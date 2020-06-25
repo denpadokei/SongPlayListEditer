@@ -1,0 +1,9 @@
+﻿<vertival>
+  <horizontal bg='panel-top' pad-left='10' pad-right='10' font-size='10'>
+    <text text='PlayListMenu' align='Center' font-size='10'></text>
+  </horizontal>
+  <horizontal bg='roud-rect-panel' pad='8'>
+    <text text='this here menu'></text>
+  </horizontal>
+  <button text='SELECT'></button>
+</vertival>

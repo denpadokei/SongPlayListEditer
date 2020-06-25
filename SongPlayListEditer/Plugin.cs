@@ -8,6 +8,7 @@ using IPA.Config.Stores;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 using IPALogger = IPA.Logging.Logger;
+using SongPlayListEditer.UI;
 
 namespace SongPlayListEditer
 {
@@ -17,6 +18,8 @@ namespace SongPlayListEditer
     {
         internal static Plugin instance { get; private set; }
         internal static string Name => "SongPlayListEditer";
+
+        private MenuUI _menuUI;
 
         [Init]
         /// <summary>
@@ -48,6 +51,9 @@ namespace SongPlayListEditer
         {
             Logger.log.Debug("OnApplicationStart");
             new GameObject("SongPlayListEditerController").AddComponent<SongPlayListEditerController>();
+            if (this._menuUI == null) {
+                this._menuUI = new GameObject(nameof(MenuUI)).AddComponent<MenuUI>();
+            }
 
         }
 
