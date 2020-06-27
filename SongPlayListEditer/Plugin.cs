@@ -9,6 +9,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 using IPALogger = IPA.Logging.Logger;
 using SongPlayListEditer.UI;
+using BS_Utils.Utilities;
+using SongPlayListEditer.BeatSaberCommon;
 
 namespace SongPlayListEditer
 {
@@ -55,6 +57,13 @@ namespace SongPlayListEditer
                 this._menuUI = new GameObject(nameof(MenuUI)).AddComponent<MenuUI>();
             }
 
+            BSEvents.lateMenuSceneLoadedFresh += this.BSEvents_lateMenuSceneLoadedFresh;
+        }
+
+        private void BSEvents_lateMenuSceneLoadedFresh(ScenesTransitionSetupDataSO obj)
+        {
+            BeatSaberUtility.Initialize();
+            MenuUI.Instance.CreateUI();
         }
 
         [OnExit]

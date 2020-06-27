@@ -1,9 +1,16 @@
-﻿<vertical child-control-height='false'>
-  <horizontal bg='panel-top' pad-left='10' pad-right='10' horizontal-fit='PreferredSize'>
-    <text text='Example' align='Center' font-size='10'></text>
-  </horizontal>
-  <horizontal bg='round-rect-panel' pad='8'>
-    <text text='Looks at this fancy text.'></text>
-  </horizontal>
-  <button text='Test Button'></button>
-</vertical>
+﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
+  <vertical child-control-height='false'>
+    <horizontal bg='panel-top' pad-left='10' pad-right='10' horizontal-fit='PreferredSize'>
+      <text text='Example' align='Center' font-size='10'></text>
+    </horizontal>
+    <modal id="testModal" show-event="show-test" hide-event="close-test" move-to-center="true" size-delta-y='75' size-delta-x='75' click-off-closes="true">
+      <vertical>
+        <text text='modal message'></text>
+      </vertical>
+    </modal>
+    <horizontal bg='round-rect-panel' pad='8'>
+      <text text='Looks at this fancy text.'></text>
+    </horizontal>
+    <button text='Test Button' click-event='show-test' on-click='click-test'></button>
+  </vertical>
+</bg>

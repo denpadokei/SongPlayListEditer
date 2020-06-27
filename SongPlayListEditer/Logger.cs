@@ -33,5 +33,12 @@ namespace SongPlayListEditer
             Logger.log.Info($"[{member}:({linenum})] : {e}\r\n{e.Message}");
 #endif
         }
+
+        public static void Debug(string log, [CallerFilePath]string filepath = "", [CallerMemberName]string member = "", [CallerLineNumber]int? linenum = 0)
+        {
+#if DEBUG
+            Logger.log.Debug($"[{filepath}] [{member}:({linenum})] : {log}");
+#endif
+        }
     }
 }

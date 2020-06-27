@@ -43,9 +43,24 @@
     <DisableZipRelease>True</DisableZipRelease>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BeatSaverSharp, Version=1.5.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Libs\BeatSaverSharp.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="BSML, Version=1.3.2.0, Culture=neutral, processorArchitecture=MSIL">
       <Private>False</Private>
       <HintPath>$(BeatSaberDir)\Plugins\BSML.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="BS_Utils, Version=1.4.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Plugins\BS_Utils.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Libs\Newtonsoft.Json.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System" />
@@ -53,7 +68,6 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
     <Reference Include="Main">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Main.dll</HintPath>
       <Private>False</Private>
@@ -82,6 +96,11 @@
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
@@ -100,15 +119,28 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BeatSaberCommon\BeatSaberUtility.cs" />
+    <Compile Include="DataBases\BeatSarverData.cs" />
+    <Compile Include="Extentions\BeatSaberUIExtensions.cs" />
+    <Compile Include="Extentions\PreviewBeatMapExtention.cs" />
+    <Compile Include="Jsons\SimpleJson.cs" />
+    <Compile Include="Models\Base64Sprites.cs" />
+    <Compile Include="Models\Playlist.cs" />
+    <Compile Include="Models\PlaylistEdierDomain.cs" />
+    <Compile Include="Models\PlaylistsEntity.cs" />
+    <Compile Include="Models\PlaylistSong.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Configuration\PluginConfig.cs" />
     <Compile Include="SongPlayListEditerController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Statics\FilePathName.cs" />
+    <Compile Include="BeatSaberCommon\BeatSaberUI.cs" />
     <Compile Include="UI\MenuUI.cs" />
-    <Compile Include="UI\UIHelper.cs" />
     <Compile Include="UI\MainFlowCoordinater.cs" />
     <Compile Include="UI\Views\PlayListMenuView.cs" />
+    <Compile Include="UI\SimpleFlowCoordinater.cs" />
+    <Compile Include="UI\Views\SimplePlayListView.cs" />
     <Compile Include="UI\Views\SongListView.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -119,6 +151,7 @@
     <None Include=".gitignore" />
     <EmbeddedResource Include="UI\Views\PlayListMenuView.bsml" />
     <EmbeddedResource Include="UI\Views\SongListView.bsml" />
+    <EmbeddedResource Include="UI\Views\SimplePlayListView.bsml" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
