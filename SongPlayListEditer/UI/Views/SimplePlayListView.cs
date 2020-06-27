@@ -10,6 +10,7 @@ using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.ViewControllers;
 using HMUI;
 using SimpleJSON;
+using SongCore;
 using SongPlayListEditer.BeatSaberCommon;
 using SongPlayListEditer.Extentions;
 using SongPlayListEditer.Models;
@@ -78,26 +79,34 @@ namespace SongPlayListEditer.UI.Views
             try {
                 await _semaphore.WaitAsync();
 
+                var addTarget = BeatSaberUtility.CurrentPreviewBeatmapLevel;
+
                 if (this.AddButonText == "Add" && !this.CurrentPlaylist.songs.Any(x => x.levelId == BeatSaberUtility.CurrentPreviewBeatmapLevel.GetBeatmapHash())) {
+                    Logger.Info($"Start add song : {addTarget.songName}");
                     this.CurrentPlaylist.songs.Add(new PlaylistSong()
                     {
                         key = "",
-                        songName = BeatSaberUtility.CurrentPreviewBeatmapLevel.songName,
-                        hash = BeatSaberUtility.CurrentPreviewBeatmapLevel.GetBeatmapHash(),
+                        songName = addTarget.songName,
+                        hash = addTarget.GetBeatmapHash(),
                     });
                     await this._domain.SavePlaylist(this.CurrentPlaylist);
+                    Logger.Info($"Finish add song : {addTarget.songName}");
                 }
                 else {
-                    this.CurrentPlaylist.songs.RemoveAll(x => x.hash == BeatSaberUtility.CurrentPreviewBeatmapLevel.GetBeatmapHash());
+                    Logger.Info($"Start delete song : {addTarget.songName}");
+                    this.CurrentPlaylist.songs.RemoveAll(x => x.hash == addTarget.GetBeatmapHash());
                     await this._domain.SavePlaylist(this.CurrentPlaylist);
+                    Logger.Info($"Finish delete song : {addTarget.songName}");
                 }
-                this.playlists.tableView.ReloadData();
+                this.CreateList();
             }
             catch (Exception e) {
                 Logger.Error(e);
             }
             finally {
+                Loader.Instance.RefreshSongs();
                 _semaphore.Release();
+                Logger.Info($"Finish add song");
             }
         }
 
