@@ -18,7 +18,13 @@ namespace SongPlayListEditer.Models
                 playlist.fileLoc = Path.Combine(Directory.GetCurrentDirectory(), "Playlists", playlist.playlistTitle);
             }
             foreach (var songinfo in playlist.songs.Where(x => string.IsNullOrEmpty(x.key))) {
-                songinfo.key = await BeatSarverData.GetBeatMapKey(songinfo.hash);
+                try {
+                    songinfo.key = await BeatSarverData.GetBeatMapKey(songinfo.hash);
+                }
+                catch (Exception e) {
+                    Logger.Error(e);
+                    songinfo.key = "";
+                }
             }
             playlist.CreateNew(playlist.fileLoc);
         }

@@ -57,7 +57,6 @@ namespace SongPlayListEditer.Models
         public static Texture2D Base64ToTexture2D(string encodedData)
         {
             try {
-                Logger.Info($"{encodedData}");
                 byte[] imageData = Convert.FromBase64String(string.IsNullOrEmpty(encodedData) ? "" : encodedData);
 
                 int width, height;

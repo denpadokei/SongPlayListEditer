@@ -19,6 +19,7 @@ using SongPlayListEditer.Extentions;
 using SongPlayListEditer.Models;
 using SongPlayListEditer.Statics;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace SongPlayListEditer.UI.Views
 {
@@ -162,7 +163,8 @@ namespace SongPlayListEditer.UI.Views
         {
             standardLevel = Resources.FindObjectsOfTypeAll<StandardLevelDetailViewController>().First();
             BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), this.ResourceName), standardLevel.transform.Find("LevelDetail").gameObject, this);
-            infoButtonTransform.localScale *= 0.7f;//no scale property in bsml as of now so manually scaling it
+            _playlistButtonTransform.localScale *= 0.7f;//no scale property in bsml as of now so manually scaling it
+            _buttonIcon.sprite = Base64Sprites.LoadSpriteFromResources("SongPlayListEditer.Resources.round_playlist_add_white_18dp.png");
         }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
@@ -186,7 +188,10 @@ namespace SongPlayListEditer.UI.Views
         private CustomListTableData _playlists;
 
         [UIComponent("playlist-button")]
-        private Transform infoButtonTransform;
+        private Transform _playlistButtonTransform;
+
+        [UIComponent("button-icon")]
+        private Image _buttonIcon;
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // 構築・破棄
