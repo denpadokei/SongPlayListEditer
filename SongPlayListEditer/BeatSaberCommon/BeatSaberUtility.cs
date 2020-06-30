@@ -42,6 +42,9 @@ namespace SongPlayListEditer.BeatSaberCommon
         public static RectTransform PlayButtons{ get; set; }
 
         public static Button PlayButton{ get; set; }
+
+        public static Button FavoriteButton { get; set; }
+
         public static Button PracticeButton{ get; set; }
 
         public static SimpleDialogPromptViewController SimpleDialogPromptViewControllerPrefab{ get; set; }
@@ -141,6 +144,7 @@ namespace SongPlayListEditer.BeatSaberCommon
                 PlayButtons = PlayContainer.GetComponentsInChildren<RectTransform>().First(x => x.name == "PlayButtons");
 
                 PlayButton = Resources.FindObjectsOfTypeAll<Button>().First(x => x.name == "PlayButton");
+
                 PracticeButton = PlayButtons.GetComponentsInChildren<Button>().First(x => x.name == "PracticeButton");
 
                 SimpleDialogPromptViewControllerPrefab = Resources.FindObjectsOfTypeAll<SimpleDialogPromptViewController>().First();
@@ -203,6 +207,35 @@ namespace SongPlayListEditer.BeatSaberCommon
             return btn;
         }
 
+        /// <summary>
+        /// Clone a Unity Button into a Button we control.
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="buttonTemplate"></param>
+        /// <param name="buttonInstance"></param>
+        /// <returns></returns>
+        static public Button CreateUIButton(RectTransform parent, Button buttonTemplate)
+        {
+            Button btn = UnityEngine.Object.Instantiate(buttonTemplate, parent, false);
+            UnityEngine.Object.DestroyImmediate(btn.GetComponent<SignalOnUIButtonClick>());
+            btn.onClick = new Button.ButtonClickedEvent();
+            btn.name = "CustomUIButton";
+
+            return btn;
+        }
+
+        /// <summary>
+        /// Safely destroy existing hoverhint.
+        /// </summary>
+        /// <param name="button"></param>
+        public static void DestroyHoverHint(RectTransform button)
+        {
+            HoverHint currentHoverHint = button.GetComponentsInChildren<HMUI.HoverHint>().First();
+            if (currentHoverHint != null) {
+                UnityEngine.GameObject.DestroyImmediate(currentHoverHint);
+            }
+        }
+
         public static IEnumerable<Playlist> GetLocalPlaylist()
         {
             Logger.Info($"Playlists Path : [{FilePathName.PlaylistsFolderPath}]");
@@ -260,6 +293,15 @@ namespace SongPlayListEditer.BeatSaberCommon
         {
             Logger.Debug($"Pack name : {beatmap.packName}, Pack ID : {beatmap.packID}, Pack short name : {beatmap.shortPackName}");
             CurrentPack = beatmap;
+        }
+
+        public static HoverHint AddHintText(RectTransform parent, string text)
+        {
+            var hoverHint = parent.gameObject.AddComponent<HoverHint>();
+            hoverHint.text = text;
+            var hoverHintController = Resources.FindObjectsOfTypeAll<HoverHintController>().First();
+            hoverHint.SetField("_hoverHintController", hoverHintController);
+            return hoverHint;
         }
     }
 }

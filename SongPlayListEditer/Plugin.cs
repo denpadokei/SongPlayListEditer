@@ -11,6 +11,7 @@ using IPALogger = IPA.Logging.Logger;
 using SongPlayListEditer.UI;
 using BS_Utils.Utilities;
 using SongPlayListEditer.BeatSaberCommon;
+using SongCore;
 
 namespace SongPlayListEditer
 {
@@ -54,7 +55,7 @@ namespace SongPlayListEditer
             Logger.log.Debug("OnApplicationStart");
             new GameObject("SongPlayListEditerController").AddComponent<SongPlayListEditerController>();
             if (this._menuUI == null) {
-                this._menuUI = new GameObject(nameof(MenuUI)).AddComponent<MenuUI>();
+                this._menuUI = new GameObject("SongPlaylistEditerMenuUI").AddComponent<MenuUI>();
             }
 
             BSEvents.lateMenuSceneLoadedFresh += this.BSEvents_lateMenuSceneLoadedFresh;

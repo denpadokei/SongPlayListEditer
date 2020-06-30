@@ -14,6 +14,7 @@ using SongPlayListEditer.Extentions;
 
 using BeatSaberUI = BeatSaberMarkupLanguage.BeatSaberUI;
 using IPA.Utilities;
+using SongPlayListEditer.UI.Views;
 
 namespace SongPlayListEditer.UI
 {
@@ -41,11 +42,15 @@ namespace SongPlayListEditer.UI
         #region // パブリックメソッド
         public static void OnLoad()
         {
-            
+
         }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プライベートメソッド
+        private void HandleSoloModeSelection()
+        {
+            throw new NotImplementedException();
+        }
         /// <summary>
         /// インスタンス作成時に1回だけ呼ばれます。（ものびへが継承されてると勝手に呼ばれる不思議なメソッド）
         /// </summary>
@@ -60,8 +65,8 @@ namespace SongPlayListEditer.UI
         public void CreateUI()
         {
             Logger.Info("Start Create UI");
-            this.CreateMenuButton();
-            //this.CreateButton();
+            //this.CreateMenuButton();
+            this.CreateButton();
             //BeatSaberUtility.LevelCollectionViewController.didSelectLevelEvent -= this.LevelCollectionViewController_didSelectLevelEvent;
             //BeatSaberUtility.LevelCollectionViewController.didSelectLevelEvent += this.LevelCollectionViewController_didSelectLevelEvent;
             Logger.Info("Finish Create UI");
@@ -88,28 +93,42 @@ namespace SongPlayListEditer.UI
         private void CreateButton()
         {
             try {
-                if (BeatSaberUtility.LevelCollectionViewController) {
-                    Logger.Info("Create Playlist Button");
-                    _playlistButton = BeatSaberUtility.LevelCollectionViewController.CreateUIButton("ApplyButton",
-                        new Vector2(66f, -37f),
-                        new Vector2(9f, 5.5f),
-                        () =>
-                        {
-                            Logger.Info("Click Playlist Button");
-                            this.ShowSimplePlaylistFlowCoordinator();
-                        },
-                        "Playlists");
+                Logger.Info("Create Playlist Button");
+                SimplePlayListView.instance.Setup();
+                Logger.Info("Created Playlist button!");
 
-                    //(_playlistButton.transform as RectTransform).anchorMin = new Vector2(1, 1);
-                    //(_playlistButton.transform as RectTransform).anchorMax = new Vector2(1, 1);
+                //if (BeatSaberUtility.LevelCollectionViewController != null) {
+                //    Logger.Info("Create Playlist Button");
+                //    SimplePlayListView.instance.Setup();
 
-                    _playlistButton.ToggleWordWrapping(false);
-                    _playlistButton.SetButtonTextSize(3.5f);
-                    _playlistButton.name = "PlaylistEditButton";
-                    //UIHelper.AddHintText(_requestButton.transform as RectTransform, "Manage the current request queue");
 
-                    Logger.Info("Created Playlist button!");
-                }
+                //    _playlistButton = BeatSaberUtility.CreateUIButton(BeatSaberUtility.PlayButtons, BeatSaberUtility.PlayButton);
+                //    _playlistButton.onClick.AddListener(delegate ()
+                //    {
+                //        Logger.Info("Click Playlist Button");
+                //        this.ShowSimplePlaylistFlowCoordinator();
+                //    });
+                //    _playlistButton.name = "PLAY LIST";
+                //    _playlistButton = BeatSaberUtility.LevelDetailViewController.CreateUIButton("ApplyButton",
+                //        new Vector2(-20f, 32f),
+                //        new Vector2(9f, 5.5f),
+                //        () =>
+                //        {
+
+                //        },
+                //        "Playlists");
+
+                //    (_playlistButton.transform as RectTransform).anchorMin = new Vector2(1, 1);
+                //    (_playlistButton.transform as RectTransform).anchorMax = new Vector2(1, 1);
+
+                //    _playlistButton.ToggleWordWrapping(false);
+                //    _playlistButton.SetButtonTextSize(2.0f);
+                //    BeatSaberUtility.DestroyHoverHint(_playlistButton.transform as RectTransform);
+
+                //    _playlistButton.name = "PlaylistEditButton";
+                //    BeatSaberUtility.AddHintText(_playlistButton.transform as RectTransform, "Edit Playlist");
+                //    Logger.Info("Created Playlist button!");
+                //}
             }
             catch (Exception e) {
                 Logger.Error(e);
@@ -137,10 +156,10 @@ namespace SongPlayListEditer.UI
                     this._simpleFlowCoordinater = BeatSaberUI.CreateFlowCoordinator<SimpleFlowCoordinater>();
                 }
 
-                BeatSaberUI.MainFlowCoordinator.PresentFlowCoordinator(this._simpleFlowCoordinater);
+                //BeatSaberUI.MainFlowCoordinator.PresentFlowCoordinator(this._simpleFlowCoordinater);
 
-                //var soloFlow = Resources.FindObjectsOfTypeAll<SoloFreePlayFlowCoordinator>().FirstOrDefault();
-                //soloFlow?.InvokeMethod<object, SoloFreePlayFlowCoordinator>("PresentFlowCoordinator", this._simpleFlowCoordinater, null, false, false);
+                var soloFlow = Resources.FindObjectsOfTypeAll<SoloFreePlayFlowCoordinator>().FirstOrDefault();
+                soloFlow?.InvokeMethod<object, SoloFreePlayFlowCoordinator>("PresentFlowCoordinator", this._simpleFlowCoordinater, null, false, false);
             }
             catch (Exception e) {
                 Logger.Error(e);
