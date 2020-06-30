@@ -163,7 +163,7 @@ namespace SongPlayListEditer.UI.Views
         {
             standardLevel = Resources.FindObjectsOfTypeAll<StandardLevelDetailViewController>().First();
             BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), this.ResourceName), standardLevel.transform.Find("LevelDetail").gameObject, this);
-            _playlistButtonTransform.localScale *= 0.7f;//no scale property in bsml as of now so manually scaling it
+            _playlistButtonTransform.localScale *= 0.4f;//no scale property in bsml as of now so manually scaling it
             _buttonIcon.sprite = Base64Sprites.LoadSpriteFromResources("SongPlayListEditer.Resources.round_playlist_add_white_18dp.png");
         }
         #endregion
