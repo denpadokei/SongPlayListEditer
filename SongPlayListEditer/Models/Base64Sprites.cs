@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SongPlayListEditer.Statics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -57,10 +58,12 @@ namespace SongPlayListEditer.Models
         public static Texture2D Base64ToTexture2D(string encodedData)
         {
             try {
-                byte[] imageData = Convert.FromBase64String(string.IsNullOrEmpty(encodedData) ? "" : encodedData);
+                byte[] imageData = Convert.FromBase64String(string.IsNullOrEmpty(encodedData) ? DefaultImage.DEFAULT_IMAGE : encodedData);
 
                 int width, height;
                 GetImageSize(imageData, out width, out height);
+
+                Logger.Info($"W : {width}, H : {height}");
 
                 Texture2D texture = new Texture2D(width, height, TextureFormat.ARGB32, false, true);
                 texture.hideFlags = HideFlags.HideAndDontSave;
@@ -70,9 +73,17 @@ namespace SongPlayListEditer.Models
             }
             catch (Exception e) {
                 Logger.Error(e);
-                Texture2D texture = new Texture2D(252, 252, TextureFormat.ARGB32, false, true);
+                byte[] imageData = Convert.FromBase64String(DefaultImage.DEFAULT_IMAGE);
+
+                int width, height;
+                GetImageSize(imageData, out width, out height);
+
+                Logger.Info($"W : {width}, H : {height}");
+
+                Texture2D texture = new Texture2D(width, height, TextureFormat.ARGB32, false, true);
                 texture.hideFlags = HideFlags.HideAndDontSave;
                 texture.filterMode = FilterMode.Trilinear;
+                texture.LoadImage(imageData);
                 return texture;
             }
         }

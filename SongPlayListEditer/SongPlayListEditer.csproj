@@ -145,6 +145,7 @@
     <Compile Include="Configuration\PluginConfig.cs" />
     <Compile Include="SongPlayListEditerController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Statics\DefaultImage.cs" />
     <Compile Include="Statics\FilePathName.cs" />
     <Compile Include="BeatSaberCommon\BeatSaberUI.cs" />
     <Compile Include="UI\MenuUI.cs" />

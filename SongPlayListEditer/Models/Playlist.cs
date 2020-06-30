@@ -32,7 +32,7 @@ namespace SongPlayListEditer.Models
 
         public Playlist(JSONNode playlistNode)
         {
-            string image = playlistNode["image"].Value;
+            image = playlistNode["image"].Value;
             // If we cannot find an image or parse the provided one correctly, fall back to anything.
             // It will never be displayed by SongBrowser.
             if (!string.IsNullOrEmpty(image)) {

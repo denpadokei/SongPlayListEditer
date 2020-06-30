@@ -93,7 +93,7 @@ namespace SongPlayListEditer.UI.Views
                 this.IsButtonInteractive = false;
                 this._playlists.data.Clear();
                 this._playlists.data
-                    .AddRange(BeatSaberUtility.GetLocalPlaylist().Select(x => new CustomListTableData.CustomCellInfo(x.playlistTitle, $"Song count : {x.songs.Count}", Base64Sprites.Base64ToTexture2D(x.image))));
+                    .AddRange(BeatSaberUtility.GetLocalPlaylist().Select(x => new CustomListTableData.CustomCellInfo(x.playlistTitle, $"Song count : {x.songs.Count}", Base64Sprites.Base64ToTexture2D(x.image.Substring(x.image.IndexOf(",") + 1)))));
                 Logger.Info($"Playlists count : {this._playlists.data.Count}");
                 this._playlists.tableView.ReloadData();
                 this._playlists.tableView.SelectCellWithIdx(-1);
