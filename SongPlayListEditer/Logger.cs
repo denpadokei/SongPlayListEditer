@@ -19,18 +19,18 @@ namespace SongPlayListEditer
         public static void Error(string log, [CallerFilePath]string filepath = "", [CallerMemberName]string member = "", [CallerLineNumber]int? linenum = 0)
         {
 #if DEBUG
-            Logger.log.Info($"[{filepath}] [{member}:({linenum})] : {log}");
+            Logger.log.Error($"[{filepath}] [{member}:({linenum})] : {log}");
 #else
-            Logger.log.Info($"[{member}:({linenum})] : {log}");
+            Logger.log.Error($"[{member}:({linenum})] : {log}");
 #endif
         }
 
         public static void Error(Exception e, [CallerFilePath]string filepath = "", [CallerMemberName]string member = "", [CallerLineNumber]int? linenum = 0)
         {
 #if DEBUG
-            Logger.log.Info($"[{filepath}] [{member}:({linenum})] : {e}\r\n{e.Message}");
+            Logger.log.Error($"[{filepath}] [{member}:({linenum})] : {e}\r\n{e.Message}");
 #else
-            Logger.log.Info($"[{member}:({linenum})] : {e}\r\n{e.Message}");
+            Logger.log.Error($"[{member}:({linenum})] : {e}\r\n{e.Message}");
 #endif
         }
 
