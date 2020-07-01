@@ -2,6 +2,7 @@
 using SimpleJSON;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -25,6 +26,7 @@ namespace SongPlayListEditer.Models
         [NonSerialized]
         public Sprite icon;
 
+        [JsonConstructor]
         public Playlist()
         {
 
@@ -85,8 +87,12 @@ namespace SongPlayListEditer.Models
         public static Playlist LoadPlaylist(string path)
         {
             Logger.Info($"Path : {path}");
-            var playlist = JsonConvert.DeserializeObject<Playlist>(File.ReadAllText(path)); //new Playlist(JSON.Parse(File.ReadAllText(path)));
+            var start = new Stopwatch();
+            start.Start();
+            var playlist = JsonConvert.DeserializeObject<Playlist>(File.ReadAllText(path));
             playlist.fileLoc = path;
+            start.Stop();
+            Logger.Info($"Load time {start.ElapsedMilliseconds}ms");
             return playlist;
         }
 

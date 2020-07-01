@@ -5,7 +5,7 @@
   <modal id='modal' show-event='open-modal' hide-event='close-modal' click-off-closes='true' anchor-pos-y='31.2' size-delta-x='65' size-delta-y='75' move-to-center='false'>
     <vertical pad-bottom='12' pad-top='2' spacing='1'>
       <page-button event-click='playlists#PageUp' direction='Up' />
-      <list id='playlists' expand-cell='true' select-cell='current'></list>
+      <list id='playlists' list-style='List' expand-cell='true' select-cell='current'></list>
       <page-button event-click='playlists#PageDown' direction='Down' />
     </vertical>
     
