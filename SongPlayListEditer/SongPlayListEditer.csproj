@@ -130,6 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bases\BindableBase.cs" />
+    <Compile Include="Bases\ViewContlollerBindableBase.cs" />
     <Compile Include="BeatSaberCommon\BeatSaberUtility.cs" />
     <Compile Include="DataBases\BeatSarverData.cs" />
     <Compile Include="Extentions\BeatSaberUIExtensions.cs" />

@@ -3,7 +3,7 @@
   "id": "SongPlayListEditer",
   "name": "SongPlayListEditer",
   "author": "denpadokei",
-  "version": "0.1.0",
+  "version": "0.0.4",
   "description": "",
   "gameVersion": "1.9.0",
   "dependsOn": {

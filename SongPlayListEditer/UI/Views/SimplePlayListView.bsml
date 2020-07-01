@@ -1,8 +1,6 @@
-﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
-  <button id='playlist-button' font-size='0.1' text='' anchor-pos-x='-20.5' anchor-pos-y='58.2' preferred-height='8' preferred-width='20' click-event='open-modal' on-click='click-button'>
-    <image id='button-icon' preserve-aspect='true'></image>
-  </button>
-  <modal id='modal' show-event='open-modal' hide-event='close-modal' click-off-closes='true' anchor-pos-y='31.2' size-delta-x='65' size-delta-y='75' move-to-center='false'>
+﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>  
+  <button id='playlist-button'></button>
+  <modal id='modal' hide-event='close-modal' click-off-closes='true' anchor-pos-y='31.2' size-delta-x='65' size-delta-y='75' move-to-center='false'>
     <vertical pad-bottom='12' pad-top='2' spacing='1'>
       <page-button event-click='playlists#PageUp' direction='Up' />
       <list id='playlists' list-style='List' expand-cell='true' select-cell='current'></list>
