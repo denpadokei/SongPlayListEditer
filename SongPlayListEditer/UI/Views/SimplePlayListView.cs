@@ -23,6 +23,7 @@ using SongPlayListEditer.Statics;
 using UnityEngine;
 using UnityEngine.UI;
 using static BeatSaberMarkupLanguage.Components.CustomListTableData;
+using BeatSaberUI = SongPlayListEditer.BeatSaberCommon.BeatSaberUI;
 
 namespace SongPlayListEditer.UI.Views
 {
@@ -91,7 +92,7 @@ namespace SongPlayListEditer.UI.Views
         #region // コマンド
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
-        #region // コマンド用メソッド
+        #region // イベント
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // オーバーライドメソッド
@@ -220,10 +221,16 @@ namespace SongPlayListEditer.UI.Views
 
         internal void Setup()
         {
-            standardLevel = Resources.FindObjectsOfTypeAll<StandardLevelDetailViewController>().First();
-            BSMLParser.instance.Parse(Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), this.ResourceName), standardLevel.transform.Find("LevelDetail").gameObject, this);
-            _playlistButtonTransform.localScale *= 0.4f;//no scale property in bsml as of now so manually scaling it
-            _buttonIcon.sprite = Base64Sprites.LoadSpriteFromResources("SongPlayListEditer.Resources.round_playlist_add_white_18dp.png");
+            standardLevel = Resources.FindObjectsOfTypeAll<StandardLevelDetailViewController>().First();            
+            BSMLParser.instance.Parse(Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), this.ResourceName), BeatSaberUtility.PlayButtons.gameObject, this);
+            _playlistButton = BeatSaberUI.CreateIconButton(BeatSaberUtility.PlayButtons, BeatSaberUtility.PracticeButton, Base64Sprites.LoadSpriteFromResources("SongPlayListEditer.Resources.round_playlist_add_white_18dp.png"));
+            _playlistButton.onClick.AddListener(() =>
+            {
+                this._modal.Show(true);
+                this.CreateList();
+            });
+            BeatSaberUI.DestroyHoverHint(_playlistButton.transform as RectTransform);
+            _playlistButton.GetComponentsInChildren<Image>().First(x => x.name == "Icon").transform.localScale *= 1.8f;
         }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
@@ -250,10 +257,10 @@ namespace SongPlayListEditer.UI.Views
         private CustomListTableData _playlists;
 
         [UIComponent("playlist-button")]
-        private Transform _playlistButtonTransform;
+        private Button _playlistButton;
 
-        [UIComponent("button-icon")]
-        private Image _buttonIcon;
+        [UIComponent("modal")]
+        private ModalView _modal;
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // 構築・破棄
