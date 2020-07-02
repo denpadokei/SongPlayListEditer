@@ -84,16 +84,20 @@ namespace SongPlayListEditer.Models
                 fileLoc = playlistNode["playlistURL"];
         }
 
-        public static Playlist LoadPlaylist(string path)
+        public static Task<Playlist> LoadPlaylist(string path)
         {
-            Logger.Info($"Path : {path}");
-            var start = new Stopwatch();
-            start.Start();
-            var playlist = JsonConvert.DeserializeObject<Playlist>(File.ReadAllText(path));
-            playlist.fileLoc = path;
-            start.Stop();
-            Logger.Info($"Load time {start.ElapsedMilliseconds}ms");
-            return playlist;
+            return Task.Run(() =>
+            {
+                Logger.Info($"Path : {path}");
+                var start = new Stopwatch();
+                start.Start();
+                var playlist = JsonConvert.DeserializeObject<Playlist>(File.ReadAllText(path));
+                playlist.fileLoc = path;
+                start.Stop();
+                Logger.Info($"Load time {start.ElapsedMilliseconds}ms");
+                return playlist;
+            });
+            
         }
 
         public bool PlaylistEqual(object obj)

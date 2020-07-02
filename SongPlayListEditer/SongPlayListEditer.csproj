@@ -130,6 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bases\BindableBase.cs" />
+    <Compile Include="Bases\BSBindableBase.cs" />
     <Compile Include="Bases\ViewContlollerBindableBase.cs" />
     <Compile Include="BeatSaberCommon\BeatSaberUtility.cs" />
     <Compile Include="DataBases\BeatSarverData.cs" />
@@ -139,6 +140,7 @@
     <Compile Include="Models\Base64Sprites.cs" />
     <Compile Include="Models\Playlist.cs" />
     <Compile Include="Models\PlaylistEdierDomain.cs" />
+    <Compile Include="Models\PlaylistMenuDomain.cs" />
     <Compile Include="Models\PlaylistsEntity.cs" />
     <Compile Include="Models\PlaylistSong.cs" />
     <Compile Include="Plugin.cs" />
@@ -154,7 +156,7 @@
     <Compile Include="UI\Views\PlayListMenuView.cs" />
     <Compile Include="UI\SimpleFlowCoordinater.cs" />
     <Compile Include="UI\Views\SimplePlayListView.cs" />
-    <Compile Include="UI\Views\SongListView.cs" />
+    <Compile Include="UI\Views\EditView.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="manifest.json" />
@@ -163,7 +165,7 @@
     <None Include="BuildTargets.targets" />
     <None Include=".gitignore" />
     <EmbeddedResource Include="UI\Views\PlayListMenuView.bsml" />
-    <EmbeddedResource Include="UI\Views\SongListView.bsml" />
+    <EmbeddedResource Include="UI\Views\EditView.bsml" />
     <EmbeddedResource Include="UI\Views\SimplePlayListView.bsml" />
   </ItemGroup>
   <ItemGroup>

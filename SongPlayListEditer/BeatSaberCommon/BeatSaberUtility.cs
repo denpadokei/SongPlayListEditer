@@ -236,7 +236,7 @@ namespace SongPlayListEditer.BeatSaberCommon
             }
         }
 
-        public static IEnumerable<Playlist> GetLocalPlaylist()
+        public static IEnumerable<Task<Playlist>> GetLocalPlaylist()
         {
             Logger.Info($"Playlists Path : [{FilePathName.PlaylistsFolderPath}]");
 

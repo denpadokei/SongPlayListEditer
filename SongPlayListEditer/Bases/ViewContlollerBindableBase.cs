@@ -1,8 +1,10 @@
-﻿using BeatSaberMarkupLanguage.Notify;
+﻿using BeatSaberMarkupLanguage;
+using BeatSaberMarkupLanguage.Notify;
 using BeatSaberMarkupLanguage.ViewControllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +14,11 @@ namespace SongPlayListEditer.Bases
     public abstract class ViewContlollerBindableBase : BSMLViewController
     {
         public abstract string ResourceName { get; }
+
+        public override string Content
+        {
+            get => Utilities.GetResourceContent(Assembly.GetAssembly(this.GetType()), ResourceName);
+        }
 
         /// <summary>
         /// Checks if a property already matches a desired value. Sets the property and

@@ -1,17 +1,13 @@
-﻿using System;
+﻿using BeatSaberMarkupLanguage.Notify;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+using UnityEngine;
 
 namespace SongPlayListEditer.Bases
 {
-    public abstract class BindableBase : INotifyPropertyChanged
+    public abstract class BSBindableBase : MonoBehaviour, INotifiableHost
     {
         public event PropertyChangedEventHandler PropertyChanged;
-
         /// <summary>
         /// Checks if a property already matches a desired value. Sets the property and
         /// notifies listeners only when necessary.
@@ -30,6 +26,7 @@ namespace SongPlayListEditer.Bases
 
             storage = value;
             RaisePropertyChanged(propertyName);
+
             return true;
         }
 
