@@ -11,7 +11,7 @@ namespace SongPlayListEditer.Extentions
         public static string GetBeatmapHash(this IPreviewBeatmapLevel beatmapLevel)
         {
             try {
-                return beatmapLevel.levelID.Split('_')[2];
+                return beatmapLevel.levelID.Split('_').Last();
             }
             catch (Exception e) {
                 Logger.Error(e);

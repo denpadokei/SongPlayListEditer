@@ -236,13 +236,12 @@ namespace SongPlayListEditer.BeatSaberCommon
             }
         }
 
-        public static IEnumerable<Task<Playlist>> GetLocalPlaylist()
+        public static IEnumerable<Playlist> GetLocalPlaylist()
         {
             Logger.Info($"Playlists Path : [{FilePathName.PlaylistsFolderPath}]");
 
             foreach (var playlistpath in Directory.EnumerateFiles(FilePathName.PlaylistsFolderPath).OrderBy(x => x)) {
-                var playlist = Playlist.LoadPlaylist(playlistpath);
-                yield return playlist;
+                yield return Playlist.LoadPlaylist(playlistpath);
             }
         }
 
