@@ -12,6 +12,7 @@ using SongPlayListEditer.UI;
 using BS_Utils.Utilities;
 using SongPlayListEditer.BeatSaberCommon;
 using SongCore;
+using System.Reflection;
 
 namespace SongPlayListEditer
 {
@@ -52,7 +53,7 @@ namespace SongPlayListEditer
         [OnStart]
         public void OnApplicationStart()
         {
-            Logger.log.Debug("OnApplicationStart");
+            Logger.log.Debug($"OnApplicationStart : Version {Assembly.GetExecutingAssembly().GetName().Version}");
             new GameObject("SongPlayListEditerController").AddComponent<SongPlayListEditerController>();
             if (this._menuUI == null) {
                 this._menuUI = new GameObject("SongPlaylistEditerMenuUI").AddComponent<MenuUI>();

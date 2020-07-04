@@ -27,7 +27,7 @@ using BeatSaberUI = SongPlayListEditer.BeatSaberCommon.BeatSaberUI;
 
 namespace SongPlayListEditer.UI.Views
 {
-    internal class SimplePlayListView : NotifiableSingleton<SimplePlayListView>, INotifiableHost
+    internal class SimplePlayListView : NotifiableSingleton<SimplePlayListView>
     {
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プロパティ
