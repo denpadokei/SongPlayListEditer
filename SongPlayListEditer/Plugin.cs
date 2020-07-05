@@ -12,6 +12,9 @@ using SongPlayListEditer.UI;
 using BS_Utils.Utilities;
 using SongPlayListEditer.BeatSaberCommon;
 using SongCore;
+using System.Reflection;
+using System.IO;
+using SongPlayListEditer.Configuration;
 
 namespace SongPlayListEditer
 {
@@ -39,26 +42,29 @@ namespace SongPlayListEditer
 
         #region BSIPA Config
         //Uncomment to use BSIPA's config
-        /*
         [Init]
-        public void InitWithConfig(Config conf)
+        public void InitWithConfig(IPA.Config.Config conf)
         {
             Configuration.PluginConfig.Instance = conf.Generated<Configuration.PluginConfig>();
             Logger.log.Debug("Config loaded");
         }
-        */
         #endregion
 
         [OnStart]
         public void OnApplicationStart()
         {
-            Logger.log.Debug("OnApplicationStart");
+            Logger.Info($"OnApplicationStart : Version {Assembly.GetExecutingAssembly().GetName().Version}");
             new GameObject("SongPlayListEditerController").AddComponent<SongPlayListEditerController>();
             if (this._menuUI == null) {
                 this._menuUI = new GameObject("SongPlaylistEditerMenuUI").AddComponent<MenuUI>();
             }
 
             BSEvents.lateMenuSceneLoadedFresh += this.BSEvents_lateMenuSceneLoadedFresh;
+
+            if (!Directory.Exists(PluginConfig.Instance.CoverFilePath)) {
+                Logger.Info($"Create CoverFileDirectory : {PluginConfig.Instance.CoverFilePath}");
+                Directory.CreateDirectory(PluginConfig.Instance.CoverFilePath);
+            }
         }
 
         private void BSEvents_lateMenuSceneLoadedFresh(ScenesTransitionSetupDataSO obj)

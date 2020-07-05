@@ -27,7 +27,7 @@ using BeatSaberUI = SongPlayListEditer.BeatSaberCommon.BeatSaberUI;
 
 namespace SongPlayListEditer.UI.Views
 {
-    internal class SimplePlayListView : NotifiableSingleton<SimplePlayListView>, INotifiableHost
+    internal class SimplePlayListView : NotifiableSingleton<SimplePlayListView>
     {
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プロパティ
@@ -239,6 +239,7 @@ namespace SongPlayListEditer.UI.Views
                 }
             }
             catch (Exception e) {
+                this.AddButtonText = "Add";
                 Logger.Error(e);
             }
             finally {
@@ -261,7 +262,7 @@ namespace SongPlayListEditer.UI.Views
 
         private void LevelCollectionViewController_didSelectLevelEvent(LevelCollectionViewController arg1, IPreviewBeatmapLevel arg2)
         {
-            Logger.Info($"Selected Beatmaplevel, [{arg2.songName} :{arg2.GetBeatmapHash()}]");
+            Logger.Info($"Selected Beatmaplevel, [{arg2.songName} : {arg2.GetBeatmapHash()}]");
 
             this.BeatMap = arg2;
             this.CurrentHash = arg2.GetBeatmapHash().ToUpper();
@@ -281,6 +282,8 @@ namespace SongPlayListEditer.UI.Views
         {
             Logger.Info($"modal scale. [x : {this._modal.transform.position.x}, y : {this._modal.transform.position.y}, z : {this._modal.transform.position.z}]");
             this._modal.transform.position = _defaultLocalScale;
+            this.CurrentPlaylist = null;
+            this.CurrentHash = null;
             this.CreateList();
             this._modal.Show(true);
         }
