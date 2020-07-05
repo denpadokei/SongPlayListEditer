@@ -54,7 +54,7 @@ namespace SongPlayListEditer
         public void OnApplicationStart()
         {
             Logger.Info($"OnApplicationStart : Version {Assembly.GetExecutingAssembly().GetName().Version}");
-            new GameObject("SongPlayListEditerController").AddComponent<SongPlayListEditerController>();
+            // new GameObject("SongPlayListEditerController").AddComponent<SongPlayListEditerController>();
             if (this._menuUI == null) {
                 this._menuUI = new GameObject("SongPlaylistEditerMenuUI").AddComponent<MenuUI>();
             }
