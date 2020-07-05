@@ -1,5 +1,20 @@
 ﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
-  <vertical>
+  <settings-container>
+    <horizontal>
+      <image id='cover'></image>
+      <button text='SELECT COVER' on-click='select-image' click-event='open-modal'></button>
+      <modal show-event='open-modal' hide-event='close-modal'>
+        <custom-list id='covers'></custom-list>
+        <button text='CLOSE' click-event='close-modal'></button>
+      </modal>
+    </horizontal>
     
-  </vertical>
+    <string-setting text='Title' value='~title'></string-setting>
+    <string-setting text='Author' value='~author'></string-setting>
+    <string-setting text='Description' value='~Description'></string-setting>
+  </settings-container>
+  <horizontal>
+    <button text='SAVE' on-click='save'></button>
+    <button text='BACK' on-click='back'></button>    
+  </horizontal>
 </bg>

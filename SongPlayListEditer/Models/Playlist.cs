@@ -89,11 +89,19 @@ namespace SongPlayListEditer.Models
             Logger.Info($"Path : {path}");
             var start = new Stopwatch();
             start.Start();
-            var playlist = JsonConvert.DeserializeObject<Playlist>(File.ReadAllText(path));
-            playlist.fileLoc = path;
-            start.Stop();
-            Logger.Info($"Load time {start.ElapsedMilliseconds}ms");
-            return playlist;
+            try {
+                var playlist = JsonConvert.DeserializeObject<Playlist>(File.ReadAllText(path));
+                playlist.fileLoc = path;
+                return playlist;
+            }
+            catch (Exception e) {
+                Logger.Error(e);
+                return null;
+            }
+            finally {
+                start.Stop();
+                Logger.Info($"Load time {start.ElapsedMilliseconds}ms");
+            }
         }
 
         public bool PlaylistEqual(object obj)

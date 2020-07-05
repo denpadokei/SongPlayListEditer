@@ -240,8 +240,12 @@ namespace SongPlayListEditer.BeatSaberCommon
         {
             Logger.Info($"Playlists Path : [{FilePathName.PlaylistsFolderPath}]");
 
-            foreach (var playlistpath in Directory.EnumerateFiles(FilePathName.PlaylistsFolderPath).OrderBy(x => x)) {
-                yield return Playlist.LoadPlaylist(playlistpath);
+            foreach (var playlistpath in Directory.EnumerateFiles(FilePathName.PlaylistsFolderPath, "*", SearchOption.TopDirectoryOnly).OrderBy(x => x)) {
+                var playlist = Playlist.LoadPlaylist(playlistpath);
+                if (playlist == null) {
+                    continue;
+                }
+                yield return playlist;
             }
         }
 
