@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
@@ -8,6 +11,7 @@ using BeatSaberMarkupLanguage.ViewControllers;
 using SongPlayListEditer.Bases;
 using SongPlayListEditer.BeatSaberCommon;
 using SongPlayListEditer.Models;
+using static BeatSaberMarkupLanguage.Components.CustomListTableData;
 
 namespace SongPlayListEditer.UI.Views
 {
@@ -51,12 +55,61 @@ namespace SongPlayListEditer.UI.Views
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // オーバーライドメソッド
+        protected override void DidActivate(bool firstActivation, ActivationType type)
+        {
+            base.DidActivate(firstActivation, type);
+            this.CreateList();
+        }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // パブリックメソッド
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プライベートメソッド
+        void Awake()
+        {
+            _context = SynchronizationContext.Current;
+        }
+
+        public void CreateList()
+        {
+            _ = this.CreateListAsync();
+        }
+
+        public async Task CreateListAsync()
+        {
+            await _createlistSemaphore.WaitAsync();
+
+            var start = new Stopwatch();
+            start.Start();
+            try {
+                Logger.Info("Create List");
+                this._playlists.tableView.SelectCellWithIdx(-1);
+                this._playlists.data.Clear();
+
+                await Task.Run(() =>
+                {
+                    foreach (var playlist in BeatSaberUtility.GetLocalPlaylist()) {
+                        _context.Post(d =>
+                        {
+                            this._playlists.data.Add(new CustomCellInfo(playlist.playlistTitle, $"Song count-{playlist.songs.Count}", Base64Sprites.Base64ToTexture2D(playlist.image.Split(',').Last())));
+                        }, null);
+                    }
+                });
+
+                Logger.Info($"Playlists count : {this._playlists.data.Count}");
+                this._playlists.tableView.ReloadData();
+                Logger.Info("Created List");
+            }
+            catch (Exception e) {
+                Logger.Error(e);
+            }
+            finally {
+                start.Stop();
+                Logger.Info($"Creat time : {start.ElapsedMilliseconds}ms");
+                _createlistSemaphore.Release();
+            }
+        }
 
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
@@ -64,7 +117,11 @@ namespace SongPlayListEditer.UI.Views
         [UIComponent("playlists")]
         private CustomListTableData _playlists;
 
+        private static SemaphoreSlim _createlistSemaphore = new SemaphoreSlim(1, 1);
+
         private PlaylistMenuDomain _domain;
+
+        private static SynchronizationContext _context;
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // 構築・破棄

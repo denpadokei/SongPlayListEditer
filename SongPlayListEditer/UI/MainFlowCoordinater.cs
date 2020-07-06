@@ -44,9 +44,11 @@ namespace SongPlayListEditer.UI
             try {
                 Logger.Info($"AwakeStart");
                 this._playListMenuView = BeatSaberUI.CreateViewController<PlayListMenuView>();
+                this._editView = BeatSaberUI.CreateViewController<EditView>();
                 Logger.Info($"Is playlist null? {this._playListMenuView == null}");
+                Logger.Info($"Is edit null? {this._editView == null}");
                 this._playListMenuView.MainFlowCoordinater = this;
-                //this._songListView = BeatSaberUI.CreateViewController<SongListView>();
+                this._editView.Coordinator = this;
             }
             catch (Exception e) {
                 Logger.Error(e);
@@ -56,7 +58,7 @@ namespace SongPlayListEditer.UI
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // メンバ変数
         PlayListMenuView _playListMenuView;
-        EditView _songListView;
+        EditView _editView;
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // 構築・破棄

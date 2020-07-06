@@ -154,7 +154,6 @@
     <Compile Include="UI\MenuUI.cs" />
     <Compile Include="UI\MainFlowCoordinater.cs" />
     <Compile Include="UI\Views\PlayListMenuView.cs" />
-    <Compile Include="UI\SimpleFlowCoordinater.cs" />
     <Compile Include="UI\Views\SimplePlayListView.cs" />
     <Compile Include="UI\Views\EditView.cs" />
   </ItemGroup>

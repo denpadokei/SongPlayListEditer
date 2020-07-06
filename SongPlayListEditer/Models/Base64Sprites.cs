@@ -1,6 +1,7 @@
 ﻿using SongPlayListEditer.Statics;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -85,6 +86,24 @@ namespace SongPlayListEditer.Models
                 texture.filterMode = FilterMode.Trilinear;
                 texture.LoadImage(imageData);
                 return texture;
+            }
+        }
+
+        public static Texture2D ImageFileToTextuer2D(string filePath)
+        {
+            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read)) {
+                var body = new byte[stream.Length];
+                var readByte = stream.Read(body, 0, (int)stream.Length);
+                return Base64ToTexture2D(Convert.ToBase64String(body));
+            }
+        }
+
+        public static Sprite ImageFileToSprite(string filePath)
+        {
+            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read)) {
+                var body = new byte[stream.Length];
+                var readByte = stream.Read(body, 0, (int)stream.Length);
+                return Base64ToSprite(Convert.ToBase64String(body));
             }
         }
 

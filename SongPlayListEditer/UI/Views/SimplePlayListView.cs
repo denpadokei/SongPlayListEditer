@@ -47,13 +47,13 @@ namespace SongPlayListEditer.UI.Views
         }
 
         /// <summary>説明 を取得、設定</summary>
-        private SimpleFlowCoordinater simpleFlowCoordinater_;
+        private MainFlowCoordinator coordinater_;
         /// <summary>説明 を取得、設定</summary>
-        public SimpleFlowCoordinater SimpleFlowCoordinater
+        public MainFlowCoordinator Coordinater
         {
-            get => this.simpleFlowCoordinater_;
+            get => this.coordinater_;
 
-            set => this.SetProperty(ref this.simpleFlowCoordinater_, value);
+            set => this.SetProperty(ref this.coordinater_, value);
         }
 
         /// <summary>説明 を取得、設定</summary>
