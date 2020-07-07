@@ -16,6 +16,7 @@ namespace SongPlayListEditer.Models
     {
         public string playlistTitle { get; set; }
         public string playlistAuthor { get; set; }
+        public string playlistDescription { get; set; }
         public string image { get; set; }
         public int playlistSongCount { get; set; }
         public List<PlaylistSong> songs { get; set; }

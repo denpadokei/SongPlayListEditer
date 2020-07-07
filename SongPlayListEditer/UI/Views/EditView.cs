@@ -57,6 +57,16 @@ namespace SongPlayListEditer.UI.Views
         }
 
         /// <summary>説明 を取得、設定</summary>
+        private string coverPath_;
+        /// <summary>説明 を取得、設定</summary>
+        public string CoverPath
+        {
+            get => this.coverPath_;
+
+            set => this.SetProperty(ref this.coverPath_, value);
+        }
+
+        /// <summary>説明 を取得、設定</summary>
         private MainFlowCoordinator coordinater_;
         /// <summary>説明 を取得、設定</summary>
         public MainFlowCoordinator Coordinator
@@ -74,6 +84,13 @@ namespace SongPlayListEditer.UI.Views
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // オーバーライドメソッド
+        protected override void DidActivate(bool firstActivation, ActivationType type)
+        {
+            base.DidActivate(firstActivation, type);
+            this.Title = this.Coordinator.CurrentPlaylist.playlistTitle;
+            this.Author = this.Coordinator.CurrentPlaylist.playlistAuthor;
+            this.Description = this.Coordinator.CurrentPlaylist.playlistDescription;
+        }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // パブリックメソッド
