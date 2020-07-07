@@ -38,7 +38,6 @@ namespace SongPlayListEditer.Bases
 
             storage = value;
             RaisePropertyChanged(propertyName);
-            NotifyPropertyChanged(propertyName);
             return true;
         }
 
@@ -58,7 +57,7 @@ namespace SongPlayListEditer.Bases
         /// <param name="args">The PropertyChangedEventArgs</param>
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
         {
-            
+            NotifyPropertyChanged(args.PropertyName);
         }
     }
 }
