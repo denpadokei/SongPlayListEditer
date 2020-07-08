@@ -1,20 +1,23 @@
 ﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
-  <settings-container>
+  <vertical pad-bottom='2' pad-top='2'>
     <horizontal>
-      <image id='cover'></image>
-      <button text='SELECT COVER' on-click='select-image' click-event='open-modal'></button>
-      <modal show-event='open-modal' hide-event='close-modal'>
-        <custom-list id='covers'></custom-list>
+      <image id='cover' size-delta-x='25' size-delta-y='25'></image>
+      <button text='SELECT COVER' on-click='select-cover' click-event='open-modal'></button>
+      <modal show-event='open-modal' hide-event='close-modal' size-delta-x='115' size-delta-y='83'>
+        <vertical pad-bottom='23' pad-top='2' spacing='1'>
+          <page-button event-click='covers#PageUp' direction='Up' />
+          <list id='covers' select-cell='select-cover-cell'></list>
+          <page-button event-click='covers#PageDown' direction='Down' />
+        </vertical>
         <button text='CLOSE' click-event='close-modal'></button>
       </modal>
     </horizontal>
-    
-    <string-setting text='Title' value='~title'></string-setting>
-    <string-setting text='Author' value='~author'></string-setting>
-    <string-setting text='Description' value='~Description'></string-setting>
-  </settings-container>
-  <horizontal>
-    <button text='SAVE' on-click='save'></button>
-    <button text='BACK' on-click='back'></button>    
-  </horizontal>
+    <string-setting text='Title' value='~title' apply-on-change='true' bind-value='true'></string-setting>
+    <string-setting text='Author' value='~author' apply-on-change='true' bind-value='true'></string-setting>
+    <!--<string-setting text='Description' value='~description'></string-setting>-->
+    <horizontal>
+      <button text='SAVE' on-click='save'></button>
+      <button text='BACK' on-click='back'></button>
+    </horizontal>
+  </vertical>
 </bg>

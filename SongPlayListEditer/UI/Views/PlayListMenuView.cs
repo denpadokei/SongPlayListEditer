@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
+using BeatSaberMarkupLanguage.Notify;
 using BeatSaberMarkupLanguage.ViewControllers;
+using HMUI;
 using SongPlayListEditer.Bases;
 using SongPlayListEditer.BeatSaberCommon;
 using SongPlayListEditer.Models;
@@ -44,13 +46,25 @@ namespace SongPlayListEditer.UI.Views
         [UIAction("add-click")]
         public void AddClick()
         {
-            Logger.Info("Clicked add button.");
+            try {
+                Logger.Info("Clicked create button.");
+                this.MainFlowCoordinater.ShowAdd();
+            }
+            catch (Exception e) {
+                Logger.Error(e);
+            }
         }
 
         [UIAction("edit-click")]
         public void EditClick()
         {
-            Logger.Info("Clicked edit button");
+            try {
+                Logger.Info("Clicked edit button");
+                this.MainFlowCoordinater.ShowEdit();
+            }
+            catch (Exception e) {
+                Logger.Error(e);
+            }
         }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
@@ -66,14 +80,17 @@ namespace SongPlayListEditer.UI.Views
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プライベートメソッド
-        void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             _context = SynchronizationContext.Current;
         }
 
         public void CreateList()
         {
             _ = this.CreateListAsync();
+            this.MainFlowCoordinater.CurrentPlaylist = null;
+            this.IsEnableEditButton = false;
         }
 
         public async Task CreateListAsync()
@@ -111,6 +128,13 @@ namespace SongPlayListEditer.UI.Views
             }
         }
 
+        [UIAction("select-cell")]
+        void SelectCell(TableView tableView, int cellindex)
+        {
+            Logger.Info("Selected Cell");
+            this.MainFlowCoordinater.CurrentPlaylist = BeatSaberUtility.GetLocalPlaylist().ToArray()[cellindex];
+            this.IsEnableEditButton = true;
+        }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // メンバ変数

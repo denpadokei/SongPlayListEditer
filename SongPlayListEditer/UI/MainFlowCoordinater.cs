@@ -30,6 +30,7 @@ namespace SongPlayListEditer.UI
         {
             this.showBackButton = true;
             this.ProvideInitialViewControllers(this._playListMenuView);
+            
         }
 
         protected override void BackButtonWasPressed(ViewController topViewController)
@@ -40,14 +41,24 @@ namespace SongPlayListEditer.UI
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // パブリックメソッド
+        public void ShowPlaylist()
+        {
+            this.ReplaceTopViewController(_playListMenuView);
+        }
+
         public void ShowEdit()
         {
-
+            Logger.Info("ShowEditView");
+            this.ReplaceTopViewController(_editView);
         }
 
         public void ShowAdd()
         {
-
+            this.CurrentPlaylist = new Playlist()
+            {
+                playlistTitle = $"MY PLAYLIST-{DateTime.Now:yyyyMMddHHmmss}"
+            };
+            this.ShowEdit();
         }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*

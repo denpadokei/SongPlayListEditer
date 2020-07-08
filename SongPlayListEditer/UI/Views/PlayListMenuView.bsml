@@ -5,7 +5,7 @@
     <page-button event-click='playlists#PageDown' direction='Down' />
   </vertical>
   <bottom-button-panel>
-    <button text='ADD' on-click='add-click'></button>
+    <button text='CREATE' on-click='add-click'></button>
     <button text='EDIT' interactable='~edit-button-interactive' on-click='edit-click'></button>
   </bottom-button-panel>
 </bg>

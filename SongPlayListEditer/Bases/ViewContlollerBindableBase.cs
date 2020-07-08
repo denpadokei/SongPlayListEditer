@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SongPlayListEditer.Bases
@@ -18,6 +19,13 @@ namespace SongPlayListEditer.Bases
         public override string Content
         {
             get => Utilities.GetResourceContent(Assembly.GetAssembly(this.GetType()), ResourceName);
+        }
+        private static SynchronizationContext context;
+
+
+        protected virtual void Awake()
+        {
+            context = SynchronizationContext.Current;
         }
 
         /// <summary>
@@ -57,7 +65,7 @@ namespace SongPlayListEditer.Bases
         /// <param name="args">The PropertyChangedEventArgs</param>
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
         {
-            NotifyPropertyChanged(args.PropertyName);
+            context.Post(d => { NotifyPropertyChanged(args.PropertyName); }, null);
         }
     }
 }

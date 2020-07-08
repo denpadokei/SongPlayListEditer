@@ -8,9 +8,11 @@ using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.ViewControllers;
+using HMUI;
 using SongPlayListEditer.Bases;
 using SongPlayListEditer.Configuration;
 using SongPlayListEditer.Models;
+using SongPlayListEditer.Statics;
 using UnityEngine.UI;
 using static BeatSaberMarkupLanguage.Components.CustomListTableData;
 
@@ -21,7 +23,7 @@ namespace SongPlayListEditer.UI.Views
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プロパティ
         // For this method of setting the ResourceName, this class must be the first class in the file.
-        public override string ResourceName => string.Join(".", GetType().Namespace, GetType().Name);
+        public override string ResourceName => string.Join(".", GetType().Namespace, "EditView.bsml");
 
         /// <summary>プレイリストのタイトル を取得、設定</summary>
         private string title_;
@@ -75,6 +77,16 @@ namespace SongPlayListEditer.UI.Views
 
             set => this.SetProperty(ref this.coordinater_, value);
         }
+
+        /// <summary>説明 を取得、設定</summary>
+        private int currentCover_;
+        /// <summary>説明 を取得、設定</summary>
+        public int CurrentCover
+        {
+            get => this.currentCover_;
+
+            set => this.SetProperty(ref this.currentCover_, value);
+        }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // コマンド
@@ -86,10 +98,17 @@ namespace SongPlayListEditer.UI.Views
         #region // オーバーライドメソッド
         protected override void DidActivate(bool firstActivation, ActivationType type)
         {
-            base.DidActivate(firstActivation, type);
-            this.Title = this.Coordinator.CurrentPlaylist.playlistTitle;
-            this.Author = this.Coordinator.CurrentPlaylist.playlistAuthor;
-            this.Description = this.Coordinator.CurrentPlaylist.playlistDescription;
+            try {
+                base.DidActivate(firstActivation, type);
+                this.Title = this.Coordinator.CurrentPlaylist.playlistTitle;
+                this.Author = this.Coordinator.CurrentPlaylist.playlistAuthor;
+                this.Description = this.Coordinator.CurrentPlaylist.playlistDescription;
+
+                _cover.sprite = Base64Sprites.Base64ToSprite(string.IsNullOrEmpty(this.Coordinator.CurrentPlaylist?.image.Split(',').Last()) ? this.Coordinator.CurrentPlaylist?.image.Split(',').Last() : DefaultImage.DEFAULT_IMAGE);
+            }
+            catch (Exception e) {
+                Logger.Error(e);
+            }
         }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
@@ -97,30 +116,41 @@ namespace SongPlayListEditer.UI.Views
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プライベートメソッド
-        void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             _context = SynchronizationContext.Current;
         }
 
         [UIAction("save")]
         void Save()
         {
-
+            if (string.IsNullOrEmpty(this.Coordinator.CurrentPlaylist.fileLoc)) {
+                this.Coordinator.CurrentPlaylist.fileLoc = Path.Combine(FilePathName.PlaylistsFolderPath, this.Coordinator.CurrentPlaylist.playlistTitle);
+            }
+            this.Coordinator.CurrentPlaylist.CreateNew(this.Coordinator.CurrentPlaylist.fileLoc);
+            
         }
 
         [UIAction("back")]
         void Back()
         {
-
+            this.Coordinator.ShowPlaylist();
         }
 
+        [UIAction("select-cover-cell")]
+        void SelectCoverCell(TableView tableView, int cellindex)
+        {
+            var cell = this._covers.data[cellindex];
+            var files = Directory.EnumerateFiles(PluginConfig.Instance.CoverDirectoryPath, "*.jpg", SearchOption.TopDirectoryOnly).Union(Directory.EnumerateFiles(PluginConfig.Instance.CoverDirectoryPath, "*.png", SearchOption.TopDirectoryOnly)).Select(x => new FileInfo(x));
+            this.Coordinator.CurrentPlaylist.SetCover(files.FirstOrDefault(x => x.Name == cell.text).FullName);
+        }
 
         [UIAction("select-cover")]
         private void ShowModal()
         {
             Logger.Info("Clicked Show modal");
             _ = CreateCoverList();
-
         }
 
         private async Task CreateCoverList()
@@ -143,7 +173,7 @@ namespace SongPlayListEditer.UI.Views
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // メンバ変数
         [UIComponent("covers")]
-        CustomCellListTableData _covers;
+        CustomListTableData _covers;
 
         [UIComponent("cover")]
         Image _cover;
