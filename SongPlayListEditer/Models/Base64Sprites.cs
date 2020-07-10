@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace SongPlayListEditer.Models
 {
@@ -20,6 +21,8 @@ namespace SongPlayListEditer.Models
         public static Sprite XIcon;
         public static Sprite RandomIcon;
         public static Sprite DoubleArrow;
+
+        private static string Base64StringHeader => "data:image/%extention%;base64";
 
         public static void Init()
         {
@@ -98,6 +101,56 @@ namespace SongPlayListEditer.Models
             }
         }
 
+        public static Texture2D StreamToTextuer2D(Stream stream)
+        {
+            try {
+                var imageData = new byte[stream.Length];
+
+                var streamindex = stream.Read(imageData, 0, (int)stream.Length);
+
+                int width, height;
+                GetImageSize(imageData, out width, out height);
+
+                Logger.Info($"W : {width}, H : {height}");
+
+                Texture2D texture = new Texture2D(width, height, TextureFormat.ARGB32, false, true);
+                texture.hideFlags = HideFlags.HideAndDontSave;
+                texture.filterMode = FilterMode.Trilinear;
+                texture.LoadImage(imageData);
+                return texture;
+            }
+            catch (Exception e) {
+                Logger.Error(e);
+                byte[] imageData = Convert.FromBase64String(DefaultImage.DEFAULT_IMAGE);
+
+                int width, height;
+                GetImageSize(imageData, out width, out height);
+
+                Logger.Info($"W : {width}, H : {height}");
+
+                Texture2D texture = new Texture2D(width, height, TextureFormat.ARGB32, false, true);
+                texture.hideFlags = HideFlags.HideAndDontSave;
+                texture.filterMode = FilterMode.Trilinear;
+                texture.LoadImage(imageData);
+                return texture;
+            }
+        }
+
+        public static Sprite StreamToSprite(Stream stream)
+        {
+            Sprite s = null;
+            try {
+                Texture2D tex = StreamToTextuer2D(stream);
+                s = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), (Vector2.one / 2f));
+            }
+            catch (Exception) {
+                Console.WriteLine("Exception loading texture from base64 data.");
+                s = null;
+            }
+
+            return s;
+        }
+
         public static Sprite ImageFileToSprite(string filePath)
         {
             using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read)) {
@@ -148,6 +201,37 @@ namespace SongPlayListEditer.Models
         public static Sprite LoadSpriteFromResources(string resourcePath, float PixelsPerUnit = 100.0f)
         {
             return LoadSpriteRaw(GetResource(Assembly.GetCallingAssembly(), resourcePath), PixelsPerUnit);
+        }
+
+        public static string FileInfoToBase64(FileInfo fileinfo)
+        {
+            try {
+                using (var stream = new FileStream(fileinfo.FullName, FileMode.Open, FileAccess.Read)) {
+                    return StreamToBase64(stream, fileinfo.Extension);
+                }
+            }
+            catch (Exception e) {
+                Logger.Error(e);
+                return GetBase64String("jpg", DefaultImage.DEFAULT_IMAGE);
+            }            
+        }
+
+        public static string StreamToBase64(Stream stream, string extention)
+        {
+            try {
+                var body = new byte[stream.Length];
+                var readByte = stream.Read(body, 0, (int)stream.Length);
+                return GetBase64String(extention, Convert.ToBase64String(body));
+            }
+            catch (Exception e) {
+                Logger.Error(e);
+                return GetBase64String("jpg", DefaultImage.DEFAULT_IMAGE);
+            }
+        }
+
+        public static string GetBase64String(string extention, string base64string)
+        {
+            return $"{Base64StringHeader.Replace("%extention%", extention)},{base64string}";
         }
 
         public static byte[] GetResource(Assembly asm, string ResourceName)

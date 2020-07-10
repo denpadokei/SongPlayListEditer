@@ -1,5 +1,7 @@
 ﻿using IPA.Utilities;
+using Newtonsoft.Json;
 using SongPlayListEditer.DataBases;
+using SongPlayListEditer.Statics;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,10 +15,10 @@ namespace SongPlayListEditer.Models
 {
     public class PlaylistEdierDomain
     {
-        public async Task SavePlaylist(Playlist playlist)
+        public async Task SavePlaylist(BeatSaberPlaylistsLib.Types.IPlaylist playlist)
         {
-            if (string.IsNullOrEmpty(playlist.fileLoc)) {
-                playlist.fileLoc = Path.Combine(Directory.GetCurrentDirectory(), "Playlists", playlist.playlistTitle);
+            if (string.IsNullOrEmpty(playlist.Filename)) {
+                playlist.Filename = Path.Combine(Directory.GetCurrentDirectory(), "Playlists", playlist.Title);
             }
             //foreach (var songinfo in playlist.songs.Where(x => string.IsNullOrEmpty(x.key))) {
             //    Logger.Info($"Try get song key : {songinfo.songName}");
@@ -33,7 +35,8 @@ namespace SongPlayListEditer.Models
             start.Start();
             await Task.Run(() =>
             {
-                playlist.CreateNew(playlist.fileLoc);
+                Logger.Info($"Filename : {playlist.Filename}");
+                File.WriteAllText(Path.Combine(FilePathName.PlaylistsFolderPath, $"{playlist.Filename}.json"), JsonConvert.SerializeObject(playlist, Formatting.Indented));
             });
             start.Stop();
             Logger.Info($"Save time : {start.ElapsedMilliseconds}ms");

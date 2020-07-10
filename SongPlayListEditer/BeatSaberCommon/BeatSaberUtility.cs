@@ -1,4 +1,5 @@
 ﻿using BeatSaberMarkupLanguage;
+using BeatSaberPlaylistsLib;
 using BS_Utils.Utilities;
 using HMUI;
 using SongPlayListEditer.Models;
@@ -236,15 +237,19 @@ namespace SongPlayListEditer.BeatSaberCommon
             }
         }
 
-        public static IEnumerable<Playlist> GetLocalPlaylist()
+        public static IEnumerable<BeatSaberPlaylistsLib.Types.IPlaylist> GetLocalPlaylist()
         {
             Logger.Info($"Playlists Path : [{FilePathName.PlaylistsFolderPath}]");
 
-            foreach (var playlistpath in Directory.EnumerateFiles(FilePathName.PlaylistsFolderPath, "*", SearchOption.TopDirectoryOnly).OrderBy(x => x)) {
-                var playlist = Playlist.LoadPlaylist(playlistpath);
-                if (playlist == null) {
-                    continue;
-                }
+            //foreach (var playlistpath in Directory.EnumerateFiles(FilePathName.PlaylistsFolderPath, "*", SearchOption.TopDirectoryOnly).OrderBy(x => x)) {
+            //    var playlist = Playlist.LoadPlaylist(playlistpath);
+            //    if (playlist == null) {
+            //        continue;
+            //    }
+            //    yield return playlist;
+            //}
+
+            foreach (var playlist in PlaylistManager.DefaultManager.GetAllPlaylists()) {
                 yield return playlist;
             }
         }

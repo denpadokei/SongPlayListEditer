@@ -8,11 +8,14 @@ using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.ViewControllers;
+using BeatSaberPlaylistsLib;
 using HMUI;
+using Newtonsoft.Json;
 using SongPlayListEditer.Bases;
 using SongPlayListEditer.Configuration;
 using SongPlayListEditer.Models;
 using SongPlayListEditer.Statics;
+using UnityEngine;
 using UnityEngine.UI;
 using static BeatSaberMarkupLanguage.Components.CustomListTableData;
 
@@ -100,11 +103,15 @@ namespace SongPlayListEditer.UI.Views
         {
             try {
                 base.DidActivate(firstActivation, type);
-                this.Title = this.Coordinator.CurrentPlaylist.playlistTitle;
-                this.Author = this.Coordinator.CurrentPlaylist.playlistAuthor;
-                this.Description = this.Coordinator.CurrentPlaylist.playlistDescription;
+                this.Title = "";
+                this.Author = "";
+                this.Description = "";
 
-                _cover.sprite = Base64Sprites.Base64ToSprite(string.IsNullOrEmpty(this.Coordinator.CurrentPlaylist?.image.Split(',').Last()) ? this.Coordinator.CurrentPlaylist?.image.Split(',').Last() : DefaultImage.DEFAULT_IMAGE);
+                this.Title = this.Coordinator.CurrentPlaylist.Title;
+                this.Author = this.Coordinator.CurrentPlaylist.Author;
+                this.Description = this.Coordinator.CurrentPlaylist.Description;
+
+                _cover.sprite = Base64Sprites.StreamToSprite(this.Coordinator.CurrentPlaylist?.GetCoverStream());
             }
             catch (Exception e) {
                 Logger.Error(e);
@@ -125,16 +132,24 @@ namespace SongPlayListEditer.UI.Views
         [UIAction("save")]
         void Save()
         {
-            if (string.IsNullOrEmpty(this.Coordinator.CurrentPlaylist.fileLoc)) {
-                this.Coordinator.CurrentPlaylist.fileLoc = Path.Combine(FilePathName.PlaylistsFolderPath, this.Coordinator.CurrentPlaylist.playlistTitle);
+            Logger.Info("Clicked Save.");
+            if (string.IsNullOrEmpty(this.Coordinator.CurrentPlaylist.Filename)) {
+                this.Coordinator.CurrentPlaylist.Filename = this.Coordinator.CurrentPlaylist.Title;
             }
-            this.Coordinator.CurrentPlaylist.CreateNew(this.Coordinator.CurrentPlaylist.fileLoc);
+            using (var stream = new FileStream(this.CoverPath, FileMode.Open, FileAccess.Read)) {
+                this.Coordinator.CurrentPlaylist.SetCover(stream);
+            }
+            this.Coordinator.CurrentPlaylist.Title = this.Title;
+            this.Coordinator.CurrentPlaylist.Author = this.Author;
+            this.Coordinator.CurrentPlaylist.Description = this.Description;
+            File.WriteAllText(Path.Combine(FilePathName.PlaylistsFolderPath, $"{this.Coordinator.CurrentPlaylist?.Filename}.json"), JsonConvert.SerializeObject(this.Coordinator.CurrentPlaylist, Formatting.Indented));
             
         }
 
         [UIAction("back")]
         void Back()
         {
+            Logger.Info("Clicked Back");
             this.Coordinator.ShowPlaylist();
         }
 
@@ -143,7 +158,16 @@ namespace SongPlayListEditer.UI.Views
         {
             var cell = this._covers.data[cellindex];
             var files = Directory.EnumerateFiles(PluginConfig.Instance.CoverDirectoryPath, "*.jpg", SearchOption.TopDirectoryOnly).Union(Directory.EnumerateFiles(PluginConfig.Instance.CoverDirectoryPath, "*.png", SearchOption.TopDirectoryOnly)).Select(x => new FileInfo(x));
-            this.Coordinator.CurrentPlaylist.SetCover(files.FirstOrDefault(x => x.Name == cell.text).FullName);
+            try {
+                var fileinfo = new FileInfo(files.FirstOrDefault(x => x.Name == cell.text).FullName);
+                this.CoverPath = fileinfo.FullName;
+                using (var stream = new FileStream(fileinfo.FullName, FileMode.Open, FileAccess.Read)) {
+                    this._cover.sprite = Base64Sprites.StreamToSprite(stream);
+                }
+            }
+            catch (Exception e) {
+                Logger.Error(e);
+            }
         }
 
         [UIAction("select-cover")]

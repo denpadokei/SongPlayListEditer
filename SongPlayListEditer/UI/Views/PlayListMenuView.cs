@@ -24,7 +24,7 @@ namespace SongPlayListEditer.UI.Views
         // For this method of setting the ResourceName, this class must be the first class in the file.
         public override string ResourceName => string.Join(".", GetType().Namespace, "PlayListMenuView.bsml");
 
-        public MainFlowCoordinator MainFlowCoordinater { get; internal set; }
+        public MainFlowCoordinator Coordinater { get; internal set; }
 
         /// <summary>編集ボタンのインタラクティブ を取得、設定</summary>
         private bool isEnableEditButton_;
@@ -48,7 +48,7 @@ namespace SongPlayListEditer.UI.Views
         {
             try {
                 Logger.Info("Clicked create button.");
-                this.MainFlowCoordinater.ShowAdd();
+                this.Coordinater.ShowAdd();
             }
             catch (Exception e) {
                 Logger.Error(e);
@@ -60,7 +60,7 @@ namespace SongPlayListEditer.UI.Views
         {
             try {
                 Logger.Info("Clicked edit button");
-                this.MainFlowCoordinater.ShowEdit();
+                this.Coordinater.ShowEdit();
             }
             catch (Exception e) {
                 Logger.Error(e);
@@ -89,7 +89,7 @@ namespace SongPlayListEditer.UI.Views
         public void CreateList()
         {
             _ = this.CreateListAsync();
-            this.MainFlowCoordinater.CurrentPlaylist = null;
+            this.Coordinater.SetCurrentPlaylist(null);
             this.IsEnableEditButton = false;
         }
 
@@ -109,7 +109,7 @@ namespace SongPlayListEditer.UI.Views
                     foreach (var playlist in BeatSaberUtility.GetLocalPlaylist()) {
                         _context.Post(d =>
                         {
-                            this._playlists.data.Add(new CustomCellInfo(playlist.playlistTitle, $"Song count-{playlist.songs.Count}", Base64Sprites.Base64ToTexture2D(playlist.image.Split(',').Last())));
+                            this._playlists.data.Add(new CustomCellInfo(playlist.Title, $"Song count-{playlist.Count}", Base64Sprites.StreamToTextuer2D(playlist.GetCoverStream())));
                         }, null);
                     }
                 });
@@ -132,7 +132,7 @@ namespace SongPlayListEditer.UI.Views
         void SelectCell(TableView tableView, int cellindex)
         {
             Logger.Info("Selected Cell");
-            this.MainFlowCoordinater.CurrentPlaylist = BeatSaberUtility.GetLocalPlaylist().ToArray()[cellindex];
+            this.Coordinater.SetCurrentPlaylist(BeatSaberUtility.GetLocalPlaylist().ToArray()[cellindex]);
             this.IsEnableEditButton = true;
         }
         #endregion

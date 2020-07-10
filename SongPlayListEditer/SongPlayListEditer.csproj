@@ -136,6 +136,7 @@
   <ItemGroup>
     <Compile Include="Bases\BindableBase.cs" />
     <Compile Include="Bases\BSBindableBase.cs" />
+    <Compile Include="Bases\SingletonBindableBase.cs" />
     <Compile Include="Bases\ViewContlollerBindableBase.cs" />
     <Compile Include="BeatSaberCommon\BeatSaberUtility.cs" />
     <Compile Include="DataBases\BeatSarverData.cs" />
@@ -171,6 +172,7 @@
     <EmbeddedResource Include="UI\Views\PlayListMenuView.bsml" />
     <EmbeddedResource Include="UI\Views\EditView.bsml" />
     <EmbeddedResource Include="UI\Views\SimplePlayListView.bsml" />
+    <None Include="dll\BeatSaberPlaylistsLib.manifest" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\round_playlist_add_white_18dp.png" />
