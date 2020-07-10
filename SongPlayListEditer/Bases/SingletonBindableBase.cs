@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace SongPlayListEditer.Bases
 {
-    public abstract class SingletonBindableBase<T> : NotifiableSingleton<T> where T : MonoBehaviour
+    public abstract class SingletonBindableBase<TController> : NotifiableSingleton<TController> where TController : MonoBehaviour
     {
         private static SynchronizationContext context;
 
