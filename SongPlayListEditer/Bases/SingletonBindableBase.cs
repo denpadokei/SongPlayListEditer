@@ -1,25 +1,18 @@
-﻿using BeatSaberMarkupLanguage;
+﻿using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.Notify;
-using BeatSaberMarkupLanguage.ViewControllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace SongPlayListEditer.Bases
 {
-    public abstract class ViewContlollerBindableBase : BSMLViewController
+    public abstract class SingletonBindableBase<TController> : NotifiableSingleton<TController> where TController : MonoBehaviour
     {
-        public abstract string ResourceName { get; }
-
-        public override string Content
-        {
-            get => Utilities.GetResourceContent(Assembly.GetAssembly(this.GetType()), ResourceName);
-        }
         private static SynchronizationContext context;
 
 
@@ -65,8 +58,7 @@ namespace SongPlayListEditer.Bases
         /// <param name="args">The PropertyChangedEventArgs</param>
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
         {
-            Logger.Info($"Property Changed by {args.PropertyName}");
-            context?.Post(d => { NotifyPropertyChanged(args.PropertyName); }, null);
+            context.Post(d => { NotifyPropertyChanged(args.PropertyName); }, null);
         }
     }
 }

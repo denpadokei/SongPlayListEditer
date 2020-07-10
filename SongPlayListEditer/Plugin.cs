@@ -61,9 +61,9 @@ namespace SongPlayListEditer
 
             BSEvents.lateMenuSceneLoadedFresh += this.BSEvents_lateMenuSceneLoadedFresh;
 
-            if (!Directory.Exists(PluginConfig.Instance.CoverFilePath)) {
-                Logger.Info($"Create CoverFileDirectory : {PluginConfig.Instance.CoverFilePath}");
-                Directory.CreateDirectory(PluginConfig.Instance.CoverFilePath);
+            if (!Directory.Exists(PluginConfig.Instance.CoverDirectoryPath)) {
+                Logger.Info($"Create CoverFileDirectory : {PluginConfig.Instance.CoverDirectoryPath}");
+                Directory.CreateDirectory(PluginConfig.Instance.CoverDirectoryPath);
             }
         }
 

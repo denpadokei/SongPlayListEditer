@@ -1,0 +1,16 @@
+﻿{
+  "$schema": "https://raw.githubusercontent.com/bsmg/BSIPA-MetadataFileSchema/master/Schema.json",
+  "id": "BeatSaberPlaylistsLib",
+  "name": "BeatSaberPlaylistsLib",
+  "author": "Zingabopp",
+  "version": "1.0.1",
+  "description": "A playlist loading library.",
+  "gameVersion": "1.10.0",
+  "files": [
+    "Libs/BeatSaberPlaylistsLib.dll"
+  ],
+  "dependsOn": {
+    "SongCore": "^2.9.7"
+  },
+  "features": []
+}

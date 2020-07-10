@@ -10,7 +10,7 @@ namespace SongPlayListEditer.Configuration
         public static PluginConfig Instance { get; set; }
         //public virtual int IntValue { get; set; } = 42; // Must be 'virtual' if you want BSIPA to detect a value change and save the config automatically.
 
-        public virtual string CoverFilePath { get; set; } = Path.Combine(Directory.GetCurrentDirectory(), "UserData", "Covers");
+        public virtual string CoverDirectoryPath { get; set; } = Path.Combine(Directory.GetCurrentDirectory(), "UserData", "Covers");
 
         /// <summary>
         /// This is called whenever BSIPA reads the config from disk (including when file changes are detected).
@@ -35,7 +35,7 @@ namespace SongPlayListEditer.Configuration
         {
             // This instance's members populated from other
 
-            this.CoverFilePath = other.CoverFilePath;
+            this.CoverDirectoryPath = other.CoverDirectoryPath;
         }
     }
 }

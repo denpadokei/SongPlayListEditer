@@ -1,5 +1,9 @@
 ﻿using BeatSaberMarkupLanguage;
+using BeatSaberPlaylistsLib;
+using BeatSaberPlaylistsLib.Blist;
+using BeatSaberPlaylistsLib.Types;
 using HMUI;
+using SongPlayListEditer.Models;
 using SongPlayListEditer.UI.Views;
 using System;
 using System.Collections.Generic;
@@ -13,6 +17,9 @@ namespace SongPlayListEditer.UI
     {
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プロパティ
+        
+        /// <summary>説明 を取得、設定</summary>
+        public BeatSaberPlaylistsLib.Types.IPlaylist CurrentPlaylist { get; private set; }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // コマンド
@@ -36,6 +43,39 @@ namespace SongPlayListEditer.UI
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // パブリックメソッド
+        public void ShowPlaylist()
+        {
+            this.ReplaceTopViewController(_playListMenuView);
+        }
+
+        public void ShowEdit()
+        {
+            Logger.Info("ShowEditView");
+            this.ReplaceTopViewController(_editView);
+        }
+
+        public void ShowAdd()
+        {
+            this.SetCurrentPlaylist(PlaylistManager.DefaultManager.CreatePlaylist($"MY PLAYLIST-{DateTime.Now:yyyyMMddHHmmss}", "", "", ""));
+            this.ShowEdit();
+        }
+
+        public void SetCurrentPlaylist(BeatSaberPlaylistsLib.Types.IPlaylist playlist)
+        {
+            
+            this.CurrentPlaylist = playlist;
+            if (playlist == null) {
+                this._editView.Title = "";
+                this._editView.Author = "";
+                this._editView.Description = "";
+                return;
+            }
+            else {
+                this._editView.Title = playlist.Title;
+                this._editView.Author = playlist.Author;
+                this._editView.Description = playlist.Description;
+            }
+        }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プライベートメソッド
@@ -44,9 +84,11 @@ namespace SongPlayListEditer.UI
             try {
                 Logger.Info($"AwakeStart");
                 this._playListMenuView = BeatSaberUI.CreateViewController<PlayListMenuView>();
+                this._editView = BeatSaberUI.CreateViewController<EditView>();
                 Logger.Info($"Is playlist null? {this._playListMenuView == null}");
-                this._playListMenuView.MainFlowCoordinater = this;
-                //this._songListView = BeatSaberUI.CreateViewController<SongListView>();
+                Logger.Info($"Is edit null? {this._editView == null}");
+                this._playListMenuView.Coordinater = this;
+                this._editView.Coordinator = this;
             }
             catch (Exception e) {
                 Logger.Error(e);
@@ -56,7 +98,7 @@ namespace SongPlayListEditer.UI
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // メンバ変数
         PlayListMenuView _playListMenuView;
-        EditView _songListView;
+        EditView _editView;
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // 構築・破棄

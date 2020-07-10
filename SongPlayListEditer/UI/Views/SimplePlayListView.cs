@@ -13,6 +13,7 @@ using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.Notify;
 using BeatSaberMarkupLanguage.ViewControllers;
+using BeatSaberPlaylistsLib.Blist;
 using HMUI;
 using SimpleJSON;
 using SongCore;
@@ -37,9 +38,9 @@ namespace SongPlayListEditer.UI.Views
         public string ResourceName => string.Join(".", GetType().Namespace, "SimplePlayListView.bsml");
 
         /// <summary>説明 を取得、設定</summary>
-        private Playlist currentPlaylist_;
+        private BeatSaberPlaylistsLib.Types.IPlaylist currentPlaylist_;
         /// <summary>説明 を取得、設定</summary>
-        public Playlist CurrentPlaylist
+        public BeatSaberPlaylistsLib.Types.IPlaylist CurrentPlaylist
         {
             get => this.currentPlaylist_;
 
@@ -47,13 +48,13 @@ namespace SongPlayListEditer.UI.Views
         }
 
         /// <summary>説明 を取得、設定</summary>
-        private SimpleFlowCoordinater simpleFlowCoordinater_;
+        private MainFlowCoordinator coordinater_;
         /// <summary>説明 を取得、設定</summary>
-        public SimpleFlowCoordinater SimpleFlowCoordinater
+        public MainFlowCoordinator Coordinater
         {
-            get => this.simpleFlowCoordinater_;
+            get => this.coordinater_;
 
-            set => this.SetProperty(ref this.simpleFlowCoordinater_, value);
+            set => this.SetProperty(ref this.coordinater_, value);
         }
 
         /// <summary>説明 を取得、設定</summary>
@@ -135,16 +136,16 @@ namespace SongPlayListEditer.UI.Views
                     var beatmapHash = this.BeatMap.GetBeatmapHash().ToUpper();
 
                     foreach (var playlist in BeatSaberUtility.GetLocalPlaylist()) {
-                        if (playlist.songs.Any(x => x.hash?.ToUpper() == beatmapHash)) {
+                        if (playlist.Any(x => x.Hash?.ToUpper() == beatmapHash)) {
                             _context.Post(d =>
                             {
-                                this._playlists.data.Add(new CustomCellInfo(playlist.playlistTitle, $"Song count-{playlist.songs.Count}", Base64Sprites.Base64ToTexture2D(playlist.image.Split(',').Last()), new Sprite[1] { Base64Sprites.LoadSpriteFromResources("SongPlayListEditer.Resources.sharp_playlist_add_check_white_18dp.png") }));
+                                this._playlists.data.Add(new CustomCellInfo(playlist.Title, $"Song count-{playlist.Count}", Base64Sprites.StreamToTextuer2D(playlist.GetCoverStream()), new Sprite[1] { Base64Sprites.LoadSpriteFromResources("SongPlayListEditer.Resources.sharp_playlist_add_check_white_18dp.png") }));
                             }, null);
                         }
                         else {
                             _context.Post(d =>
                             {
-                                this._playlists.data.Add(new CustomCellInfo(playlist.playlistTitle, $"Song count-{playlist.songs.Count}", Base64Sprites.Base64ToTexture2D(playlist.image.Split(',').Last())));
+                                this._playlists.data.Add(new CustomCellInfo(playlist.Title, $"Song count-{playlist.Count}", Base64Sprites.StreamToTextuer2D(playlist.GetCoverStream())));
                             }, null);
                         }
                     }
@@ -186,20 +187,15 @@ namespace SongPlayListEditer.UI.Views
                 var addTargetHash = this.BeatMap.GetBeatmapHash().ToUpper();
 
 
-                if (this.AddButtonText == "Add" && !playlist.songs.Any(x => x.hash?.ToUpper() == addTargetHash)) {
+                if (this.AddButtonText == "Add" && !playlist.Any(x => x.Hash?.ToUpper() == addTargetHash)) {
                     Logger.Info($"Start add song : {addTarget.songName}");
-                    playlist.songs.Add(new PlaylistSong()
-                    {
-                        key = "",
-                        songName = addTarget.songName,
-                        hash = addTargetHash,
-                    });
+                    playlist.Add(addTargetHash, addTarget.songName, null, addTarget.levelAuthorName);
                     await this._domain.SavePlaylist(playlist);
                     Logger.Info($"Finish add song : {addTarget.songName}");
                 }
                 else {
                     Logger.Info($"Start delete song : {addTarget.songName}");
-                    playlist.songs.RemoveAll(x => x.hash?.ToUpper() == addTargetHash);
+                    playlist.TryRemoveByHash(addTargetHash);
                     await this._domain.SavePlaylist(playlist);
                     Logger.Info($"Finish delete song : {addTarget.songName}");
                 }
@@ -223,7 +219,7 @@ namespace SongPlayListEditer.UI.Views
                 var result = await Task.Run(() => { return BeatSaberUtility.GetLocalPlaylist().ToArray(); });
                 this.CurrentPlaylist = result[selectRow];
                 this.CurrentCellIndex = selectRow;
-                var isContain = this.CurrentPlaylist.songs.Any(x => x.hash?.ToUpper() == beatMaphash);
+                var isContain = this.CurrentPlaylist.Any(x => x.Hash?.ToUpper() == beatMaphash);
                 Logger.Info($"Current PreviewBeatmapLevel LevelID : {this.BeatMap.levelID}");
                 if (isContain) {
                     this.AddButtonText = "Delete";

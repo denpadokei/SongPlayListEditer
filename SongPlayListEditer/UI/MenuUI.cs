@@ -47,10 +47,7 @@ namespace SongPlayListEditer.UI
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プライベートメソッド
-        private void HandleSoloModeSelection()
-        {
-            throw new NotImplementedException();
-        }
+        
         /// <summary>
         /// インスタンス作成時に1回だけ呼ばれます。（ものびへが継承されてると勝手に呼ばれる不思議なメソッド）
         /// </summary>
@@ -65,17 +62,9 @@ namespace SongPlayListEditer.UI
         public void CreateUI()
         {
             Logger.Info("Start Create UI");
-            //this.CreateMenuButton();
+            this.CreateMenuButton();
             this.CreateButton();
-            //BeatSaberUtility.LevelCollectionViewController.didSelectLevelEvent -= this.LevelCollectionViewController_didSelectLevelEvent;
-            //BeatSaberUtility.LevelCollectionViewController.didSelectLevelEvent += this.LevelCollectionViewController_didSelectLevelEvent;
             Logger.Info("Finish Create UI");
-        }
-
-        private async void LevelCollectionViewController_didSelectLevelEvent(LevelCollectionViewController arg1, IPreviewBeatmapLevel arg2)
-        {
-            await Task.Delay(5000);
-            this.ShowSimplePlaylistFlowCoordinator();
         }
 
         /// <summary>
@@ -83,7 +72,7 @@ namespace SongPlayListEditer.UI
         /// </summary>
         private void CreateMenuButton()
         {
-            var button = new MenuButton("SONG PLAYLIST EDITER", "Edit song playlist", this.ShowSimplePlaylistFlowCoordinator, true);
+            var button = new MenuButton("SONG PLAYLIST EDITER", "Edit song playlist", this.ShowMainFlowCoodniator, true);
             MenuButtons.instance.RegisterButton(button);
         }
 
@@ -96,39 +85,6 @@ namespace SongPlayListEditer.UI
                 Logger.Info("Create Playlist Button");
                 SimplePlayListView.instance.Setup();
                 Logger.Info("Created Playlist button!");
-
-                //if (BeatSaberUtility.LevelCollectionViewController != null) {
-                //    Logger.Info("Create Playlist Button");
-                //    SimplePlayListView.instance.Setup();
-
-
-                //    _playlistButton = BeatSaberUtility.CreateUIButton(BeatSaberUtility.PlayButtons, BeatSaberUtility.PlayButton);
-                //    _playlistButton.onClick.AddListener(delegate ()
-                //    {
-                //        Logger.Info("Click Playlist Button");
-                //        this.ShowSimplePlaylistFlowCoordinator();
-                //    });
-                //    _playlistButton.name = "PLAY LIST";
-                //    _playlistButton = BeatSaberUtility.LevelDetailViewController.CreateUIButton("ApplyButton",
-                //        new Vector2(-20f, 32f),
-                //        new Vector2(9f, 5.5f),
-                //        () =>
-                //        {
-
-                //        },
-                //        "Playlists");
-
-                //    (_playlistButton.transform as RectTransform).anchorMin = new Vector2(1, 1);
-                //    (_playlistButton.transform as RectTransform).anchorMax = new Vector2(1, 1);
-
-                //    _playlistButton.ToggleWordWrapping(false);
-                //    _playlistButton.SetButtonTextSize(2.0f);
-                //    BeatSaberUtility.DestroyHoverHint(_playlistButton.transform as RectTransform);
-
-                //    _playlistButton.name = "PlaylistEditButton";
-                //    BeatSaberUtility.AddHintText(_playlistButton.transform as RectTransform, "Edit Playlist");
-                //    Logger.Info("Created Playlist button!");
-                //}
             }
             catch (Exception e) {
                 Logger.Error(e);
@@ -140,26 +96,13 @@ namespace SongPlayListEditer.UI
         /// </summary>
         private void ShowMainFlowCoodniator()
         {
-            if (this._mainFlowCoordinater == null) {
-                this._mainFlowCoordinater = BeatSaberUI.CreateFlowCoordinator<MainFlowCoordinator>();
-            }
-
-            BeatSaberUI.MainFlowCoordinator.PresentFlowCoordinator(this._mainFlowCoordinater);
-        }
-
-        private void ShowSimplePlaylistFlowCoordinator()
-        {
             try {
                 Logger.Info("Click Playlist Button");
-
-                if (this._simpleFlowCoordinater == null) {
-                    this._simpleFlowCoordinater = BeatSaberUI.CreateFlowCoordinator<SimpleFlowCoordinater>();
+                if (this._mainFlowCoordinater == null) {
+                    this._mainFlowCoordinater = BeatSaberUI.CreateFlowCoordinator<MainFlowCoordinator>();
                 }
 
-                //BeatSaberUI.MainFlowCoordinator.PresentFlowCoordinator(this._simpleFlowCoordinater);
-
-                var soloFlow = Resources.FindObjectsOfTypeAll<SoloFreePlayFlowCoordinator>().FirstOrDefault();
-                soloFlow?.InvokeMethod<object, SoloFreePlayFlowCoordinator>("PresentFlowCoordinator", this._simpleFlowCoordinater, null, false, false);
+                BeatSaberUI.MainFlowCoordinator.PresentFlowCoordinator(this._mainFlowCoordinater);
             }
             catch (Exception e) {
                 Logger.Error(e);
@@ -169,9 +112,6 @@ namespace SongPlayListEditer.UI
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // メンバ変数
         private MainFlowCoordinator _mainFlowCoordinater;
-
-        private SimpleFlowCoordinater _simpleFlowCoordinater;
-
         private Button _playlistButton;
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*

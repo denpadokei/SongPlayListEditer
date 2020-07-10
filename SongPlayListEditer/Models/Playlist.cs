@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using SimpleJSON;
+using SongPlayListEditer.Statics;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,12 +17,17 @@ namespace SongPlayListEditer.Models
     {
         public string playlistTitle { get; set; }
         public string playlistAuthor { get; set; }
+        public string playlistDescription { get; set; }
         public string image { get; set; }
         public int playlistSongCount { get; set; }
         public List<PlaylistSong> songs { get; set; }
         public string fileLoc { get; set; }
         public string customDetailUrl { get; set; }
         public string customArchiveUrl { get; set; }
+
+        [JsonIgnore]
+        private string Base64StringHeader => "data:image/%extention%;base64";
+        
 
         [NonSerialized]
         public Sprite icon;
@@ -120,6 +126,26 @@ namespace SongPlayListEditer.Models
                    songCountThis == songCountObj;
         }
 
+        public void SetCover(string coverPath)
+        {
+            try {
+                var fileinfo = new FileInfo(coverPath);
+                using (var stream = new FileStream(coverPath, FileMode.Open, FileAccess.Read)) {
+                    var body = new byte[stream.Length];
+                    var readByte = stream.Read(body, 0, (int)stream.Length);
+                    this.SetBase64String(fileinfo.Extension, Convert.ToBase64String(body));
+                }
+            }
+            catch (Exception e) {
+                this.SetBase64String("jpg", DefaultImage.DEFAULT_IMAGE);
+                Logger.Error(e);
+            }
+        }
+
+        public void SetBase64String(string extention, string base64string)
+        {
+            this.image = $"{this.Base64StringHeader.Replace("%extention%", extention)},{base64string}";
+        }
         public void CreateNew(String fileLoc)
         {
             File.WriteAllText(fileLoc, JsonConvert.SerializeObject(this, Formatting.Indented));
