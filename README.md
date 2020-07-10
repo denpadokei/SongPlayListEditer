@@ -9,19 +9,20 @@
 # 依存  
 [Beat-Saber-Utils](https://github.com/Kylemc1413/Beat-Saber-Utils)  
 [BeatSaberMarkupLanguage](https://github.com/monkeymanboy/BeatSaberMarkupLanguage)  
+[BeatSaberPlaylistsLib](https://github.com/Zingabopp/BeatSaberPlaylistsLib)  
 
 上記2個はModAssistantからインストールできます。  
   
 # SongPlayListEditer  
 Edit playlist in game  
+# What you can do now  
 Add songs to a playlist  
 Remove song from playlist  
-# Thing you want to do  
 Create new playlist itself  
 Rename the playlist itself  
-
 # Dependence
 [Beat-Saber-Utils](https://github.com/Kylemc1413/Beat-Saber-Utils)  
 [BeatSaberMarkupLanguage](https://github.com/monkeymanboy/BeatSaberMarkupLanguage)  
+[BeatSaberPlaylistsLib](https://github.com/Zingabopp/BeatSaberPlaylistsLib)  
   
 The above two can be installed from Mod Assistant.
