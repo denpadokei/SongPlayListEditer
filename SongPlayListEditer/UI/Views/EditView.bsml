@@ -12,9 +12,9 @@
         <button text='CLOSE' click-event='close-modal'></button>
       </modal>
     </horizontal>
-    <string-setting text='Title' value='title' bind-value='true'></string-setting>
-    <string-setting text='Author' value='author' apply-on-change='true'></string-setting>
-    <string-setting text='Description' value='description' apply-on-change='true' bind-value='true'></string-setting>
+    <string-setting id='title-value' text='Title'></string-setting>
+    <string-setting id='author-value' text='Author'></string-setting>
+    <string-setting id='description-value' text='Description'></string-setting>
     
     <horizontal>
       <button text='SAVE' on-click='save'></button>

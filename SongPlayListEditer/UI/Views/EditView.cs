@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
+using BeatSaberMarkupLanguage.Components.Settings;
+using BeatSaberMarkupLanguage.Notify;
 using BeatSaberMarkupLanguage.ViewControllers;
 using BeatSaberPlaylistsLib;
 using HMUI;
@@ -15,6 +17,7 @@ using SongPlayListEditer.Bases;
 using SongPlayListEditer.Configuration;
 using SongPlayListEditer.Models;
 using SongPlayListEditer.Statics;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using static BeatSaberMarkupLanguage.Components.CustomListTableData;
@@ -31,7 +34,6 @@ namespace SongPlayListEditer.UI.Views
         /// <summary>プレイリストのタイトル を取得、設定</summary>
         private string title_;
         /// <summary>プレイリストのタイトル を取得、設定</summary>
-        [UIValue("title")]
         public string Title
         {
             get => this.title_;
@@ -42,7 +44,6 @@ namespace SongPlayListEditer.UI.Views
         /// <summary>作者 を取得、設定</summary>
         private string author_;
         /// <summary>作者 を取得、設定</summary>
-        [UIValue("author")]
         public string Author
         {
             get => this.author_;
@@ -53,7 +54,6 @@ namespace SongPlayListEditer.UI.Views
         /// <summary>詳細 を取得、設定</summary>
         private string description_;
         /// <summary>詳細 を取得、設定</summary>
-        [UIValue("description")]
         public string Description
         {
             get => this.description_;
@@ -103,9 +103,9 @@ namespace SongPlayListEditer.UI.Views
         {
             try {
                 base.DidActivate(firstActivation, type);
-                this.Title = "";
-                this.Author = "";
-                this.Description = "";
+                this.Title = null;
+                this.Author = null;
+                this.Description = null;
 
                 this.Title = this.Coordinator.CurrentPlaylist.Title;
                 this.Author = this.Coordinator.CurrentPlaylist.Author;
@@ -115,6 +115,23 @@ namespace SongPlayListEditer.UI.Views
             }
             catch (Exception e) {
                 Logger.Error(e);
+            }
+        }
+
+        protected override void OnPropertyChanged(PropertyChangedEventArgs args)
+        {
+            base.OnPropertyChanged(args);
+            if (args.PropertyName == nameof(this.Title) && this._titleValue != null) {
+                this._titleValue.Text = this.Title;
+                this._titleValue.ApplyValue();
+            }
+            else if (args.PropertyName == nameof(this.Author) && this._authorValue != null) {
+                this._authorValue.Text = this.Author;
+                this._authorValue.ApplyValue();
+            }
+            else if (args.PropertyName == nameof(this.Description) && this._descriptionValue != null) {
+                this._descriptionValue.Text = this.Description;
+                this._descriptionValue.ApplyValue();
             }
         }
         #endregion
@@ -139,11 +156,10 @@ namespace SongPlayListEditer.UI.Views
             using (var stream = new FileStream(this.CoverPath, FileMode.Open, FileAccess.Read)) {
                 this.Coordinator.CurrentPlaylist.SetCover(stream);
             }
-            this.Coordinator.CurrentPlaylist.Title = this.Title;
-            this.Coordinator.CurrentPlaylist.Author = this.Author;
-            this.Coordinator.CurrentPlaylist.Description = this.Description;
+            this.Coordinator.CurrentPlaylist.Title = this._titleValue.Text;
+            this.Coordinator.CurrentPlaylist.Author = this._authorValue.Text;
+            this.Coordinator.CurrentPlaylist.Description = this._descriptionValue.Text;
             File.WriteAllText(Path.Combine(FilePathName.PlaylistsFolderPath, $"{this.Coordinator.CurrentPlaylist?.Filename}.json"), JsonConvert.SerializeObject(this.Coordinator.CurrentPlaylist, Formatting.Indented));
-            
         }
 
         [UIAction("back")]
@@ -201,6 +217,14 @@ namespace SongPlayListEditer.UI.Views
 
         [UIComponent("cover")]
         Image _cover;
+
+
+        [UIComponent("title-value")]
+        StringSetting _titleValue;
+        [UIComponent("author-value")]
+        StringSetting _authorValue;
+        [UIComponent("description-value")]
+        StringSetting _descriptionValue;
 
         static SynchronizationContext _context;
         #endregion
