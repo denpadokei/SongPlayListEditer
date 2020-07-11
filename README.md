@@ -1,3 +1,5 @@
+[最新版はこちらからDLしてください](https://github.com/denpadokei/SongPlayListEditer/releases/latest)  
+  
 # SongPlayListEditer
 ゲーム内でプレイリストが編集できる
 
