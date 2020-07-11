@@ -58,7 +58,7 @@ namespace SongPlayListEditer.Bases
         /// <param name="args">The PropertyChangedEventArgs</param>
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
         {
-            context.Post(d => { NotifyPropertyChanged(args.PropertyName); }, null);
+            context?.Post(d => { NotifyPropertyChanged(args.PropertyName); }, null);
         }
     }
 }
