@@ -154,11 +154,14 @@ namespace SongPlayListEditer.UI.Views
             if (string.IsNullOrEmpty(this.Coordinator.CurrentPlaylist.Filename)) {
                 this.Coordinator.CurrentPlaylist.Filename = this.Coordinator.CurrentPlaylist.Title;
             }
-            if (string.IsNullOrEmpty(this.CoverPath)) {
-                this.Coordinator.CurrentPlaylist.SetCover(DefaultImage.DEFAULT_IMAGE);
+            Logger.Info($"Cover Path : [{this.CoverPath}]");
+            if (!string.IsNullOrEmpty(this.CoverPath)) {
+                using (var stream = new FileStream(this.CoverPath, FileMode.Open, FileAccess.Read)) {
+                    this.Coordinator.CurrentPlaylist.SetCover(stream);
+                }
             }
             else {
-                using (var stream = new FileStream(this.CoverPath, FileMode.Open, FileAccess.Read)) {
+                using (var stream = Base64Sprites.Base64ToStream(DefaultImage.DEFAULT_IMAGE)) {
                     this.Coordinator.CurrentPlaylist.SetCover(stream);
                 }
             }

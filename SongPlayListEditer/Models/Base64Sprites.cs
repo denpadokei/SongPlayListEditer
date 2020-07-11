@@ -35,6 +35,14 @@ namespace SongPlayListEditer.Models
             RandomIcon = Base64Sprites.LoadSpriteFromResources("SongBrowser.Assets.RandomIcon.png");
         }
 
+        public static Stream Base64ToStream(string base64)
+        {
+            var base64string = base64.Split(',').Last();
+            var body = Convert.FromBase64String(base64string);
+
+            return new MemoryStream(body);
+        }
+
         public static string SpriteToBase64(Sprite input)
         {
             return Convert.ToBase64String(input.texture.EncodeToPNG());
