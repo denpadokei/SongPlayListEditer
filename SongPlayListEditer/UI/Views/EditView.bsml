@@ -10,6 +10,7 @@
           <page-button event-click='covers#PageDown' direction='Down' />
         </vertical>
         <button text='CLOSE' click-event='close-modal'></button>
+        <button text='OPEN FOLDER' click-event='open-folder' anchor-pos-x='37'></button>
       </modal>
     </horizontal>
     <string-setting id='title-value' text='Title'></string-setting>

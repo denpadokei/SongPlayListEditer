@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -153,8 +154,13 @@ namespace SongPlayListEditer.UI.Views
             if (string.IsNullOrEmpty(this.Coordinator.CurrentPlaylist.Filename)) {
                 this.Coordinator.CurrentPlaylist.Filename = this.Coordinator.CurrentPlaylist.Title;
             }
-            using (var stream = new FileStream(this.CoverPath, FileMode.Open, FileAccess.Read)) {
-                this.Coordinator.CurrentPlaylist.SetCover(stream);
+            if (string.IsNullOrEmpty(this.CoverPath)) {
+                this.Coordinator.CurrentPlaylist.SetCover(DefaultImage.DEFAULT_IMAGE);
+            }
+            else {
+                using (var stream = new FileStream(this.CoverPath, FileMode.Open, FileAccess.Read)) {
+                    this.Coordinator.CurrentPlaylist.SetCover(stream);
+                }
             }
             this.Coordinator.CurrentPlaylist.Title = this._titleValue.Text;
             this.Coordinator.CurrentPlaylist.Author = this._authorValue.Text;
@@ -175,7 +181,7 @@ namespace SongPlayListEditer.UI.Views
             var cell = this._covers.data[cellindex];
             var files = Directory.EnumerateFiles(PluginConfig.Instance.CoverDirectoryPath, "*.jpg", SearchOption.TopDirectoryOnly).Union(Directory.EnumerateFiles(PluginConfig.Instance.CoverDirectoryPath, "*.png", SearchOption.TopDirectoryOnly)).Select(x => new FileInfo(x));
             try {
-                var fileinfo = new FileInfo(files.FirstOrDefault(x => x.Name == cell.text).FullName);
+                var fileinfo = files.FirstOrDefault(x => x.Name == cell.text);
                 this.CoverPath = fileinfo.FullName;
                 using (var stream = new FileStream(fileinfo.FullName, FileMode.Open, FileAccess.Read)) {
                     this._cover.sprite = Base64Sprites.StreamToSprite(stream);
@@ -191,6 +197,12 @@ namespace SongPlayListEditer.UI.Views
         {
             Logger.Info("Clicked Show modal");
             _ = CreateCoverList();
+        }
+
+        [UIAction("open-folder")]
+        void OpenCoverFolder()
+        {
+            Process.Start($"{PluginConfig.Instance.CoverDirectoryPath}");
         }
 
         private async Task CreateCoverList()
