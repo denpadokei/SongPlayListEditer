@@ -104,6 +104,7 @@ namespace SongPlayListEditer.UI.Views
         {
             try {
                 base.DidActivate(firstActivation, type);
+                this.CoverPath = null;
                 this.Title = null;
                 this.Author = null;
                 this.Description = null;
@@ -155,12 +156,13 @@ namespace SongPlayListEditer.UI.Views
                 this.Coordinator.CurrentPlaylist.Filename = this.Coordinator.CurrentPlaylist.Title;
             }
             Logger.Info($"Cover Path : [{this.CoverPath}]");
+            Logger.Info($"Has Cover? : {this.Coordinator.CurrentPlaylist.HasCover}");
             if (!string.IsNullOrEmpty(this.CoverPath)) {
                 using (var stream = new FileStream(this.CoverPath, FileMode.Open, FileAccess.Read)) {
                     this.Coordinator.CurrentPlaylist.SetCover(stream);
                 }
             }
-            else {
+            else if(!this.Coordinator.CurrentPlaylist.HasCover) {
                 using (var stream = Base64Sprites.Base64ToStream(DefaultImage.DEFAULT_IMAGE)) {
                     this.Coordinator.CurrentPlaylist.SetCover(stream);
                 }
