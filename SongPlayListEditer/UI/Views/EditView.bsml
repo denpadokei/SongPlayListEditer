@@ -18,7 +18,7 @@
     <string-setting id='description-value' text='Description'></string-setting>
     
     <horizontal>
-      <button text='SAVE' on-click='save'></button>
+      <button text='SAVE' on-click='save' interactable='~save-button-interactive'></button>
       <button text='BACK' on-click='back'></button>
     </horizontal>
   </vertical>
