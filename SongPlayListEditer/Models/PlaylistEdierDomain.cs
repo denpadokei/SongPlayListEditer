@@ -19,19 +19,8 @@ namespace SongPlayListEditer.Models
         public async Task SavePlaylist(BeatSaberPlaylistsLib.Types.IPlaylist playlist)
         {
             if (string.IsNullOrEmpty(playlist.Filename)) {
-                playlist.Filename = Path.Combine(Directory.GetCurrentDirectory(), "Playlists", playlist.Title);
+                playlist.Filename = $"{playlist.Title}_{DateTime.Now:yyyyMMddHHmmss}";
             }
-            //foreach (var songinfo in playlist.songs.Where(x => string.IsNullOrEmpty(x.key))) {
-            //    Logger.Info($"Try get song key : {songinfo.songName}");
-            //    try {
-            //        songinfo.key = await BeatSarverData.GetBeatMapKey(songinfo.hash);
-            //        Logger.Info($"Sucsess get key : {songinfo.key}");
-            //    }
-            //    catch (Exception e) {
-            //        Logger.Error(e);
-            //        songinfo.key = "";
-            //    }
-            //}
             var start = new Stopwatch();
             start.Start();
             await Task.Run(() =>

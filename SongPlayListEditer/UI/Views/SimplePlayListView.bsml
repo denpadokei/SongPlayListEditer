@@ -8,7 +8,7 @@
     </vertical>
     
     <bottom-button-panel>
-      <button text='~add-text' on-click='add-click'></button>
+      <button text='~add-text' on-click='add-click' interactable='~add-button-interactive'></button>
       <button text='CLOSE' click-event='close-modal'></button>
     </bottom-button-panel>
   </modal>
