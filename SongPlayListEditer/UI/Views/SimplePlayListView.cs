@@ -1,27 +1,19 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿#define BeatSaber
+using System;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.Notify;
-using BeatSaberMarkupLanguage.ViewControllers;
-using BeatSaberPlaylistsLib.Blist;
 using HMUI;
-using SimpleJSON;
-using SongCore;
 using SongPlayListEditer.Bases;
 using SongPlayListEditer.BeatSaberCommon;
 using SongPlayListEditer.Extentions;
 using SongPlayListEditer.Models;
-using SongPlayListEditer.Statics;
 using UnityEngine;
 using UnityEngine.UI;
 using static BeatSaberMarkupLanguage.Components.CustomListTableData;
@@ -72,7 +64,7 @@ namespace SongPlayListEditer.UI.Views
         /// <summary>説明 を取得、設定</summary>
         private bool isButtonInteracive_;
         /// <summary>説明 を取得、設定</summary>
-        [UIValue("playlist-button-interactive")]
+        [UIValue("add-button-interactive")]
         public bool IsButtonInteractive
         {
             get => this.isButtonInteracive_;
@@ -99,7 +91,6 @@ namespace SongPlayListEditer.UI.Views
 
             set => this.SetProperty(ref this.beatmap_, value);
         }
-
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // コマンド
@@ -109,6 +100,14 @@ namespace SongPlayListEditer.UI.Views
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // オーバーライドメソッド
+        protected override void OnPropertyChanged(PropertyChangedEventArgs args)
+        {
+            base.OnPropertyChanged(args);
+            if (args.PropertyName == nameof(this.CurrentPlaylist)) {
+                this.IsButtonInteractive = this.CurrentPlaylist != null;
+            }
+        }
+
         protected override void Awake()
         {
             base.Awake();
@@ -178,7 +177,6 @@ namespace SongPlayListEditer.UI.Views
                 Logger.Error(e);
             }
             finally {
-                this.IsButtonInteractive = true;
                 start.Stop();
                 Logger.Info($"Creat time : {start.ElapsedMilliseconds}ms");
                 _createlistSemaphore.Release();
@@ -214,6 +212,7 @@ namespace SongPlayListEditer.UI.Views
                 Logger.Error(e);
             }
             finally {
+                this.RaisePropertyChanged(nameof(this.CurrentPlaylist));
                 _semaphore.Release();
                 Logger.Info($"Finish add song");
             }
@@ -238,6 +237,7 @@ namespace SongPlayListEditer.UI.Views
                 }
             }
             catch (Exception e) {
+                this.CurrentPlaylist = null;
                 this.AddButtonText = "Add";
                 Logger.Error(e);
             }
@@ -273,6 +273,7 @@ namespace SongPlayListEditer.UI.Views
             Logger.Info($"modal scale. [x : {this._modal.transform.position.x}, y : {this._modal.transform.position.y}, z : {this._modal.transform.position.z}]");
             this._modal.transform.position = _defaultLocalScale;
             this.CurrentPlaylist = null;
+            this.AddButtonText = "Add";
             this.CreateList();
             this._modal.Show(true);
         }

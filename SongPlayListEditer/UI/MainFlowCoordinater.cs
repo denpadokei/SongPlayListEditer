@@ -56,7 +56,7 @@ namespace SongPlayListEditer.UI
 
         public void ShowAdd()
         {
-            this.SetCurrentPlaylist(PlaylistManager.DefaultManager.CreatePlaylist($"MY PLAYLIST-{DateTime.Now:yyyyMMddHHmmss}", "", "", ""));
+            this.SetCurrentPlaylist(PlaylistManager.DefaultManager.CreatePlaylist(null, "", "", ""));
             this.ShowEdit();
         }
 

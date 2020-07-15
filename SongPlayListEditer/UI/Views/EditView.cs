@@ -91,6 +91,17 @@ namespace SongPlayListEditer.UI.Views
 
             set => this.SetProperty(ref this.currentCover_, value);
         }
+
+        /// <summary>説明 を取得、設定</summary>
+        private bool isSaveButtonIteractive_;
+        /// <summary>説明 を取得、設定</summary>
+        [UIValue("save-button-interactive")]
+        public bool IsSaveButtonInteractive
+        {
+            get => this.isSaveButtonIteractive_;
+
+            set => this.SetProperty(ref this.isSaveButtonIteractive_, value);
+        }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // コマンド
@@ -114,9 +125,24 @@ namespace SongPlayListEditer.UI.Views
                 this.Description = this.Coordinator.CurrentPlaylist.Description;
 
                 _cover.sprite = Base64Sprites.StreamToSprite(this.Coordinator.CurrentPlaylist?.GetCoverStream());
+
+                this.IsSaveButtonInteractive = !string.IsNullOrEmpty(this.Title);
+
+                this._titleValue.modalKeyboard.keyboard.EnterPressed -= this.Keyboard_EnterPressed;
+                this._titleValue.modalKeyboard.keyboard.EnterPressed += this.Keyboard_EnterPressed;
             }
             catch (Exception e) {
                 Logger.Error(e);
+            }
+        }
+
+        private void Keyboard_EnterPressed(string obj)
+        {
+            if (string.IsNullOrEmpty(obj)) {
+                this.IsSaveButtonInteractive = false;
+            }
+            else {
+                this.IsSaveButtonInteractive = true;
             }
         }
 
@@ -167,10 +193,14 @@ namespace SongPlayListEditer.UI.Views
                     this.Coordinator.CurrentPlaylist.SetCover(stream);
                 }
             }
+            if (string.IsNullOrEmpty(this.Coordinator.CurrentPlaylist.Filename)) {
+                this.Coordinator.CurrentPlaylist.Filename = $"{this._titleValue.Text}_{DateTime.Now:yyyyMMddHHmmss}";
+            }
+
             this.Coordinator.CurrentPlaylist.Title = this._titleValue.Text;
             this.Coordinator.CurrentPlaylist.Author = this._authorValue.Text;
             this.Coordinator.CurrentPlaylist.Description = this._descriptionValue.Text;
-            File.WriteAllText(Path.Combine(FilePathName.PlaylistsFolderPath, $"{this.Coordinator.CurrentPlaylist?.Filename}.json"), JsonConvert.SerializeObject(this.Coordinator.CurrentPlaylist, Formatting.Indented));
+            PlaylistManager.DefaultManager.StorePlaylist(this.Coordinator.CurrentPlaylist);
         }
 
         [UIAction("back")]
@@ -207,6 +237,8 @@ namespace SongPlayListEditer.UI.Views
         [UIAction("open-folder")]
         void OpenCoverFolder()
         {
+            Logger.Info("Clicked Open Folder.");
+            Logger.Info($"Cover folder path : {PluginConfig.Instance.CoverDirectoryPath}");
             Process.Start($"{PluginConfig.Instance.CoverDirectoryPath}");
         }
 
