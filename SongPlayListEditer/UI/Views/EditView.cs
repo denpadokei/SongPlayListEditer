@@ -237,6 +237,8 @@ namespace SongPlayListEditer.UI.Views
         [UIAction("open-folder")]
         void OpenCoverFolder()
         {
+            Logger.Info("Clicked Open Folder.");
+            Logger.Info($"Cover folder path : {PluginConfig.Instance.CoverDirectoryPath}");
             Process.Start($"{PluginConfig.Instance.CoverDirectoryPath}");
         }
 
