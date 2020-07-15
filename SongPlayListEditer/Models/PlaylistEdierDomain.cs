@@ -1,4 +1,5 @@
-﻿using IPA.Utilities;
+﻿using BeatSaberPlaylistsLib;
+using IPA.Utilities;
 using Newtonsoft.Json;
 using SongPlayListEditer.DataBases;
 using SongPlayListEditer.Statics;
@@ -36,7 +37,7 @@ namespace SongPlayListEditer.Models
             await Task.Run(() =>
             {
                 Logger.Info($"Filename : {playlist.Filename}");
-                File.WriteAllText(Path.Combine(FilePathName.PlaylistsFolderPath, $"{playlist.Filename}.json"), JsonConvert.SerializeObject(playlist, Formatting.Indented));
+                PlaylistManager.DefaultManager.StorePlaylist(playlist);
             });
             start.Stop();
             Logger.Info($"Save time : {start.ElapsedMilliseconds}ms");

@@ -170,7 +170,8 @@ namespace SongPlayListEditer.UI.Views
             this.Coordinator.CurrentPlaylist.Title = this._titleValue.Text;
             this.Coordinator.CurrentPlaylist.Author = this._authorValue.Text;
             this.Coordinator.CurrentPlaylist.Description = this._descriptionValue.Text;
-            File.WriteAllText(Path.Combine(FilePathName.PlaylistsFolderPath, $"{this.Coordinator.CurrentPlaylist?.Filename}.json"), JsonConvert.SerializeObject(this.Coordinator.CurrentPlaylist, Formatting.Indented));
+            PlaylistManager.DefaultManager.StorePlaylist(this.Coordinator.CurrentPlaylist);
+            //File.WriteAllText(Path.Combine(FilePathName.PlaylistsFolderPath, $"{this.Coordinator.CurrentPlaylist?.Filename}.json"), JsonConvert.SerializeObject(this.Coordinator.CurrentPlaylist, Formatting.Indented));
         }
 
         [UIAction("back")]
