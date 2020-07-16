@@ -20,7 +20,7 @@ namespace SongPlayListEditer.Bases
         {
             get => Utilities.GetResourceContent(Assembly.GetAssembly(this.GetType()), ResourceName);
         }
-        private static SynchronizationContext context;
+        protected static SynchronizationContext context;
 
 
         protected virtual void Awake()

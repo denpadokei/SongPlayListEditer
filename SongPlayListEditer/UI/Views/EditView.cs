@@ -233,7 +233,7 @@ namespace SongPlayListEditer.UI.Views
         private void ShowModal()
         {
             Logger.Info("Clicked Show modal");
-            _ = CreateCoverList();
+            CreateCoverList();
         }
 
         [UIAction("open-folder")]
@@ -244,20 +244,14 @@ namespace SongPlayListEditer.UI.Views
             Process.Start($"{PluginConfig.Instance.CoverDirectoryPath}");
         }
 
-        private async Task CreateCoverList()
+        private void CreateCoverList()
         {
             this._covers.data.Clear();
-            await Task.Run(() =>
-            {
-                foreach (var coverPath in Directory.EnumerateFiles(PluginConfig.Instance.CoverDirectoryPath, "*.jpg", SearchOption.TopDirectoryOnly).Union(Directory.EnumerateFiles(PluginConfig.Instance.CoverDirectoryPath, "*.png", SearchOption.TopDirectoryOnly))) {
-                    var fileinfo = new FileInfo(coverPath);
-                    _context.Post(d =>
-                    {
-                        this._covers.data.Add(new CustomCellInfo(fileinfo.Name, "", Base64Sprites.ImageFileToTextuer2D(coverPath)));
-                    }, null);
-                }
-            });
-
+            foreach (var coverPath in Directory.EnumerateFiles(PluginConfig.Instance.CoverDirectoryPath, "*.jpg", SearchOption.TopDirectoryOnly).Union(Directory.EnumerateFiles(PluginConfig.Instance.CoverDirectoryPath, "*.png", SearchOption.TopDirectoryOnly))) {
+                var fileinfo = new FileInfo(coverPath);
+                this._covers.data.Add(new CustomCellInfo(fileinfo.Name, "", Base64Sprites.ImageFileToTextuer2D(coverPath)));
+                
+            }
             this._covers.tableView.ReloadData();
         }
         #endregion
