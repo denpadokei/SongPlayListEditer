@@ -135,16 +135,13 @@ namespace SongPlayListEditer.UI.Views
                 Logger.Error(e);
             }
         }
-
-        private void Keyboard_EnterPressed(string obj)
+        protected override void Awake()
         {
-            if (string.IsNullOrEmpty(obj)) {
-                this.IsSaveButtonInteractive = false;
-            }
-            else {
-                this.IsSaveButtonInteractive = true;
-            }
+            base.Awake();
+            _context = SynchronizationContext.Current;
         }
+
+
 
         protected override void OnPropertyChanged(PropertyChangedEventArgs args)
         {
@@ -168,11 +165,16 @@ namespace SongPlayListEditer.UI.Views
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プライベートメソッド
-        protected override void Awake()
+        private void Keyboard_EnterPressed(string obj)
         {
-            base.Awake();
-            _context = SynchronizationContext.Current;
+            if (string.IsNullOrEmpty(obj)) {
+                this.IsSaveButtonInteractive = false;
+            }
+            else {
+                this.IsSaveButtonInteractive = true;
+            }
         }
+        
 
         [UIAction("save")]
         void Save()

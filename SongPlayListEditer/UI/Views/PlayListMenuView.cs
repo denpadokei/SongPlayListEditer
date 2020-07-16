@@ -74,17 +74,19 @@ namespace SongPlayListEditer.UI.Views
             base.DidActivate(firstActivation, type);
             this.CreateList();
         }
+
+        protected override void Awake()
+        {
+            base.Awake();
+            _context = SynchronizationContext.Current;
+        }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // パブリックメソッド
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プライベートメソッド
-        protected override void Awake()
-        {
-            base.Awake();
-            _context = SynchronizationContext.Current;
-        }
+
 
         public void CreateList()
         {
@@ -107,9 +109,10 @@ namespace SongPlayListEditer.UI.Views
                 await Task.Run(() =>
                 {
                     foreach (var playlist in BeatSaberUtility.GetLocalPlaylist()) {
+                        var coverstream = playlist.GetCoverStream();
                         _context.Post(d =>
                         {
-                            this._playlists.data.Add(new CustomCellInfo(playlist.Title, $"Song count-{playlist.Count}", Base64Sprites.StreamToTextuer2D(playlist.GetCoverStream())));
+                            this._playlists.data.Add(new CustomCellInfo(playlist.Title, $"Song count-{playlist.Count}", Base64Sprites.StreamToTextuer2D(coverstream)));
                         }, null);
                     }
                 });
