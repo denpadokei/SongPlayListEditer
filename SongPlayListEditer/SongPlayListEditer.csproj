@@ -144,7 +144,6 @@
     <Compile Include="Extentions\PreviewBeatMapExtention.cs" />
     <Compile Include="Models\Base64Sprites.cs" />
     <Compile Include="Models\PlaylistEdierDomain.cs" />
-    <Compile Include="Models\PlaylistMenuDomain.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Configuration\PluginConfig.cs" />

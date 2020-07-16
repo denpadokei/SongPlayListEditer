@@ -35,6 +35,7 @@ namespace SongPlayListEditer.UI.Views
         /// <summary>プレイリストのタイトル を取得、設定</summary>
         private string title_;
         /// <summary>プレイリストのタイトル を取得、設定</summary>
+        [UIValue("title")]
         public string Title
         {
             get => this.title_;
@@ -45,6 +46,7 @@ namespace SongPlayListEditer.UI.Views
         /// <summary>作者 を取得、設定</summary>
         private string author_;
         /// <summary>作者 を取得、設定</summary>
+        [UIValue("author")]
         public string Author
         {
             get => this.author_;
@@ -55,6 +57,7 @@ namespace SongPlayListEditer.UI.Views
         /// <summary>詳細 を取得、設定</summary>
         private string description_;
         /// <summary>詳細 を取得、設定</summary>
+        [UIValue("description")]
         public string Description
         {
             get => this.description_;
@@ -80,16 +83,6 @@ namespace SongPlayListEditer.UI.Views
             get => this.coordinater_;
 
             set => this.SetProperty(ref this.coordinater_, value);
-        }
-
-        /// <summary>説明 を取得、設定</summary>
-        private int currentCover_;
-        /// <summary>説明 を取得、設定</summary>
-        public int CurrentCover
-        {
-            get => this.currentCover_;
-
-            set => this.SetProperty(ref this.currentCover_, value);
         }
 
         /// <summary>説明 を取得、設定</summary>
@@ -127,39 +120,23 @@ namespace SongPlayListEditer.UI.Views
                 _cover.sprite = Base64Sprites.StreamToSprite(this.Coordinator.CurrentPlaylist?.GetCoverStream());
 
                 this.IsSaveButtonInteractive = !string.IsNullOrEmpty(this.Title);
-
-                this._titleValue.modalKeyboard.keyboard.EnterPressed -= this.Keyboard_EnterPressed;
-                this._titleValue.modalKeyboard.keyboard.EnterPressed += this.Keyboard_EnterPressed;
             }
             catch (Exception e) {
                 Logger.Error(e);
             }
         }
-
-        private void Keyboard_EnterPressed(string obj)
-        {
-            if (string.IsNullOrEmpty(obj)) {
-                this.IsSaveButtonInteractive = false;
-            }
-            else {
-                this.IsSaveButtonInteractive = true;
-            }
-        }
-
         protected override void OnPropertyChanged(PropertyChangedEventArgs args)
         {
             base.OnPropertyChanged(args);
-            if (args.PropertyName == nameof(this.Title) && this._titleValue != null) {
-                this._titleValue.Text = this.Title;
-                this._titleValue.ApplyValue();
+            if (args.PropertyName == nameof(this.Title)) {
+                this._parserParams?.EmitEvent("change-title");
+                this.CanSave();
             }
-            else if (args.PropertyName == nameof(this.Author) && this._authorValue != null) {
-                this._authorValue.Text = this.Author;
-                this._authorValue.ApplyValue();
+            else if (args.PropertyName == nameof(this.Author)) {
+                this._parserParams?.EmitEvent("change-author");
             }
-            else if (args.PropertyName == nameof(this.Description) && this._descriptionValue != null) {
-                this._descriptionValue.Text = this.Description;
-                this._descriptionValue.ApplyValue();
+            else if (args.PropertyName == nameof(this.Description)) {
+                this._parserParams?.EmitEvent("change-description");
             }
         }
         #endregion
@@ -168,10 +145,14 @@ namespace SongPlayListEditer.UI.Views
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プライベートメソッド
-        protected override void Awake()
+        private void CanSave()
         {
-            base.Awake();
-            _context = SynchronizationContext.Current;
+            if (string.IsNullOrEmpty(this.Title)) {
+                this.IsSaveButtonInteractive = false;
+            }
+            else {
+                this.IsSaveButtonInteractive = true;
+            }
         }
 
         [UIAction("save")]
@@ -194,12 +175,12 @@ namespace SongPlayListEditer.UI.Views
                 }
             }
             if (string.IsNullOrEmpty(this.Coordinator.CurrentPlaylist.Filename)) {
-                this.Coordinator.CurrentPlaylist.Filename = $"{this._titleValue.Text}_{DateTime.Now:yyyyMMddHHmmss}";
+                this.Coordinator.CurrentPlaylist.Filename = $"{this.Title}_{DateTime.Now:yyyyMMddHHmmss}";
             }
 
-            this.Coordinator.CurrentPlaylist.Title = this._titleValue.Text;
-            this.Coordinator.CurrentPlaylist.Author = this._authorValue.Text;
-            this.Coordinator.CurrentPlaylist.Description = this._descriptionValue.Text;
+            this.Coordinator.CurrentPlaylist.Title = this.Title;
+            this.Coordinator.CurrentPlaylist.Author = this.Author;
+            this.Coordinator.CurrentPlaylist.Description = this.Description;
             PlaylistManager.DefaultManager.StorePlaylist(this.Coordinator.CurrentPlaylist);
         }
 
@@ -231,7 +212,7 @@ namespace SongPlayListEditer.UI.Views
         private void ShowModal()
         {
             Logger.Info("Clicked Show modal");
-            _ = CreateCoverList();
+            CreateCoverList();
         }
 
         [UIAction("open-folder")]
@@ -242,20 +223,13 @@ namespace SongPlayListEditer.UI.Views
             Process.Start($"{PluginConfig.Instance.CoverDirectoryPath}");
         }
 
-        private async Task CreateCoverList()
+        private void CreateCoverList()
         {
             this._covers.data.Clear();
-            await Task.Run(() =>
-            {
-                foreach (var coverPath in Directory.EnumerateFiles(PluginConfig.Instance.CoverDirectoryPath, "*.jpg", SearchOption.TopDirectoryOnly).Union(Directory.EnumerateFiles(PluginConfig.Instance.CoverDirectoryPath, "*.png", SearchOption.TopDirectoryOnly))) {
-                    var fileinfo = new FileInfo(coverPath);
-                    _context.Post(d =>
-                    {
-                        this._covers.data.Add(new CustomCellInfo(fileinfo.Name, "", Base64Sprites.ImageFileToTextuer2D(coverPath)));
-                    }, null);
-                }
-            });
-
+            foreach (var coverPath in Directory.EnumerateFiles(PluginConfig.Instance.CoverDirectoryPath, "*.jpg", SearchOption.TopDirectoryOnly).Union(Directory.EnumerateFiles(PluginConfig.Instance.CoverDirectoryPath, "*.png", SearchOption.TopDirectoryOnly))) {
+                var fileinfo = new FileInfo(coverPath);
+                this._covers.data.Add(new CustomCellInfo(fileinfo.Name, "", Base64Sprites.ImageFileToTextuer2D(coverPath)));
+            }
             this._covers.tableView.ReloadData();
         }
         #endregion
@@ -266,16 +240,6 @@ namespace SongPlayListEditer.UI.Views
 
         [UIComponent("cover")]
         Image _cover;
-
-
-        [UIComponent("title-value")]
-        StringSetting _titleValue;
-        [UIComponent("author-value")]
-        StringSetting _authorValue;
-        [UIComponent("description-value")]
-        StringSetting _descriptionValue;
-
-        static SynchronizationContext _context;
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // 構築・破棄

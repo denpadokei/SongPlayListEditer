@@ -13,9 +13,9 @@
         <button text='OPEN FOLDER' on-click='open-folder' anchor-pos-x='37'></button>
       </modal>
     </horizontal>
-    <string-setting id='title-value' text='Title'></string-setting>
-    <string-setting id='author-value' text='Author'></string-setting>
-    <string-setting id='description-value' text='Description'></string-setting>
+    <string-setting text='Title' value='title' get-event='change-title' apply-on-change='true'></string-setting>
+    <string-setting text='Author' value='author' get-event='change-author' apply-on-change='true'></string-setting>
+    <string-setting text='Description' value='description' get-event='change-description' apply-on-change='true'></string-setting>
     
     <horizontal>
       <button text='SAVE' on-click='save' interactable='~save-button-interactive'></button>

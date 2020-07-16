@@ -1,5 +1,7 @@
 ﻿using BeatSaberMarkupLanguage;
+using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Notify;
+using BeatSaberMarkupLanguage.Parser;
 using BeatSaberMarkupLanguage.ViewControllers;
 using System;
 using System.Collections.Generic;
@@ -16,11 +18,14 @@ namespace SongPlayListEditer.Bases
     {
         public abstract string ResourceName { get; }
 
+        [UIParams]
+        protected BSMLParserParams _parserParams;
+
         public override string Content
         {
             get => Utilities.GetResourceContent(Assembly.GetAssembly(this.GetType()), ResourceName);
         }
-        private static SynchronizationContext context;
+        protected static SynchronizationContext context;
 
 
         protected virtual void Awake()

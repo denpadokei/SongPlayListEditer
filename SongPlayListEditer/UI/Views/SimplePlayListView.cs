@@ -144,16 +144,17 @@ namespace SongPlayListEditer.UI.Views
                     var beatmapHash = this.BeatMap.GetBeatmapHash().ToUpper();
 
                     foreach (var playlist in BeatSaberUtility.GetLocalPlaylist()) {
+                        var cover = playlist.GetCoverStream();
                         if (playlist.Any(x => x.Hash?.ToUpper() == beatmapHash)) {
                             _context.Post(d =>
                             {
-                                this._playlists.data.Add(new CustomCellInfo(playlist.Title, $"Song count-{playlist.Count}", Base64Sprites.StreamToTextuer2D(playlist.GetCoverStream()), new Sprite[1] { Base64Sprites.LoadSpriteFromResources("SongPlayListEditer.Resources.sharp_playlist_add_check_white_18dp.png") }));
+                                this._playlists.data.Add(new CustomCellInfo(playlist.Title, $"Song count-{playlist.Count}", Base64Sprites.StreamToTextuer2D(cover), new Sprite[1] { Base64Sprites.LoadSpriteFromResources("SongPlayListEditer.Resources.sharp_playlist_add_check_white_18dp.png") }));
                             }, null);
                         }
                         else {
                             _context.Post(d =>
                             {
-                                this._playlists.data.Add(new CustomCellInfo(playlist.Title, $"Song count-{playlist.Count}", Base64Sprites.StreamToTextuer2D(playlist.GetCoverStream())));
+                                this._playlists.data.Add(new CustomCellInfo(playlist.Title, $"Song count-{playlist.Count}", Base64Sprites.StreamToTextuer2D(cover)));
                             }, null);
                         }
                     }
