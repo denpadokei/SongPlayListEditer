@@ -83,16 +83,6 @@ namespace SongPlayListEditer.UI.Views
         }
 
         /// <summary>説明 を取得、設定</summary>
-        private int currentCover_;
-        /// <summary>説明 を取得、設定</summary>
-        public int CurrentCover
-        {
-            get => this.currentCover_;
-
-            set => this.SetProperty(ref this.currentCover_, value);
-        }
-
-        /// <summary>説明 を取得、設定</summary>
         private bool isSaveButtonIteractive_;
         /// <summary>説明 を取得、設定</summary>
         [UIValue("save-button-interactive")]
@@ -135,14 +125,6 @@ namespace SongPlayListEditer.UI.Views
                 Logger.Error(e);
             }
         }
-        protected override void Awake()
-        {
-            base.Awake();
-            _context = SynchronizationContext.Current;
-        }
-
-
-
         protected override void OnPropertyChanged(PropertyChangedEventArgs args)
         {
             base.OnPropertyChanged(args);
@@ -250,7 +232,6 @@ namespace SongPlayListEditer.UI.Views
             foreach (var coverPath in Directory.EnumerateFiles(PluginConfig.Instance.CoverDirectoryPath, "*.jpg", SearchOption.TopDirectoryOnly).Union(Directory.EnumerateFiles(PluginConfig.Instance.CoverDirectoryPath, "*.png", SearchOption.TopDirectoryOnly))) {
                 var fileinfo = new FileInfo(coverPath);
                 this._covers.data.Add(new CustomCellInfo(fileinfo.Name, "", Base64Sprites.ImageFileToTextuer2D(coverPath)));
-                
             }
             this._covers.tableView.ReloadData();
         }
@@ -270,8 +251,6 @@ namespace SongPlayListEditer.UI.Views
         StringSetting _authorValue;
         [UIComponent("description-value")]
         StringSetting _descriptionValue;
-
-        static SynchronizationContext _context;
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // 構築・破棄

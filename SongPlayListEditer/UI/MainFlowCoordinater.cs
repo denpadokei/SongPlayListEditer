@@ -45,13 +45,14 @@ namespace SongPlayListEditer.UI
         #region // パブリックメソッド
         public void ShowPlaylist()
         {
-            this.ReplaceTopViewController(_playListMenuView);
+            Logger.Info("ShowPlaylistView");
+            this.ReplaceTopViewController(_playListMenuView, null, false, ViewController.SlideAnimationDirection.Left);
         }
 
         public void ShowEdit()
         {
             Logger.Info("ShowEditView");
-            this.ReplaceTopViewController(_editView);
+            this.ReplaceTopViewController(_editView, null, false, ViewController.SlideAnimationDirection.Right);
         }
 
         public void ShowAdd()
