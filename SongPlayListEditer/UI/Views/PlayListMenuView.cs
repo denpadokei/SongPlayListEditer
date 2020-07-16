@@ -146,16 +146,10 @@ namespace SongPlayListEditer.UI.Views
 
         private static SemaphoreSlim _createlistSemaphore = new SemaphoreSlim(1, 1);
 
-        private PlaylistMenuDomain _domain;
-
         private static SynchronizationContext _context;
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // 構築・破棄
-        public PlayListMenuView()
-        {
-            this._domain = new PlaylistMenuDomain();
-        }
         #endregion
     }
 }

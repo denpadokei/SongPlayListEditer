@@ -1,5 +1,7 @@
 ﻿using BeatSaberMarkupLanguage;
+using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Notify;
+using BeatSaberMarkupLanguage.Parser;
 using BeatSaberMarkupLanguage.ViewControllers;
 using System;
 using System.Collections.Generic;
@@ -15,6 +17,9 @@ namespace SongPlayListEditer.Bases
     public abstract class ViewContlollerBindableBase : BSMLViewController
     {
         public abstract string ResourceName { get; }
+
+        [UIParams]
+        protected BSMLParserParams _parserParams;
 
         public override string Content
         {
