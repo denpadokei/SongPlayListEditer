@@ -15,6 +15,7 @@ using SongPlayListEditer.Extentions;
 using BeatSaberUI = BeatSaberMarkupLanguage.BeatSaberUI;
 using IPA.Utilities;
 using SongPlayListEditer.UI.Views;
+using BeatSaberMarkupLanguage.Settings;
 
 namespace SongPlayListEditer.UI
 {
@@ -60,6 +61,7 @@ namespace SongPlayListEditer.UI
             Logger.Info("Start Create UI");
             this.CreateMenuButton();
             this.CreateButton();
+            this.CreateSetting();
             Logger.Info("Finish Create UI");
         }
 
@@ -81,6 +83,16 @@ namespace SongPlayListEditer.UI
                 Logger.Info("Create Playlist Button");
                 SimplePlayListView.instance.Setup();
                 Logger.Info("Created Playlist button!");
+            }
+            catch (Exception e) {
+                Logger.Error(e);
+            }
+        }
+
+        private void CreateSetting()
+        {
+            try {
+                BSMLSettings.instance.AddSettingsMenu("SONG PLAYLIST EDITER", SettingView.instance.ResourceName, SettingView.instance);
             }
             catch (Exception e) {
                 Logger.Error(e);

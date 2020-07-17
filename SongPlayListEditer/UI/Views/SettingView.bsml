@@ -1,0 +1,6 @@
+﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
+  <settings-container>
+    <slider-setting text='Button Index' value='button-index' integer-only='true' max='2' min='0' increment='1'></slider-setting>
+    <checkbox text='Save with bsr Key' value='is-save-with-key'></checkbox>
+  </settings-container>
+</bg>

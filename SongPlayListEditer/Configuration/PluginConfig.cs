@@ -12,6 +12,10 @@ namespace SongPlayListEditer.Configuration
 
         public virtual string CoverDirectoryPath { get; set; } = Path.Combine(Directory.GetCurrentDirectory(), "UserData", "Covers");
 
+        public virtual int ButtonIndex { get; set; } = 0;
+
+        public bool IsSaveWithKey { get; set; } = false;
+
         /// <summary>
         /// This is called whenever BSIPA reads the config from disk (including when file changes are detected).
         /// </summary>
@@ -36,6 +40,8 @@ namespace SongPlayListEditer.Configuration
             // This instance's members populated from other
 
             this.CoverDirectoryPath = other.CoverDirectoryPath;
+            this.ButtonIndex = other.ButtonIndex;
+            this.IsSaveWithKey = other.IsSaveWithKey;
         }
     }
 }
