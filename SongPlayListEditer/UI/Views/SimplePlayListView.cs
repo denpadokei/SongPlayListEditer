@@ -272,7 +272,7 @@ namespace SongPlayListEditer.UI.Views
             Logger.Info($"Selected Beatmaplevel, [{arg2.songName} : {arg2.GetBeatmapHash()}]");
 
             this.BeatMap = arg2;
-            if (arg2.levelID.Length >= LEVELID_LENGTH && !arg2.levelID.Contains(" WIP")) {
+            if (arg2.levelID.Length >= LEVELID_LENGTH && !arg2.IsWip()) {
                 this._playlistButton.interactable = true;
             }
             else {
