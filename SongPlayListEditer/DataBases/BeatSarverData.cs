@@ -14,15 +14,21 @@ namespace SongPlayListEditer.DataBases
 
         static BeatSarverData()
         {
-            var http = new HttpOptions() { ApplicationName = "SongPlaylistEditer", Version = Assembly.GetExecutingAssembly().GetName().Version, Timeout = new TimeSpan(0, 0, 30) };
+            var http = new HttpOptions() { ApplicationName = "SongPlayListEditer", Version = Assembly.GetExecutingAssembly().GetName().Version, Timeout = new TimeSpan(0, 0, 30) };
 
             BeatSaver = new BeatSaver(http);
         }
 
         public static async Task<string> GetBeatMapKey(string hash)
         {
-            var beatmap = await BeatSaver.Hash(hash);
-            return beatmap.Key;
+            try {
+                var beatmap = await BeatSaver.Hash(hash);
+                return beatmap.Key;
+            }
+            catch (Exception e) {
+                Logger.Error(e);
+                return string.Empty;
+            }
         }
     }
 }

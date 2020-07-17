@@ -18,5 +18,17 @@ namespace SongPlayListEditer.Extentions
                 return "";
             }
         }
+
+        public static bool IsWip(this IPreviewBeatmapLevel beatmapLevel)
+        {
+            try {
+                var hash = beatmapLevel.GetBeatmapHash();
+                return hash.Split(' ').Last() == "WIP";
+            }
+            catch (Exception e) {
+                Logger.Error(e);
+                return false;
+            }
+        }
     }
 }
