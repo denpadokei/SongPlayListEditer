@@ -12,6 +12,8 @@ using BeatSaberMarkupLanguage.Notify;
 using HMUI;
 using SongPlayListEditer.Bases;
 using SongPlayListEditer.BeatSaberCommon;
+using SongPlayListEditer.Configuration;
+using SongPlayListEditer.DataBases;
 using SongPlayListEditer.Extentions;
 using SongPlayListEditer.Models;
 using UnityEngine;
@@ -197,7 +199,12 @@ namespace SongPlayListEditer.UI.Views
 
                 if (this.AddButtonText == "Add" && !playlist.Any(x => x.Hash?.ToUpper() == addTargetHash)) {
                     Logger.Info($"Start add song : {addTarget.songName}");
-                    playlist.Add(addTargetHash, addTarget.songName, null, addTarget.levelAuthorName);
+                    if (PluginConfig.Instance.IsSaveWithKey) {
+                        playlist.Add(addTargetHash, addTarget.songName, await BeatSarverData.GetBeatMapKey(addTargetHash), addTarget.levelAuthorName);
+                    }
+                    else {
+                        playlist.Add(addTargetHash, addTarget.songName, null, addTarget.levelAuthorName);
+                    }
                     await this._domain.SavePlaylist(playlist);
                     Logger.Info($"Finish add song : {addTarget.songName}");
                 }
@@ -255,7 +262,7 @@ namespace SongPlayListEditer.UI.Views
             _playlistButton.onClick.AddListener(this.ShowModal);
             BeatSaberUI.DestroyHoverHint(_playlistButton.transform as RectTransform);
             _playlistButton.GetComponentsInChildren<Image>().First(x => x.name == "Icon").transform.localScale *= 1.8f;
-            _playlistButton.transform.SetSiblingIndex(0);
+            _playlistButton.transform.SetSiblingIndex(PluginConfig.Instance.ButtonIndex);
             BeatSaberUtility.LevelCollectionViewController.didSelectLevelEvent -= this.LevelCollectionViewController_didSelectLevelEvent;
             BeatSaberUtility.LevelCollectionViewController.didSelectLevelEvent += this.LevelCollectionViewController_didSelectLevelEvent;
         }
@@ -265,6 +272,12 @@ namespace SongPlayListEditer.UI.Views
             Logger.Info($"Selected Beatmaplevel, [{arg2.songName} : {arg2.GetBeatmapHash()}]");
 
             this.BeatMap = arg2;
+            if (arg2.levelID.Length >= LEVELID_LENGTH && !arg2.levelID.Contains(" WIP")) {
+                this._playlistButton.interactable = true;
+            }
+            else {
+                this._playlistButton.interactable = false;
+            }
         }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
@@ -304,6 +317,8 @@ namespace SongPlayListEditer.UI.Views
         /// ボタンの位置によってモーダルウインドウの位置がずれるので開く前に強制的に座標を上書きさせる。
         /// </summary>
         private static readonly Vector3 _defaultLocalScale = new Vector3(0.8433125f, 1.64405f, 2.6f);
+
+        private const int LEVELID_LENGTH = 32;
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // 構築・破棄
