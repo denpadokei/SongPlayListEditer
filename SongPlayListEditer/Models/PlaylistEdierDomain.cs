@@ -1,6 +1,5 @@
 ﻿using BeatSaberPlaylistsLib;
 using IPA.Utilities;
-using Newtonsoft.Json;
 using SongPlayListEditer.DataBases;
 using SongPlayListEditer.Statics;
 using System;

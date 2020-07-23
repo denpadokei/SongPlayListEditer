@@ -24,17 +24,6 @@ namespace SongPlayListEditer.Models
 
         private static string Base64StringHeader => "data:image/%extention%;base64";
 
-        public static void Init()
-        {
-            SpeedIcon = Base64Sprites.LoadSpriteFromResources("SongBrowser.Assets.Speed.png");
-            GraphIcon = Base64Sprites.LoadSpriteFromResources("SongBrowser.Assets.Graph.png");
-            XIcon = Base64Sprites.LoadSpriteFromResources("SongBrowser.Assets.X.png");
-            StarFullIcon = Base64Sprites.LoadSpriteFromResources("SongBrowser.Assets.StarFull.png");
-            DeleteIcon = Base64Sprites.LoadSpriteFromResources("SongBrowser.Assets.DeleteIcon.png");
-            DoubleArrow = Base64Sprites.LoadSpriteFromResources("SongBrowser.Assets.DoubleArrow.png");
-            RandomIcon = Base64Sprites.LoadSpriteFromResources("SongBrowser.Assets.RandomIcon.png");
-        }
-
         public static Stream Base64ToStream(string base64)
         {
             var base64string = base64.Split(',').Last();

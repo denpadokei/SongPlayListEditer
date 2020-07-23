@@ -13,7 +13,6 @@ using BeatSaberMarkupLanguage.Notify;
 using BeatSaberMarkupLanguage.ViewControllers;
 using BeatSaberPlaylistsLib;
 using HMUI;
-using Newtonsoft.Json;
 using SongPlayListEditer.Bases;
 using SongPlayListEditer.Configuration;
 using SongPlayListEditer.Models;
