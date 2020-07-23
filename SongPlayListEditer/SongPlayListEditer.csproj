@@ -63,11 +63,6 @@
       <HintPath>$(BeatSaberDir)\Plugins\BS_Utils.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <Private>False</Private>
-      <HintPath>$(BeatSaberDir)\Libs\Newtonsoft.Json.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
     <Reference Include="SongCore, Version=2.9.5.0, Culture=neutral, processorArchitecture=MSIL">
       <Private>False</Private>
       <HintPath>$(BeatSaberDir)\Plugins\SongCore.dll</HintPath>
@@ -147,7 +142,6 @@
     <Compile Include="Plugin.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Configuration\PluginConfig.cs" />
-    <Compile Include="SongPlayListEditerController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Statics\DefaultImage.cs" />
     <Compile Include="BeatSaberCommon\BeatSaberUI.cs" />
