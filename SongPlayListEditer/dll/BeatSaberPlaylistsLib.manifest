@@ -10,7 +10,7 @@
     "Libs/BeatSaberPlaylistsLib.dll"
   ],
   "dependsOn": {
-    "SongCore": "^2.9.7"
+    "SongCore": "^2.9.6"
   },
   "features": []
 }
