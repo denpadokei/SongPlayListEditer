@@ -334,6 +334,11 @@
             A base64 string conversion of the cover image.
             </summary>
         </member>
+        <member name="F:BeatSaberPlaylistsLib.Legacy.LegacyPlaylist.CoverData">
+            <summary>
+            Raw data for the cover image.
+            </summary>
+        </member>
         <member name="P:BeatSaberPlaylistsLib.Legacy.LegacyPlaylist.IsReadOnly">
             <inheritdoc/>
         </member>
@@ -550,6 +555,11 @@
             Class that manages <see cref="T:BeatSaberPlaylistsLib.Types.IPlaylistHandler"/>s and <see cref="T:BeatSaberPlaylistsLib.Types.IPlaylist"/>s.
             </summary>
         </member>
+        <member name="E:BeatSaberPlaylistsLib.PlaylistManager.PlaylistsRefreshRequested">
+            <summary>
+            Raised when an assembly requests consumers be notified of large changes to <see cref="T:BeatSaberPlaylistsLib.PlaylistManager"/>'s contents.
+            </summary>
+        </member>
         <member name="F:BeatSaberPlaylistsLib.PlaylistManager._defaultManagerLoader">
             <summary>
             Lazy loader for <see cref="P:BeatSaberPlaylistsLib.PlaylistManager.DefaultManager"/>. 
@@ -638,6 +648,13 @@
             <summary>
             Path to the directory the <see cref="T:BeatSaberPlaylistsLib.PlaylistManager"/> loads and stores playlists.
             </summary>
+        </member>
+        <member name="M:BeatSaberPlaylistsLib.PlaylistManager.RequestRefresh(System.String)">
+            <summary>
+            Call this after making large changes to playlists or the <see cref="T:BeatSaberPlaylistsLib.PlaylistManager"/> to notify other assemblies.
+            Recommended for requesting a UI to update.
+            </summary>
+            <param name="requestSource"></param>
         </member>
         <member name="M:BeatSaberPlaylistsLib.PlaylistManager.CreatePlaylist(System.String,System.String,System.String,System.Lazy{System.String},System.String)">
             <summary>
