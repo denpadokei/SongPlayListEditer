@@ -46,7 +46,7 @@ namespace SongPlayListEditer.Extentions
         public static bool IsCustom(this IPreviewBeatmapLevel beatmapLevel)
         {
             try {
-                return beatmapLevel.levelID.Length >= LEVELID_LENGTH;
+                return beatmapLevel.levelID.Length >= LEVELID_LENGTH && !beatmapLevel.IsWip();
             }
             catch (Exception e) {
                 Logger.Error(e);
