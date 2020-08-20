@@ -171,7 +171,7 @@ namespace SongPlayListEditer.UI.Views
                         var isContain = false;
 
                         switch (this.SongType) {
-                            case SongTypeMode.Castum:
+                            case SongTypeMode.Custom:
                                 isContain = playlist.Any(x => x.Hash?.ToUpper() == beatmapHash);
                                 break;
                             case SongTypeMode.Official:
@@ -235,7 +235,7 @@ namespace SongPlayListEditer.UI.Views
                 var isContain = false;
 
                 switch (this.SongType) {
-                    case SongTypeMode.Castum:
+                    case SongTypeMode.Custom:
                         isContain = playlist.Any(x => x.Hash?.ToUpper() == addTargetHash);
                         break;
                     case SongTypeMode.Official:
@@ -286,7 +286,7 @@ namespace SongPlayListEditer.UI.Views
                 var isContain = false;
 
                 switch (this.SongType) {
-                    case SongTypeMode.Castum:
+                    case SongTypeMode.Custom:
                         isContain = this.CurrentPlaylist.Any(x => x.Hash?.ToUpper() == beatMaphash);
                         break;
                     case SongTypeMode.Official:
@@ -338,7 +338,7 @@ namespace SongPlayListEditer.UI.Views
 
             if (arg2.IsCustom()) {
                 this._playlistButton.interactable = true;
-                this.SongType = SongTypeMode.Castum;
+                this.SongType = SongTypeMode.Custom;
             }
             else if (arg2.IsWip()) {
                 this._playlistButton.interactable = false;
@@ -369,7 +369,7 @@ namespace SongPlayListEditer.UI.Views
         private async Task AddSong(IPreviewBeatmapLevel beatmap, BeatSaberPlaylistsLib.Types.IPlaylist playlist)
         {
             switch (this.SongType) {
-                case SongTypeMode.Castum:
+                case SongTypeMode.Custom:
                     var addTargetHash = this.BeatMap.GetBeatmapHash();
                     if (PluginConfig.Instance.IsSaveWithKey) {
                         playlist.Add(addTargetHash, beatmap.songName, await BeatSarverData.GetBeatMapKey(addTargetHash), beatmap.levelAuthorName);
@@ -397,7 +397,7 @@ namespace SongPlayListEditer.UI.Views
         private void RemoveSong(IPreviewBeatmapLevel beatmap, BeatSaberPlaylistsLib.Types.IPlaylist playlist)
         {
             switch (this.SongType) {
-                case SongTypeMode.Castum:
+                case SongTypeMode.Custom:
                     playlist.TryRemoveByHash(beatmap.GetBeatmapHash());
                     break;
                 case SongTypeMode.Official:
