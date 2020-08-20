@@ -16,6 +16,7 @@ using SongPlayListEditer.Configuration;
 using SongPlayListEditer.DataBases;
 using SongPlayListEditer.Extentions;
 using SongPlayListEditer.Models;
+using SongPlayListEditer.Statics;
 using UnityEngine;
 using UnityEngine.UI;
 using static BeatSaberMarkupLanguage.Components.CustomListTableData;
@@ -93,6 +94,26 @@ namespace SongPlayListEditer.UI.Views
 
             set => this.SetProperty(ref this.beatmap_, value);
         }
+
+        /// <summary>説明 を取得、設定</summary>
+        private SongTypeMode songType;
+        /// <summary>説明 を取得、設定</summary>
+        public SongTypeMode SongType
+        {
+            get => this.songType;
+
+            set => this.SetProperty(ref this.songType, value);
+        }
+
+        /// <summary>説明 を取得、設定</summary>
+        private AddMode add_;
+        /// <summary>説明 を取得、設定</summary>
+        public AddMode Add
+        {
+            get => this.add_;
+
+            set => this.SetProperty(ref this.add_, value);
+        }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // コマンド
@@ -144,10 +165,24 @@ namespace SongPlayListEditer.UI.Views
                 await Task.Run(() =>
                 {
                     var beatmapHash = this.BeatMap.GetBeatmapHash().ToUpper();
+                    var beatmapLevelID = this.BeatMap.levelID.ToUpper();
 
                     foreach (var playlist in BeatSaberUtility.GetLocalPlaylist()) {
+                        var isContain = false;
+
+                        switch (this.SongType) {
+                            case SongTypeMode.Castum:
+                                isContain = playlist.Any(x => x.Hash?.ToUpper() == beatmapHash);
+                                break;
+                            case SongTypeMode.Official:
+                                isContain = playlist.Any(x => x.LevelId?.ToUpper() == beatmapLevelID);
+                                break;
+                            default:
+                                break;
+                        }
+
                         var cover = playlist.GetCoverStream();
-                        if (playlist.Any(x => x.Hash?.ToUpper() == beatmapHash)) {
+                        if (isContain) {
                             _context.Post(d =>
                             {
                                 this._playlists.data.Add(new CustomCellInfo(playlist.Title, $"Song count-{playlist.Count}", Base64Sprites.StreamToTextuer2D(cover), new Sprite[1] { Base64Sprites.LoadSpriteFromResources("SongPlayListEditer.Resources.sharp_playlist_add_check_white_18dp.png") }));
@@ -195,22 +230,34 @@ namespace SongPlayListEditer.UI.Views
                 var playlist = this.CurrentPlaylist;
                 var addTarget = this.BeatMap;
                 var addTargetHash = this.BeatMap.GetBeatmapHash().ToUpper();
+                var addTargetLevelID = this.BeatMap.levelID.ToUpper();
 
+                var isContain = false;
 
-                if (this.AddButtonText == "Add" && !playlist.Any(x => x.Hash?.ToUpper() == addTargetHash)) {
+                switch (this.SongType) {
+                    case SongTypeMode.Castum:
+                        isContain = playlist.Any(x => x.Hash?.ToUpper() == addTargetHash);
+                        break;
+                    case SongTypeMode.Official:
+                        isContain = playlist.Any(x => x.LevelId?.ToUpper() == addTargetLevelID);
+                        break;
+                    default:
+                        break;
+                }
+
+                Logger.Info($"Is Contain? : {isContain}");
+                Logger.Info($"Mode? : {this.Add}");
+
+                if (this.Add == AddMode.Add && !isContain) {
                     Logger.Info($"Start add song : {addTarget.songName}");
-                    if (PluginConfig.Instance.IsSaveWithKey) {
-                        playlist.Add(addTargetHash, addTarget.songName, await BeatSarverData.GetBeatMapKey(addTargetHash), addTarget.levelAuthorName);
-                    }
-                    else {
-                        playlist.Add(addTargetHash, addTarget.songName, null, addTarget.levelAuthorName);
-                    }
+                    playlist.AllowDuplicates = true;
+                    await this.AddSong(addTarget, playlist);
                     await this._domain.SavePlaylist(playlist);
                     Logger.Info($"Finish add song : {addTarget.songName}");
                 }
                 else {
                     Logger.Info($"Start delete song : {addTarget.songName}");
-                    playlist.TryRemoveByHash(addTargetHash);
+                    this.RemoveSong(addTarget, playlist);
                     await this._domain.SavePlaylist(playlist);
                     Logger.Info($"Finish delete song : {addTarget.songName}");
                 }
@@ -232,21 +279,37 @@ namespace SongPlayListEditer.UI.Views
             try {
                 await _semaphore.WaitAsync();
                 var beatMaphash = this.BeatMap.GetBeatmapHash().ToUpper();
+                var beatMapLevelID = this.BeatMap.levelID.ToUpper();
                 var result = await Task.Run(() => { return BeatSaberUtility.GetLocalPlaylist().ToArray(); });
                 this.CurrentPlaylist = result[selectRow];
                 this.CurrentCellIndex = selectRow;
-                var isContain = this.CurrentPlaylist.Any(x => x.Hash?.ToUpper() == beatMaphash);
+                var isContain = false;
+
+                switch (this.SongType) {
+                    case SongTypeMode.Castum:
+                        isContain = this.CurrentPlaylist.Any(x => x.Hash?.ToUpper() == beatMaphash);
+                        break;
+                    case SongTypeMode.Official:
+                        isContain = this.CurrentPlaylist.Any(x => x.LevelId?.ToUpper() == beatMapLevelID);
+                        break;
+                    default:
+                        break;
+                }
+
                 Logger.Info($"Current PreviewBeatmapLevel LevelID : {this.BeatMap.levelID}");
                 if (isContain) {
                     this.AddButtonText = "Delete";
+                    this.Add = AddMode.Remove;
                 }
                 else {
                     this.AddButtonText = "Add";
+                    this.Add = AddMode.Add;
                 }
             }
             catch (Exception e) {
                 this.CurrentPlaylist = null;
                 this.AddButtonText = "Add";
+                this.Add = AddMode.Add;
                 Logger.Error(e);
             }
             finally {
@@ -272,11 +335,22 @@ namespace SongPlayListEditer.UI.Views
             Logger.Info($"Selected Beatmaplevel, [{arg2.songName} : {arg2.GetBeatmapHash()}]");
 
             this.BeatMap = arg2;
-            if (arg2.levelID.Length >= LEVELID_LENGTH && !arg2.IsWip()) {
+
+            if (arg2.IsCustom()) {
                 this._playlistButton.interactable = true;
+                this.SongType = SongTypeMode.Castum;
+            }
+            else if (arg2.IsWip()) {
+                this._playlistButton.interactable = false;
+                this.SongType = SongTypeMode.WIP;
+            }
+            else if (arg2.IsOfficial()) {
+                this._playlistButton.interactable = true;
+                this.SongType = SongTypeMode.Official;
             }
             else {
                 this._playlistButton.interactable = false;
+                this.SongType = SongTypeMode.None;
             }
         }
         #endregion
@@ -290,6 +364,49 @@ namespace SongPlayListEditer.UI.Views
             this.AddButtonText = "Add";
             this.CreateList();
             this._modal.Show(true);
+        }
+
+        private async Task AddSong(IPreviewBeatmapLevel beatmap, BeatSaberPlaylistsLib.Types.IPlaylist playlist)
+        {
+            switch (this.SongType) {
+                case SongTypeMode.Castum:
+                    var addTargetHash = this.BeatMap.GetBeatmapHash();
+                    if (PluginConfig.Instance.IsSaveWithKey) {
+                        playlist.Add(addTargetHash, beatmap.songName, await BeatSarverData.GetBeatMapKey(addTargetHash), beatmap.levelAuthorName);
+                    }
+                    else {
+                        playlist.Add(addTargetHash, beatmap.songName, null, beatmap.levelAuthorName);
+                    }
+                    break;
+                case SongTypeMode.Official:
+                    var officalSong = new OfficialSongEntity()
+                    {
+                        LevelId = beatmap.levelID,
+                        Name = beatmap.songName,
+                        Identifiers = BeatSaberPlaylistsLib.Types.Identifier.LevelId,
+                        DateAdded = DateTime.Now
+                    };
+
+                    playlist.Add(officalSong);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void RemoveSong(IPreviewBeatmapLevel beatmap, BeatSaberPlaylistsLib.Types.IPlaylist playlist)
+        {
+            switch (this.SongType) {
+                case SongTypeMode.Castum:
+                    playlist.TryRemoveByHash(beatmap.GetBeatmapHash());
+                    break;
+                case SongTypeMode.Official:
+                    var levelID = beatmap.levelID.ToUpper();
+                    playlist.Remove(playlist.FirstOrDefault(x => x.LevelId?.ToUpper() == levelID));
+                    break;
+                default:
+                    break;
+            }
         }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
