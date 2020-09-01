@@ -16,6 +16,8 @@ namespace SongPlayListEditer.Configuration
 
         public bool IsSaveWithKey { get; set; } = false;
 
+        public bool AutoRefresh { get; set; } = false;
+
         /// <summary>
         /// This is called whenever BSIPA reads the config from disk (including when file changes are detected).
         /// </summary>

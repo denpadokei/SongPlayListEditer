@@ -1,5 +1,4 @@
-﻿#define BeatSaber
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -10,6 +9,7 @@ using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.Notify;
 using HMUI;
+using PlaylistLoaderLite.HarmonyPatches;
 using SongPlayListEditer.Bases;
 using SongPlayListEditer.BeatSaberCommon;
 using SongPlayListEditer.Configuration;
@@ -226,6 +226,8 @@ namespace SongPlayListEditer.UI.Views
         {
             try {
                 await _semaphore.WaitAsync();
+                this.IsButtonInteractive = false;
+
 
                 var playlist = this.CurrentPlaylist;
                 var addTarget = this.BeatMap;
@@ -268,6 +270,14 @@ namespace SongPlayListEditer.UI.Views
             }
             finally {
                 this.RaisePropertyChanged(nameof(this.CurrentPlaylist));
+                if (PluginConfig.Instance?.AutoRefresh == true) {
+                    try {
+                        PlaylistCollectionOverride.refreshPlaylists();
+                    }
+                    catch (Exception e) {
+                        Logger.Error(e);
+                    }
+                }
                 _semaphore.Release();
                 Logger.Info($"Finish add song");
             }
