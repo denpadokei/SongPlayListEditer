@@ -13,6 +13,7 @@ using BeatSaberMarkupLanguage.Notify;
 using BeatSaberMarkupLanguage.ViewControllers;
 using BeatSaberPlaylistsLib;
 using HMUI;
+using PlaylistLoaderLite.HarmonyPatches;
 using SongPlayListEditer.Bases;
 using SongPlayListEditer.Configuration;
 using SongPlayListEditer.Models;
@@ -181,6 +182,13 @@ namespace SongPlayListEditer.UI.Views
             this.Coordinator.CurrentPlaylist.Author = this.Author;
             this.Coordinator.CurrentPlaylist.Description = this.Description;
             PlaylistManager.DefaultManager.StorePlaylist(this.Coordinator.CurrentPlaylist);
+
+            try {
+                PlaylistCollectionOverride.refreshPlaylists();
+            }
+            catch (Exception e) {
+                Logger.Error(e);
+            }
         }
 
         [UIAction("back")]

@@ -34,6 +34,14 @@ namespace SongPlayListEditer.UI.Views
             set => PluginConfig.Instance.IsSaveWithKey = value;
         }
 
+        [UIValue("auto-refresh")]
+        public bool AutoRefresh
+        {
+            get => PluginConfig.Instance?.AutoRefresh ?? false;
+
+            set => PluginConfig.Instance.AutoRefresh = value;
+        }
+
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // コマンド

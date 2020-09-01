@@ -2,5 +2,6 @@
   <settings-container>
     <slider-setting text='Button Index' value='button-index' integer-only='true' max='2' min='0' increment='1'></slider-setting>
     <checkbox text='Save with bsr Key' value='is-save-with-key' hover-hint='Get Key from BeatSaver.'></checkbox>
+    <checkbox text='Auto refresh' value='auto-refresh' hover-hint='Auto refresh playlists to after edit.'></checkbox>
   </settings-container>
 </bg>

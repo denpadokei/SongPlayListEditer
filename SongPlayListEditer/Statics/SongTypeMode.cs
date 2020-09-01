@@ -9,7 +9,7 @@ namespace SongPlayListEditer.Statics
     public enum SongTypeMode
     {
         None,
-        Castum,
+        Custom,
         Official,
         WIP
     }

@@ -1,5 +1,4 @@
-﻿#define BeatSaber
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -10,6 +9,7 @@ using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.Notify;
 using HMUI;
+using PlaylistLoaderLite.HarmonyPatches;
 using SongPlayListEditer.Bases;
 using SongPlayListEditer.BeatSaberCommon;
 using SongPlayListEditer.Configuration;
@@ -171,7 +171,7 @@ namespace SongPlayListEditer.UI.Views
                         var isContain = false;
 
                         switch (this.SongType) {
-                            case SongTypeMode.Castum:
+                            case SongTypeMode.Custom:
                                 isContain = playlist.Any(x => x.Hash?.ToUpper() == beatmapHash);
                                 break;
                             case SongTypeMode.Official:
@@ -226,6 +226,8 @@ namespace SongPlayListEditer.UI.Views
         {
             try {
                 await _semaphore.WaitAsync();
+                this.IsButtonInteractive = false;
+
 
                 var playlist = this.CurrentPlaylist;
                 var addTarget = this.BeatMap;
@@ -235,7 +237,7 @@ namespace SongPlayListEditer.UI.Views
                 var isContain = false;
 
                 switch (this.SongType) {
-                    case SongTypeMode.Castum:
+                    case SongTypeMode.Custom:
                         isContain = playlist.Any(x => x.Hash?.ToUpper() == addTargetHash);
                         break;
                     case SongTypeMode.Official:
@@ -268,6 +270,14 @@ namespace SongPlayListEditer.UI.Views
             }
             finally {
                 this.RaisePropertyChanged(nameof(this.CurrentPlaylist));
+                if (PluginConfig.Instance?.AutoRefresh == true) {
+                    try {
+                        PlaylistCollectionOverride.refreshPlaylists();
+                    }
+                    catch (Exception e) {
+                        Logger.Error(e);
+                    }
+                }
                 _semaphore.Release();
                 Logger.Info($"Finish add song");
             }
@@ -286,7 +296,7 @@ namespace SongPlayListEditer.UI.Views
                 var isContain = false;
 
                 switch (this.SongType) {
-                    case SongTypeMode.Castum:
+                    case SongTypeMode.Custom:
                         isContain = this.CurrentPlaylist.Any(x => x.Hash?.ToUpper() == beatMaphash);
                         break;
                     case SongTypeMode.Official:
@@ -338,7 +348,7 @@ namespace SongPlayListEditer.UI.Views
 
             if (arg2.IsCustom()) {
                 this._playlistButton.interactable = true;
-                this.SongType = SongTypeMode.Castum;
+                this.SongType = SongTypeMode.Custom;
             }
             else if (arg2.IsWip()) {
                 this._playlistButton.interactable = false;
@@ -369,7 +379,7 @@ namespace SongPlayListEditer.UI.Views
         private async Task AddSong(IPreviewBeatmapLevel beatmap, BeatSaberPlaylistsLib.Types.IPlaylist playlist)
         {
             switch (this.SongType) {
-                case SongTypeMode.Castum:
+                case SongTypeMode.Custom:
                     var addTargetHash = this.BeatMap.GetBeatmapHash();
                     if (PluginConfig.Instance.IsSaveWithKey) {
                         playlist.Add(addTargetHash, beatmap.songName, await BeatSarverData.GetBeatMapKey(addTargetHash), beatmap.levelAuthorName);
@@ -397,7 +407,7 @@ namespace SongPlayListEditer.UI.Views
         private void RemoveSong(IPreviewBeatmapLevel beatmap, BeatSaberPlaylistsLib.Types.IPlaylist playlist)
         {
             switch (this.SongType) {
-                case SongTypeMode.Castum:
+                case SongTypeMode.Custom:
                     playlist.TryRemoveByHash(beatmap.GetBeatmapHash());
                     break;
                 case SongTypeMode.Official:
