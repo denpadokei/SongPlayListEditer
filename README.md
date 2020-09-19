@@ -15,7 +15,7 @@
 [PlaylistLoaderLite](https://github.com/rithik-b/PlaylistLoaderPlugin)  
 [BeatSaberPlaylistsLib](https://github.com/Zingabopp/BeatSaberPlaylistsLib)  
 
-上記個はModAssistantからインストールできます。  
+上記4個はModAssistantからインストールできます。  
   
 # SongPlayListEditer  
 Edit playlist in game  
