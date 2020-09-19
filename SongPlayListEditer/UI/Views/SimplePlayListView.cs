@@ -272,7 +272,7 @@ namespace SongPlayListEditer.UI.Views
                 this.RaisePropertyChanged(nameof(this.CurrentPlaylist));
                 if (PluginConfig.Instance?.AutoRefresh == true) {
                     try {
-                        PlaylistCollectionOverride.refreshPlaylists();
+                        PlaylistCollectionOverride.RefreshPlaylists();
                     }
                     catch (Exception e) {
                         Logger.Error(e);
