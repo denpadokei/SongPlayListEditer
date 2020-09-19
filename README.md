@@ -12,10 +12,10 @@
 [Beat-Saber-Utils](https://github.com/Kylemc1413/Beat-Saber-Utils)  
 [BeatSaberMarkupLanguage](https://github.com/monkeymanboy/BeatSaberMarkupLanguage)  
 [BeatSaverSharp](https://github.com/lolPants/BeatSaverSharp)  
+[PlaylistLoaderLite](https://github.com/rithik-b/PlaylistLoaderPlugin)  
 [BeatSaberPlaylistsLib](https://github.com/Zingabopp/BeatSaberPlaylistsLib)  
 
-
-上記3個はModAssistantからインストールできます。  
+上記個はModAssistantからインストールできます。  
   
 # SongPlayListEditer  
 Edit playlist in game  
