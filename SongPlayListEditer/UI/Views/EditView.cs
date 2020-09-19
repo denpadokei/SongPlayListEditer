@@ -184,7 +184,7 @@ namespace SongPlayListEditer.UI.Views
             PlaylistManager.DefaultManager.StorePlaylist(this.Coordinator.CurrentPlaylist);
 
             try {
-                PlaylistCollectionOverride.refreshPlaylists();
+                PlaylistCollectionOverride.RefreshPlaylists();
             }
             catch (Exception e) {
                 Logger.Error(e);
