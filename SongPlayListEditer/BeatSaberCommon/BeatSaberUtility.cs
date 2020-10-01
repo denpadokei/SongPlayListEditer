@@ -239,7 +239,7 @@ namespace SongPlayListEditer.BeatSaberCommon
 
         public static IEnumerable<BeatSaberPlaylistsLib.Types.IPlaylist> GetLocalPlaylist()
         {
-            foreach (var playlist in PlaylistManager.DefaultManager.GetAllPlaylists()) {
+            foreach (var playlist in PlaylistManager.DefaultManager.GetAllPlaylists().OrderBy(x => x.Title)) {
                 yield return playlist;
             }
         }

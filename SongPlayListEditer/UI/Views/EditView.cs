@@ -182,13 +182,7 @@ namespace SongPlayListEditer.UI.Views
             this.Coordinator.CurrentPlaylist.Author = this.Author;
             this.Coordinator.CurrentPlaylist.Description = this.Description;
             PlaylistManager.DefaultManager.StorePlaylist(this.Coordinator.CurrentPlaylist);
-
-            try {
-                PlaylistCollectionOverride.RefreshPlaylists();
-            }
-            catch (Exception e) {
-                Logger.Error(e);
-            }
+            PlaylistCollectionOverride.RefreshPlaylists();
         }
 
         [UIAction("back")]
@@ -219,7 +213,7 @@ namespace SongPlayListEditer.UI.Views
         private void ShowModal()
         {
             Logger.Info("Clicked Show modal");
-            CreateCoverList();
+            _ = CreateCoverList();
         }
 
         [UIAction("open-folder")]
@@ -230,14 +224,24 @@ namespace SongPlayListEditer.UI.Views
             Process.Start($"{PluginConfig.Instance.CoverDirectoryPath}");
         }
 
-        private void CreateCoverList()
+        private async Task CreateCoverList()
         {
             this._covers.data.Clear();
-            foreach (var coverPath in Directory.EnumerateFiles(PluginConfig.Instance.CoverDirectoryPath, "*.jpg", SearchOption.TopDirectoryOnly).Union(Directory.EnumerateFiles(PluginConfig.Instance.CoverDirectoryPath, "*.png", SearchOption.TopDirectoryOnly))) {
-                var fileinfo = new FileInfo(coverPath);
-                this._covers.data.Add(new CustomCellInfo(fileinfo.Name, "", Base64Sprites.ImageFileToTextuer2D(coverPath)));
-            }
-            this._covers.tableView.ReloadData();
+
+            await Task.Run(() =>
+            {
+                foreach (var coverPath in Directory.EnumerateFiles(PluginConfig.Instance.CoverDirectoryPath, "*.jpg", SearchOption.TopDirectoryOnly).Union(Directory.EnumerateFiles(PluginConfig.Instance.CoverDirectoryPath, "*.png", SearchOption.TopDirectoryOnly))) {
+                    var fileinfo = new FileInfo(coverPath);
+                    HMMainThreadDispatcher.instance?.Enqueue(() =>
+                    {
+                        this._covers.data.Add(new CustomCellInfo(fileinfo.Name, "", Base64Sprites.ImageFileToTextuer2D(coverPath)));
+                    });
+                }
+                HMMainThreadDispatcher.instance?.Enqueue(() =>
+                {
+                    this._covers.tableView.ReloadData();
+                });
+            });
         }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
