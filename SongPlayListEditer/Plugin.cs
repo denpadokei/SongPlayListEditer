@@ -15,6 +15,7 @@ using SongCore;
 using System.Reflection;
 using System.IO;
 using SongPlayListEditer.Configuration;
+using SongPlayListEditer.Models;
 
 namespace SongPlayListEditer
 {
@@ -54,6 +55,9 @@ namespace SongPlayListEditer
         public void OnApplicationStart()
         {
             Logger.Info($"OnApplicationStart : Version {Assembly.GetExecutingAssembly().GetName().Version}");
+            if (PluginConfig.Instance?.AutoBackup == true) {
+                BackupManager.Backup(PluginConfig.Instance?.BackupPath);
+            }
             if (this._menuUI == null) {
                 this._menuUI = new GameObject("SongPlaylistEditerMenuUI").AddComponent<MenuUI>();
             }
@@ -75,8 +79,10 @@ namespace SongPlayListEditer
         [OnExit]
         public void OnApplicationQuit()
         {
+            if (PluginConfig.Instance?.AutoBackup == true) {
+                BackupManager.Backup(PluginConfig.Instance?.BackupPath);
+            }
             Logger.log.Debug("OnApplicationQuit");
-
         }
     }
 }

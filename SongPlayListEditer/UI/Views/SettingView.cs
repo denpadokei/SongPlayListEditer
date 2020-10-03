@@ -42,6 +42,14 @@ namespace SongPlayListEditer.UI.Views
             set => PluginConfig.Instance.AutoRefresh = value;
         }
 
+        [UIValue("auto-backup")]
+        public bool AutoBackup
+        {
+            get => PluginConfig.Instance?.AutoBackup ?? false;
+
+            set => PluginConfig.Instance.AutoBackup = value;
+        }
+
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // コマンド

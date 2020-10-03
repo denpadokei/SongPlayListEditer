@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Runtime.CompilerServices;
 using IPA.Config.Stores;
 
@@ -14,9 +15,13 @@ namespace SongPlayListEditer.Configuration
 
         public virtual int ButtonIndex { get; set; } = 0;
 
-        public bool IsSaveWithKey { get; set; } = false;
+        public virtual bool IsSaveWithKey { get; set; } = false;
 
-        public bool AutoRefresh { get; set; } = false;
+        public virtual bool AutoRefresh { get; set; } = false;
+
+        public virtual bool AutoBackup { get; set; } = true;
+
+        public virtual string BackupPath { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BeatSaber");
 
         /// <summary>
         /// This is called whenever BSIPA reads the config from disk (including when file changes are detected).
@@ -44,6 +49,8 @@ namespace SongPlayListEditer.Configuration
             this.CoverDirectoryPath = other.CoverDirectoryPath;
             this.ButtonIndex = other.ButtonIndex;
             this.IsSaveWithKey = other.IsSaveWithKey;
+            this.AutoRefresh = other.AutoRefresh;
+            this.AutoBackup = other.AutoBackup;
         }
     }
 }
