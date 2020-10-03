@@ -136,7 +136,6 @@ namespace SongPlayListEditer.UI.Views
             base.Awake();
             Logger.Info("Start Awake");
             this.AddButtonText = "Add";
-            _context = SynchronizationContext.Current;
             Logger.Info("Finish Awake");
         }
         #endregion
@@ -183,33 +182,34 @@ namespace SongPlayListEditer.UI.Views
 
                         var cover = playlist.GetCoverStream();
                         if (isContain) {
-                            _context.Post(d =>
+                            HMMainThreadDispatcher.instance?.Enqueue(() =>
                             {
                                 this._playlists.data.Add(new CustomCellInfo(playlist.Title, $"Song count-{playlist.Count}", Base64Sprites.StreamToTextuer2D(cover), new Sprite[1] { Base64Sprites.LoadSpriteFromResources("SongPlayListEditer.Resources.sharp_playlist_add_check_white_18dp.png") }));
-                            }, null);
+                            });
                         }
                         else {
-                            _context.Post(d =>
+                            HMMainThreadDispatcher.instance?.Enqueue(() =>
                             {
                                 this._playlists.data.Add(new CustomCellInfo(playlist.Title, $"Song count-{playlist.Count}", Base64Sprites.StreamToTextuer2D(cover)));
-                            }, null);
+                            });
                         }
                     }
+                    HMMainThreadDispatcher.instance?.Enqueue(() =>
+                    {
+                        Logger.Info($"Playlists count : {this._playlists.data.Count}");
+
+                        this._playlists.tableView.ReloadData();
+
+                        if (isAdded) {
+                            this._playlists.tableView.SelectCellWithIdx(this.CurrentCellIndex);
+                            this.SelectedPlaylist(null, this.CurrentCellIndex);
+                        }
+                        else {
+                            this._playlists.tableView.SelectCellWithIdx(-1);
+                        }
+                        Logger.Info("Created List");
+                    });
                 });
-
-                Logger.Info($"Playlists count : {this._playlists.data.Count}");
-                
-                this._playlists.tableView.ReloadData();
-                if (isAdded) {
-                    this._playlists.tableView.SelectCellWithIdx(this.CurrentCellIndex);
-                    this.SelectedPlaylist(null, this.CurrentCellIndex);
-                }
-                else {
-                    this._playlists.tableView.SelectCellWithIdx(-1);
-                }
-
-
-                Logger.Info("Created List");
             }
             catch (Exception e) {
                 Logger.Error(e);
@@ -271,12 +271,7 @@ namespace SongPlayListEditer.UI.Views
             finally {
                 this.RaisePropertyChanged(nameof(this.CurrentPlaylist));
                 if (PluginConfig.Instance?.AutoRefresh == true) {
-                    try {
-                        PlaylistCollectionOverride.RefreshPlaylists();
-                    }
-                    catch (Exception e) {
-                        Logger.Error(e);
-                    }
+                    PlaylistCollectionOverride.RefreshPlaylists();
                 }
                 _semaphore.Release();
                 Logger.Info($"Finish add song");
@@ -329,7 +324,6 @@ namespace SongPlayListEditer.UI.Views
 
         internal void Setup()
         {
-            standardLevel = Resources.FindObjectsOfTypeAll<StandardLevelDetailViewController>().First();            
             BSMLParser.instance.Parse(Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), this.ResourceName), BeatSaberUtility.PlayButtons.gameObject, this);
             _playlistButton = BeatSaberUI.CreateIconButton(BeatSaberUtility.PlayButtons, BeatSaberUtility.PracticeButton, Base64Sprites.LoadSpriteFromResources("SongPlayListEditer.Resources.round_playlist_add_white_18dp.png"));
             _playlistButton.onClick.AddListener(this.ShowModal);
@@ -362,6 +356,8 @@ namespace SongPlayListEditer.UI.Views
                 this._playlistButton.interactable = false;
                 this.SongType = SongTypeMode.None;
             }
+
+            _modal?.Hide(true);
         }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
@@ -424,10 +420,6 @@ namespace SongPlayListEditer.UI.Views
         private PlaylistEdierDomain _domain = new PlaylistEdierDomain();
 
         private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
-
-        private StandardLevelDetailViewController standardLevel;
-
-        private static SynchronizationContext _context;
 
         private static readonly SemaphoreSlim _createlistSemaphore = new SemaphoreSlim(1, 1);
 

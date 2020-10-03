@@ -16,6 +16,7 @@ using BeatSaberUI = BeatSaberMarkupLanguage.BeatSaberUI;
 using IPA.Utilities;
 using SongPlayListEditer.UI.Views;
 using BeatSaberMarkupLanguage.Settings;
+using SongPlayListEditer.Models;
 
 namespace SongPlayListEditer.UI
 {

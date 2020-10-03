@@ -1251,6 +1251,53 @@
             Indicates the Beat Saver key is available.
             </summary>
         </member>
+        <member name="T:BeatSaberPlaylistsLib.Types.Playlist">
+            <summary>
+            Base class for a Playlist.
+            </summary>
+        </member>
+        <member name="E:BeatSaberPlaylistsLib.Types.Playlist.PlaylistChanged">
+            <inheritdoc/>
+        </member>
+        <member name="P:BeatSaberPlaylistsLib.Types.Playlist.Title">
+            <inheritdoc/>
+        </member>
+        <member name="P:BeatSaberPlaylistsLib.Types.Playlist.Author">
+            <inheritdoc/>
+        </member>
+        <member name="P:BeatSaberPlaylistsLib.Types.Playlist.Description">
+            <inheritdoc/>
+        </member>
+        <member name="P:BeatSaberPlaylistsLib.Types.Playlist.Filename">
+            <inheritdoc/>
+        </member>
+        <member name="P:BeatSaberPlaylistsLib.Types.Playlist.SuggestedExtension">
+            <inheritdoc/>
+        </member>
+        <member name="P:BeatSaberPlaylistsLib.Types.Playlist.AllowDuplicates">
+            <inheritdoc/>
+        </member>
+        <member name="P:BeatSaberPlaylistsLib.Types.Playlist.IsReadOnly">
+            <inheritdoc/>
+        </member>
+        <member name="P:BeatSaberPlaylistsLib.Types.Playlist.HasCover">
+            <inheritdoc/>
+        </member>
+        <member name="M:BeatSaberPlaylistsLib.Types.Playlist.GetCoverStream">
+            <inheritdoc/>
+        </member>
+        <member name="M:BeatSaberPlaylistsLib.Types.Playlist.SetCover(System.Byte[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:BeatSaberPlaylistsLib.Types.Playlist.SetCover(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BeatSaberPlaylistsLib.Types.Playlist.SetCover(System.IO.Stream)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BeatSaberPlaylistsLib.Types.Playlist.RaisePlaylistChanged">
+            <inheritdoc/>
+        </member>
         <member name="T:BeatSaberPlaylistsLib.Types.Playlist`1">
             <summary>
             Base class for a Playlist.
@@ -1265,34 +1312,7 @@
         <member name="P:BeatSaberPlaylistsLib.Types.Playlist`1.Item(System.Int32)">
             <inheritdoc/>
         </member>
-        <member name="E:BeatSaberPlaylistsLib.Types.Playlist`1.PlaylistChanged">
-            <inheritdoc/>
-        </member>
-        <member name="P:BeatSaberPlaylistsLib.Types.Playlist`1.Title">
-            <inheritdoc/>
-        </member>
-        <member name="P:BeatSaberPlaylistsLib.Types.Playlist`1.Author">
-            <inheritdoc/>
-        </member>
-        <member name="P:BeatSaberPlaylistsLib.Types.Playlist`1.Description">
-            <inheritdoc/>
-        </member>
-        <member name="P:BeatSaberPlaylistsLib.Types.Playlist`1.Filename">
-            <inheritdoc/>
-        </member>
-        <member name="P:BeatSaberPlaylistsLib.Types.Playlist`1.SuggestedExtension">
-            <inheritdoc/>
-        </member>
-        <member name="P:BeatSaberPlaylistsLib.Types.Playlist`1.AllowDuplicates">
-            <inheritdoc/>
-        </member>
         <member name="P:BeatSaberPlaylistsLib.Types.Playlist`1.Count">
-            <inheritdoc/>
-        </member>
-        <member name="P:BeatSaberPlaylistsLib.Types.Playlist`1.IsReadOnly">
-            <inheritdoc/>
-        </member>
-        <member name="P:BeatSaberPlaylistsLib.Types.Playlist`1.HasCover">
             <inheritdoc/>
         </member>
         <member name="M:BeatSaberPlaylistsLib.Types.Playlist`1.CreateFrom(BeatSaberPlaylistsLib.Types.ISong)">
@@ -1323,9 +1343,6 @@
         <member name="M:BeatSaberPlaylistsLib.Types.Playlist`1.CopyTo(BeatSaberPlaylistsLib.Types.IPlaylistSong[],System.Int32)">
             <inheritdoc/>
         </member>
-        <member name="M:BeatSaberPlaylistsLib.Types.Playlist`1.GetCoverStream">
-            <inheritdoc/>
-        </member>
         <member name="M:BeatSaberPlaylistsLib.Types.Playlist`1.GetEnumerator">
             <summary>
             Returns an <see cref="T:System.Collections.Generic.IEnumerator`1"/> that iterates through the playlist's songs.
@@ -1336,9 +1353,6 @@
             <inheritdoc/>
         </member>
         <member name="M:BeatSaberPlaylistsLib.Types.Playlist`1.Insert(System.Int32,BeatSaberPlaylistsLib.Types.IPlaylistSong)">
-            <inheritdoc/>
-        </member>
-        <member name="M:BeatSaberPlaylistsLib.Types.Playlist`1.RaisePlaylistChanged">
             <inheritdoc/>
         </member>
         <member name="M:BeatSaberPlaylistsLib.Types.Playlist`1.Remove(BeatSaberPlaylistsLib.Types.IPlaylistSong)">
@@ -1354,15 +1368,6 @@
             <inheritdoc/>
         </member>
         <member name="M:BeatSaberPlaylistsLib.Types.Playlist`1.RemoveDuplicates">
-            <inheritdoc/>
-        </member>
-        <member name="M:BeatSaberPlaylistsLib.Types.Playlist`1.SetCover(System.Byte[])">
-            <inheritdoc/>
-        </member>
-        <member name="M:BeatSaberPlaylistsLib.Types.Playlist`1.SetCover(System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:BeatSaberPlaylistsLib.Types.Playlist`1.SetCover(System.IO.Stream)">
             <inheritdoc/>
         </member>
         <member name="M:BeatSaberPlaylistsLib.Types.Playlist`1.TryRemoveByHash(System.String)">
