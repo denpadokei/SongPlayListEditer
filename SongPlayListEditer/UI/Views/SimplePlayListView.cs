@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
-using BeatSaberMarkupLanguage.Notify;
+// using BeatSaberMarkupLanguage.Notify;
 using HMUI;
 using PlaylistLoaderLite.HarmonyPatches;
 using SongPlayListEditer.Bases;
@@ -17,6 +18,7 @@ using SongPlayListEditer.DataBases;
 using SongPlayListEditer.Extentions;
 using SongPlayListEditer.Models;
 using SongPlayListEditer.Statics;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using static BeatSaberMarkupLanguage.Components.CustomListTableData;
@@ -184,13 +186,13 @@ namespace SongPlayListEditer.UI.Views
                         if (isContain) {
                             HMMainThreadDispatcher.instance?.Enqueue(() =>
                             {
-                                this._playlists.data.Add(new CustomCellInfo(playlist.Title, $"Song count-{playlist.Count}", Base64Sprites.StreamToTextuer2D(cover), new Sprite[1] { Base64Sprites.LoadSpriteFromResources("SongPlayListEditer.Resources.sharp_playlist_add_check_white_18dp.png") }));
+                                this._playlists.data.Add(new CustomCellInfo(playlist.Title, $"Song count-{playlist.Count}", Base64Sprites.StreamToSprite(cover)));//, Base64Sprites.LoadSpriteFromResources("SongPlayListEditer.Resources.sharp_playlist_add_check_white_18dp.png")));
                             });
                         }
                         else {
                             HMMainThreadDispatcher.instance?.Enqueue(() =>
                             {
-                                this._playlists.data.Add(new CustomCellInfo(playlist.Title, $"Song count-{playlist.Count}", Base64Sprites.StreamToTextuer2D(cover)));
+                                this._playlists.data.Add(new CustomCellInfo(playlist.Title, $"Song count-{playlist.Count}", Base64Sprites.StreamToSprite(cover)));
                             });
                         }
                     }
@@ -324,12 +326,25 @@ namespace SongPlayListEditer.UI.Views
 
         internal void Setup()
         {
-            BSMLParser.instance.Parse(Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), this.ResourceName), BeatSaberUtility.PlayButtons.gameObject, this);
-            _playlistButton = BeatSaberUI.CreateIconButton(BeatSaberUtility.PlayButtons, BeatSaberUtility.PracticeButton, Base64Sprites.LoadSpriteFromResources("SongPlayListEditer.Resources.round_playlist_add_white_18dp.png"));
+            BSMLParser.instance.Parse(Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), this.ResourceName), new GameObject(), this);
+            _playlistButton = BeatSaberUI.CreateUIButton(BeatSaberUtility.PlayButtons, _playlistButton, "PLAY LIST");//, Base64Sprites.LoadSpriteFromResources("SongPlayListEditer.Resources.round_playlist_add_white_18dp.png"));
+            //_playlistButton.transform.parent = BeatSaberUtility.PlayButtons;
             _playlistButton.onClick.AddListener(this.ShowModal);
-            BeatSaberUI.DestroyHoverHint(_playlistButton.transform as RectTransform);
-            _playlistButton.GetComponentsInChildren<Image>().First(x => x.name == "Icon").transform.localScale *= 1.8f;
+            _playlistButton.interactable = true;
+            //Polyglot.LocalizedTextMeshProUGUI localizer = _playlistButton.GetComponentInChildren<Polyglot.LocalizedTextMeshProUGUI>();
+            //if (localizer != null)
+            //    GameObject.Destroy(localizer);
+            
+            //ExternalComponents externalComponents = _playlistButton.gameObject.AddComponent<ExternalComponents>();
+            //TextMeshProUGUI textMesh = _playlistButton.GetComponentInChildren<TextMeshProUGUI>();
+            //textMesh.richText = true;
+            //textMesh.text = "PLAY LIST";
+            //externalComponents.components.Add(textMesh);
+            //StackLayoutGroup stackLayoutGroup = _playlistButton.GetComponentInChildren<StackLayoutGroup>();
+            //if (stackLayoutGroup != null)
+            //    externalComponents.components.Add(stackLayoutGroup);
             _playlistButton.transform.SetSiblingIndex(PluginConfig.Instance.ButtonIndex);
+            this._modal.transform.parent = BeatSaberUtility.PlayButtons;
             BeatSaberUtility.LevelCollectionViewController.didSelectLevelEvent -= this.LevelCollectionViewController_didSelectLevelEvent;
             BeatSaberUtility.LevelCollectionViewController.didSelectLevelEvent += this.LevelCollectionViewController_didSelectLevelEvent;
         }
@@ -365,6 +380,7 @@ namespace SongPlayListEditer.UI.Views
         private void ShowModal()
         {
             Logger.Info($"modal scale. [x : {this._modal.transform.position.x}, y : {this._modal.transform.position.y}, z : {this._modal.transform.position.z}]");
+            this._modal.transform.parent = BeatSaberUtility.PlayButtons;
             this._modal.transform.position = _defaultLocalScale;
             this.CurrentPlaylist = null;
             this.AddButtonText = "Add";

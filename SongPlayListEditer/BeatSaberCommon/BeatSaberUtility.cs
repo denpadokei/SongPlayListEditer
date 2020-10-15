@@ -98,7 +98,7 @@ namespace SongPlayListEditer.BeatSaberCommon
 
 
                 // gather flow coordinator elements
-                LevelSelectionNavigationController = LevelSelectionFlowCoordinator.GetPrivateField<LevelSelectionNavigationController>("_levelSelectionNavigationController");
+                LevelSelectionNavigationController = Resources.FindObjectsOfTypeAll<LevelSelectionNavigationController>().First(); //LevelSelectionFlowCoordinator.GetPrivateField<LevelSelectionNavigationController>("_levelSelectionNavigationController");
                 Logger.Debug($"Acquired LevelSelectionNavigationController [{LevelSelectionNavigationController.GetInstanceID()}]");
 
                 LevelSelectionNavigationController.didSelectLevelPackEvent -= DidSelectLevelPack;
@@ -110,13 +110,13 @@ namespace SongPlayListEditer.BeatSaberCommon
                 LevelFilteringNavigationController = Resources.FindObjectsOfTypeAll<LevelFilteringNavigationController>().First();
                 Logger.Debug($"Acquired LevelFilteringNavigationController [{LevelFilteringNavigationController.GetInstanceID()}]");
 
-                LevelCollectionViewController = LevelSelectionNavigationController.GetPrivateField<LevelCollectionViewController>("_levelCollectionViewController");
+                LevelCollectionViewController = Resources.FindObjectsOfTypeAll<LevelCollectionViewController>().First(); //LevelSelectionNavigationController.GetPrivateField<LevelCollectionViewController>("_levelCollectionViewController");
                 Logger.Debug($"Acquired LevelPackLevelsViewController [{LevelCollectionViewController.GetInstanceID()}]");
                 LevelCollectionViewController.didSelectLevelEvent -= SelectLevelHandle;
                 LevelCollectionViewController.didSelectLevelEvent += SelectLevelHandle;
 
 
-                LevelDetailViewController = LevelSelectionNavigationController.GetPrivateField<StandardLevelDetailViewController>("_levelDetailViewController");
+                LevelDetailViewController = Resources.FindObjectsOfTypeAll<StandardLevelDetailViewController>().First();// LevelSelectionNavigationController.GetPrivateField<StandardLevelDetailViewController>("_levelDetailViewController");
                 Logger.Debug($"Acquired StandardLevelDetailViewController [{LevelDetailViewController.GetInstanceID()}]");
 
                 LevelCollectionTableView = LevelCollectionViewController.GetPrivateField<LevelCollectionTableView>("_levelCollectionTableView");
@@ -141,10 +141,16 @@ namespace SongPlayListEditer.BeatSaberCommon
                 TableViewPageDownButton = tableView.GetPrivateField<Button>("_pageDownButton");
                 Logger.Debug("Acquired Page Up and Down buttons...");
 
-                PlayContainer = StandardLevelDetailView.GetComponentsInChildren<RectTransform>().First(x => x.name == "PlayContainer");
-                PlayButtons = PlayContainer.GetComponentsInChildren<RectTransform>().First(x => x.name == "PlayButtons");
+#if DEBUG
+                foreach (var item in StandardLevelDetailView.GetComponentInChildren<RectTransform>()) {
+                    Logger.Debug($"{item}");
+                }
+#endif
 
-                PlayButton = Resources.FindObjectsOfTypeAll<Button>().First(x => x.name == "PlayButton");
+                PlayContainer = StandardLevelDetailView.GetComponentsInChildren<RectTransform>().First(x => x.name == "BeatmapParamsPanel");
+                PlayButtons = StandardLevelDetailView.GetComponentsInChildren<RectTransform>().First(x => x.name == "ActionButtons");
+
+                PlayButton = Resources.FindObjectsOfTypeAll<Button>().First(x => x.name == "ActionButton");
 
                 PracticeButton = PlayButtons.GetComponentsInChildren<Button>().First(x => x.name == "PracticeButton");
 

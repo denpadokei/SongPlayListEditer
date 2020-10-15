@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -9,7 +10,7 @@ using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.Components.Settings;
-using BeatSaberMarkupLanguage.Notify;
+// using BeatSaberMarkupLanguage.Notify;
 using BeatSaberMarkupLanguage.ViewControllers;
 using BeatSaberPlaylistsLib;
 using HMUI;
@@ -104,10 +105,10 @@ namespace SongPlayListEditer.UI.Views
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // オーバーライドメソッド
-        protected override void DidActivate(bool firstActivation, ActivationType type)
+        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
             try {
-                base.DidActivate(firstActivation, type);
+                base.DidActivate(firstActivation, addedToHierarchy, screenSystemEnabling);
                 this.CoverPath = null;
                 this.Title = null;
                 this.Author = null;
@@ -234,7 +235,7 @@ namespace SongPlayListEditer.UI.Views
                     var fileinfo = new FileInfo(coverPath);
                     HMMainThreadDispatcher.instance?.Enqueue(() =>
                     {
-                        this._covers.data.Add(new CustomCellInfo(fileinfo.Name, "", Base64Sprites.ImageFileToTextuer2D(coverPath)));
+                        this._covers.data.Add(new CustomCellInfo(fileinfo.Name, "", Base64Sprites.ImageFileToSprite(coverPath)));
                     });
                 }
                 HMMainThreadDispatcher.instance?.Enqueue(() =>

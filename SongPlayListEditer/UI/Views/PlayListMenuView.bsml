@@ -4,8 +4,8 @@
     <list id='playlists' list-style='List' expand-cell='true' select-cell='select-cell'></list>
     <page-button event-click='playlists#PageDown' direction='Down' />
   </vertical>
-  <bottom-button-panel>
+  <vertical>
     <button text='CREATE' on-click='add-click'></button>
     <button text='EDIT' interactable='~edit-button-interactive' on-click='edit-click'></button>
-  </bottom-button-panel>
+  </vertical>
 </bg>

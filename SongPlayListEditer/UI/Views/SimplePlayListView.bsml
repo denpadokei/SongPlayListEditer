@@ -1,15 +1,16 @@
 ﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>  
   <button id='playlist-button'></button>
   <modal id='modal' hide-event='close-modal' click-off-closes='true' anchor-pos-y='31.2' size-delta-x='65' size-delta-y='75' move-to-center='false'>
-    <vertical pad-bottom='12' pad-top='2' spacing='1'>
-      <page-button event-click='playlists#PageUp' direction='Up' />
-      <list id='playlists' list-style='List' expand-cell='true' select-cell='current'></list>
-      <page-button event-click='playlists#PageDown' direction='Down' />
-    </vertical>
-    
-    <bottom-button-panel>
-      <button text='~add-text' on-click='add-click' interactable='~add-button-interactive'></button>
-      <button text='CLOSE' click-event='close-modal'></button>
-    </bottom-button-panel>
+    <vertical>
+      <vertical pad-bottom='12' pad-top='2' spacing='1'>
+        <page-button event-click='playlists#PageUp' direction='Up' />
+        <list id='playlists' list-style='List' expand-cell='true' select-cell='current'></list>
+        <page-button event-click='playlists#PageDown' direction='Down' />
+      </vertical>
+      <horizontal>
+        <button text='~add-text' on-click='add-click' interactable='~add-button-interactive'></button>
+        <button text='CLOSE' click-event='close-modal'></button>
+      </horizontal>
+    </vertical>    
   </modal>
 </bg>

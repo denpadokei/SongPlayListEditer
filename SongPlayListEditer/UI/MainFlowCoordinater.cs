@@ -29,7 +29,7 @@ namespace SongPlayListEditer.UI
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // オーバーライドメソッド
-        protected override void DidActivate(bool firstActivation, ActivationType activationType)
+        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
             this.showBackButton = true;
             this.ProvideInitialViewControllers(this._playListMenuView);
@@ -46,13 +46,13 @@ namespace SongPlayListEditer.UI
         public void ShowPlaylist()
         {
             Logger.Info("ShowPlaylistView");
-            this.ReplaceTopViewController(_playListMenuView, null, false, ViewController.SlideAnimationDirection.Left);
+            this.ReplaceTopViewController(_playListMenuView, null, ViewController.AnimationType.In, ViewController.AnimationDirection.Vertical);
         }
 
         public void ShowEdit()
         {
             Logger.Info("ShowEditView");
-            this.ReplaceTopViewController(_editView, null, false, ViewController.SlideAnimationDirection.Right);
+            this.ReplaceTopViewController(_editView, null, ViewController.AnimationType.Out, ViewController.AnimationDirection.Vertical);
         }
 
         public void ShowAdd()
