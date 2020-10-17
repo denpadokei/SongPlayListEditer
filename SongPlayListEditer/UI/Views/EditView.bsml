@@ -5,9 +5,9 @@
       <button text='SELECT COVER' on-click='select-cover' click-event='open-modal'></button>
       <modal show-event='open-modal' hide-event='close-modal' size-delta-x='115' size-delta-y='83'>
         <vertical pad-bottom='23' pad-top='2' spacing='1'>
-          <page-button event-click='covers#PageUp' direction='Up' />
+          <page-button event-click='covers#PageUp' direction='Up' interactable='true'/>
           <list id='covers' select-cell='select-cover-cell'></list>
-          <page-button event-click='covers#PageDown' direction='Down' />
+          <page-button event-click='covers#PageDown' direction='Down' interactable='true'/>
         </vertical>
         <button text='CLOSE' click-event='close-modal'></button>
         <button text='OPEN FOLDER' on-click='open-folder' anchor-pos-x='37'></button>

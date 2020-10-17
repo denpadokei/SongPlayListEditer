@@ -67,8 +67,6 @@ namespace SongPlayListEditer.BeatSaberCommon
             if (stackLayoutGroup != null)
                 externalComponents.components.Add(stackLayoutGroup);
 
-
-
             return btn;
         }
 

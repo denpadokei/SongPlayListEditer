@@ -3,9 +3,9 @@
   <modal id='modal' hide-event='close-modal' click-off-closes='true' anchor-pos-y='31.2' size-delta-x='65' size-delta-y='75' move-to-center='false'>
     <vertical>
       <vertical pad-bottom='12' pad-top='2' spacing='1'>
-        <page-button event-click='playlists#PageUp' direction='Up' />
+        <page-button event-click='playlists#PageUp' direction='Up' interactable='true'/>
         <list id='playlists' list-style='List' expand-cell='true' select-cell='current'></list>
-        <page-button event-click='playlists#PageDown' direction='Down' />
+        <page-button event-click='playlists#PageDown' direction='Down' interactable='true'/>
       </vertical>
       <horizontal>
         <button text='~add-text' on-click='add-click' interactable='~add-button-interactive'></button>
