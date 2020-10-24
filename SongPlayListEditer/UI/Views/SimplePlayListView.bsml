@@ -1,16 +1,20 @@
 ﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>  
-  <button id='playlist-button'></button>
-  <modal id='modal' hide-event='close-modal' click-off-closes='true' anchor-pos-y='31.2' size-delta-x='65' size-delta-y='75' move-to-center='false'>
+  <modal id='modal' hide-event='close-modal' click-off-closes='true' anchor-pos-y='31.2' size-delta-x='100' size-delta-y='75' move-to-center='false'>
     <vertical>
-      <vertical pad-bottom='12' pad-top='2' spacing='1'>
-        <page-button event-click='playlists#PageUp' direction='Up' interactable='true'/>
-        <list id='playlists' list-style='List' expand-cell='true' select-cell='current'></list>
-        <page-button event-click='playlists#PageDown' direction='Down' interactable='true'/>
+      <vertical pad-left='3' pad-right='3' spacing='1'>
+        <page-button size-delta-x='3' size-delta-y='3' event-click='playlists-list-table#PageUp' direction='Up'/>
+        <custom-list id='playlists-list-table' data='playlists' select-cell='current' clickable-cells='false' min-width='90'>
+          <horizontal horizontal-fit ='Unconstrained' vertical-fit='Unconstrained'>
+            <image min-height='8' min-width='8' pref-height='8' pref-width='8' id='cover'></image>
+            <vertical min-width='60' horizontal-fit='Unconstrained' child-align='MiddleLeft'>
+              <text text='~title' word-wrapping='false' align='Left'></text>
+              <text text='~sub-info' word-wrapping='false' font-size='2' color='grey' align='Left'></text>
+            </vertical>
+            <checkbox id='check-box'></checkbox>
+          </horizontal>
+        </custom-list>
+        <page-button size-delta-x='3' size-delta-y='3' event-click='playlists-list-table#PageDown' direction='Down'/>
       </vertical>
-      <horizontal>
-        <button text='~add-text' on-click='add-click' interactable='~add-button-interactive'></button>
-        <button text='CLOSE' click-event='close-modal'></button>
-      </horizontal>
     </vertical>    
   </modal>
 </bg>

@@ -11,12 +11,12 @@ using SongPlayListEditer.Configuration;
 
 namespace SongPlayListEditer.UI.Views
 {
-    internal class SettingView : SingletonBindableBase<SettingView>
+    internal class SettingView : BSMLResourceViewController
     {
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プロパティ
         // For this method of setting the ResourceName, this class must be the first class in the file.
-        public string ResourceName => string.Join(".", GetType().Namespace, "SettingView.bsml");
+        public override string ResourceName => string.Join(".", GetType().Namespace, "SettingView.bsml");
 
         [UIValue("button-index")]
         public int ButtonIndex

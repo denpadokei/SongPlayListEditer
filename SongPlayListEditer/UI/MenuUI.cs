@@ -17,42 +17,44 @@ using IPA.Utilities;
 using SongPlayListEditer.UI.Views;
 using BeatSaberMarkupLanguage.Settings;
 using SongPlayListEditer.Models;
+using Zenject;
 
 namespace SongPlayListEditer.UI
 {
     /// <summary>
     /// UIまわりを管理するクラス
     /// </summary>
-    public class MenuUI : MonoBehaviour
+    public class MenuUI : MonoBehaviour, IInitializable
     {
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プロパティ
-        public static MenuUI Instance { get; private set; }
+
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // パブリックメソッド
         /// <summary>
         /// UI全般を作成します。
         /// </summary>
-        public void CreateUI()
+        [Inject]
+        public void CreateUI(SimplePlayListView simplePlayListView)
         {
             Logger.Info("Start Create UI");
-            this.CreateMenuButton();
-            this.CreateButton();
-            this.CreateSetting();
+            this._simplePlayListView = simplePlayListView;
             Logger.Info("Finish Create UI");
+        }
+
+
+        public void Initialize()
+        {
+            Logger.Debug($"Start Initialize.");
+            this._simplePlayListView.Initialize();
+            this.CreateMenuButton();
+            //this.CreateButton();
+            this.CreateSetting();
         }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プライベートメソッド
-
-        /// <summary>
-        /// インスタンス作成時に1回だけ呼ばれます。（ものびへが継承されてると勝手に呼ばれる不思議なメソッド）
-        /// </summary>
-        private void Awake()
-        {
-            Instance = this;
-        }
 
         /// <summary>
         /// 左側のメニューボタンを作成します。
@@ -70,7 +72,7 @@ namespace SongPlayListEditer.UI
         {
             try {
                 Logger.Info("Create Playlist Button");
-                SimplePlayListView.instance.Setup();
+                //SimplePlayListView.instance.Setup();
                 Logger.Info("Created Playlist button!");
             }
             catch (Exception e) {
@@ -84,7 +86,8 @@ namespace SongPlayListEditer.UI
         private void CreateSetting()
         {
             try {
-                BSMLSettings.instance.AddSettingsMenu("SONG PLAYLIST EDITER", SettingView.instance.ResourceName, SettingView.instance);
+                var setting = BeatSaberUI.CreateViewController<SettingView>();
+                BSMLSettings.instance.AddSettingsMenu("SONG PLAYLIST EDITER", setting.ResourceName, setting);
             }
             catch (Exception e) {
                 Logger.Error(e);
@@ -99,7 +102,7 @@ namespace SongPlayListEditer.UI
             try {
                 Logger.Info("Click Playlist Button");
                 if (this._mainFlowCoordinater == null) {
-                    this._mainFlowCoordinater = BeatSaberUI.CreateFlowCoordinator<MainFlowCoordinator>();
+                    this._mainFlowCoordinater = BeatSaberUI.CreateFlowCoordinator<PlaylistEditorFlowCoordinator>();
                 }
 
                 BeatSaberUI.MainFlowCoordinator.PresentFlowCoordinator(this._mainFlowCoordinater);
@@ -111,7 +114,11 @@ namespace SongPlayListEditer.UI
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // メンバ変数
-        private MainFlowCoordinator _mainFlowCoordinater;
+        [Inject]
+        DiContainer _container;
+        [Inject]
+        private PlaylistEditorFlowCoordinator _mainFlowCoordinater;
+        private SimplePlayListView _simplePlayListView;
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // 構築・破棄

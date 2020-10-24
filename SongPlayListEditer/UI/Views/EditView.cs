@@ -31,7 +31,7 @@ namespace SongPlayListEditer.UI.Views
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プロパティ
         // For this method of setting the ResourceName, this class must be the first class in the file.
-        public override string ResourceName => string.Join(".", GetType().Namespace, "EditView.bsml");
+        
 
         /// <summary>プレイリストのタイトル を取得、設定</summary>
         private string title_;
@@ -39,7 +39,7 @@ namespace SongPlayListEditer.UI.Views
         [UIValue("title")]
         public string Title
         {
-            get => this.title_;
+            get => this.title_ ?? "";
 
             set => this.SetProperty(ref this.title_, value);
         }
@@ -50,7 +50,7 @@ namespace SongPlayListEditer.UI.Views
         [UIValue("author")]
         public string Author
         {
-            get => this.author_;
+            get => this.author_ ?? "";
 
             set => this.SetProperty(ref this.author_, value);
         }
@@ -61,7 +61,7 @@ namespace SongPlayListEditer.UI.Views
         [UIValue("description")]
         public string Description
         {
-            get => this.description_;
+            get => this.description_ ?? "";
 
             set => this.SetProperty(ref this.description_, value);
         }
@@ -71,19 +71,9 @@ namespace SongPlayListEditer.UI.Views
         /// <summary>説明 を取得、設定</summary>
         public string CoverPath
         {
-            get => this.coverPath_;
+            get => this.coverPath_ ?? "";
 
             set => this.SetProperty(ref this.coverPath_, value);
-        }
-
-        /// <summary>説明 を取得、設定</summary>
-        private MainFlowCoordinator coordinater_;
-        /// <summary>説明 を取得、設定</summary>
-        public MainFlowCoordinator Coordinator
-        {
-            get => this.coordinater_;
-
-            set => this.SetProperty(ref this.coordinater_, value);
         }
 
         /// <summary>説明 を取得、設定</summary>
@@ -96,9 +86,21 @@ namespace SongPlayListEditer.UI.Views
 
             set => this.SetProperty(ref this.isSaveButtonIteractive_, value);
         }
+
+        /// <summary>説明 を取得、設定</summary>
+        private BeatSaberPlaylistsLib.Types.IPlaylist curretPlaylist_;
+        /// <summary>説明 を取得、設定</summary>
+        public BeatSaberPlaylistsLib.Types.IPlaylist CurrentPlaylist
+        {
+            get => this.curretPlaylist_;
+
+            set => this.SetProperty(ref this.curretPlaylist_, value);
+        }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
-        #region // コマンド
+        #region // イベント
+        public event Action<BeatSaberPlaylistsLib.Types.IPlaylist> SaveEvent;
+        public event Action ExitEvent;
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // コマンド用メソッド
@@ -114,30 +116,16 @@ namespace SongPlayListEditer.UI.Views
                 this.Author = null;
                 this.Description = null;
 
-                this.Title = this.Coordinator.CurrentPlaylist.Title;
-                this.Author = this.Coordinator.CurrentPlaylist.Author;
-                this.Description = this.Coordinator.CurrentPlaylist.Description;
+                this.Title = this.CurrentPlaylist.Title;
+                this.Author = this.CurrentPlaylist.Author;
+                this.Description = this.CurrentPlaylist.Description;
 
-                _cover.sprite = Base64Sprites.StreamToSprite(this.Coordinator.CurrentPlaylist?.GetCoverStream());
+                _cover.sprite = Base64Sprites.StreamToSprite(this.CurrentPlaylist?.GetCoverStream());
 
                 this.IsSaveButtonInteractive = !string.IsNullOrEmpty(this.Title);
             }
             catch (Exception e) {
                 Logger.Error(e);
-            }
-        }
-        protected override void OnPropertyChanged(PropertyChangedEventArgs args)
-        {
-            base.OnPropertyChanged(args);
-            if (args.PropertyName == nameof(this.Title)) {
-                this._parserParams?.EmitEvent("change-title");
-                this.CanSave();
-            }
-            else if (args.PropertyName == nameof(this.Author)) {
-                this._parserParams?.EmitEvent("change-author");
-            }
-            else if (args.PropertyName == nameof(this.Description)) {
-                this._parserParams?.EmitEvent("change-description");
             }
         }
         #endregion
@@ -160,29 +148,29 @@ namespace SongPlayListEditer.UI.Views
         void Save()
         {
             Logger.Info("Clicked Save.");
-            if (string.IsNullOrEmpty(this.Coordinator.CurrentPlaylist.Filename)) {
-                this.Coordinator.CurrentPlaylist.Filename = this.Coordinator.CurrentPlaylist.Title;
+            if (string.IsNullOrEmpty(this.CurrentPlaylist.Filename)) {
+                this.CurrentPlaylist.Filename = this.CurrentPlaylist.Title;
             }
             Logger.Info($"Cover Path : [{this.CoverPath}]");
-            Logger.Info($"Has Cover? : {this.Coordinator.CurrentPlaylist.HasCover}");
+            Logger.Info($"Has Cover? : {this.CurrentPlaylist.HasCover}");
             if (!string.IsNullOrEmpty(this.CoverPath)) {
                 using (var stream = new FileStream(this.CoverPath, FileMode.Open, FileAccess.Read)) {
-                    this.Coordinator.CurrentPlaylist.SetCover(stream);
+                    this.CurrentPlaylist.SetCover(stream);
                 }
             }
-            else if(!this.Coordinator.CurrentPlaylist.HasCover) {
+            else if(!this.CurrentPlaylist.HasCover) {
                 using (var stream = Base64Sprites.Base64ToStream(DefaultImage.DEFAULT_IMAGE)) {
-                    this.Coordinator.CurrentPlaylist.SetCover(stream);
+                    this.CurrentPlaylist.SetCover(stream);
                 }
             }
-            if (string.IsNullOrEmpty(this.Coordinator.CurrentPlaylist.Filename)) {
-                this.Coordinator.CurrentPlaylist.Filename = $"{this.Title}_{DateTime.Now:yyyyMMddHHmmss}";
+            if (string.IsNullOrEmpty(this.CurrentPlaylist.Filename)) {
+                this.CurrentPlaylist.Filename = $"{this.Title}_{DateTime.Now:yyyyMMddHHmmss}";
             }
 
-            this.Coordinator.CurrentPlaylist.Title = this.Title;
-            this.Coordinator.CurrentPlaylist.Author = this.Author;
-            this.Coordinator.CurrentPlaylist.Description = this.Description;
-            PlaylistManager.DefaultManager.StorePlaylist(this.Coordinator.CurrentPlaylist);
+            this.CurrentPlaylist.Title = this.Title;
+            this.CurrentPlaylist.Author = this.Author;
+            this.CurrentPlaylist.Description = this.Description;
+            this.SaveEvent?.Invoke(this.CurrentPlaylist);
             PlaylistCollectionOverride.RefreshPlaylists();
         }
 
@@ -190,7 +178,7 @@ namespace SongPlayListEditer.UI.Views
         void Back()
         {
             Logger.Info("Clicked Back");
-            this.Coordinator.ShowPlaylist();
+            this.ExitEvent?.Invoke();
         }
 
         [UIAction("select-cover-cell")]

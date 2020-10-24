@@ -73,6 +73,11 @@
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Polyglot.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="SiraUtil, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Plugins\SiraUtil.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="SongCore, Version=2.9.5.0, Culture=neutral, processorArchitecture=MSIL">
       <Private>False</Private>
       <HintPath>$(BeatSaberDir)\Plugins\SongCore.dll</HintPath>
@@ -147,6 +152,16 @@
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.VRModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Zenject, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Zenject.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Zenject-usage, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Zenject-usage.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bases\BindableBase.cs" />
@@ -157,9 +172,12 @@
     <Compile Include="DataBases\BeatSarverData.cs" />
     <Compile Include="Extentions\BeatSaberUIExtensions.cs" />
     <Compile Include="Extentions\PreviewBeatMapExtention.cs" />
+    <Compile Include="Installer\PlaylistEditerInstaller.cs" />
+    <Compile Include="Interfaces\IPlaylistCell.cs" />
     <Compile Include="Models\BackupManager.cs" />
     <Compile Include="Models\Base64Sprites.cs" />
     <Compile Include="Models\OfficialSongEntity.cs" />
+    <Compile Include="Models\PlaylistCellEntity.cs" />
     <Compile Include="Models\PlaylistEdierDomain.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Logger.cs" />
@@ -170,7 +188,7 @@
     <Compile Include="Statics\DefaultImage.cs" />
     <Compile Include="BeatSaberCommon\BeatSaberUI.cs" />
     <Compile Include="UI\MenuUI.cs" />
-    <Compile Include="UI\MainFlowCoordinater.cs" />
+    <Compile Include="UI\PlaylistEditorFlowCoordinater.cs" />
     <Compile Include="UI\Views\PlayListMenuView.cs" />
     <Compile Include="UI\Views\SettingView.cs" />
     <Compile Include="UI\Views\SimplePlayListView.cs" />
@@ -185,9 +203,7 @@
     <EmbeddedResource Include="UI\Views\PlayListMenuView.bsml" />
     <EmbeddedResource Include="UI\Views\EditView.bsml" />
     <EmbeddedResource Include="UI\Views\SimplePlayListView.bsml" />
-    <None Include="dll\BeatSaberPlaylistsLib.manifest">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="dll\BeatSaberPlaylistsLib.manifest" />
     <EmbeddedResource Include="UI\Views\SettingView.bsml" />
   </ItemGroup>
   <ItemGroup>
