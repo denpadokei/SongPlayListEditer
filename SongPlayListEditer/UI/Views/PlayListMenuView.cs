@@ -4,11 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
-using BeatSaberMarkupLanguage.Notify;
-using BeatSaberMarkupLanguage.ViewControllers;
 using HMUI;
 using SongPlayListEditer.Bases;
 using SongPlayListEditer.BeatSaberCommon;
@@ -22,9 +19,6 @@ namespace SongPlayListEditer.UI.Views
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プロパティ
         // For this method of setting the ResourceName, this class must be the first class in the file.
-        public override string ResourceName => string.Join(".", GetType().Namespace, "PlayListMenuView.bsml");
-
-        public MainFlowCoordinator Coordinater { get; internal set; }
 
         /// <summary>編集ボタンのインタラクティブ を取得、設定</summary>
         private bool isEnableEditButton_;
@@ -39,7 +33,10 @@ namespace SongPlayListEditer.UI.Views
 
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
-        #region // コマンド
+        #region // イベント
+        public event Action ShowAddEvent;
+        public event Action ShowEditEvent;
+        public event Action<BeatSaberPlaylistsLib.Types.IPlaylist> SelectedCell;
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // ボタン用メソッド
@@ -48,7 +45,7 @@ namespace SongPlayListEditer.UI.Views
         {
             try {
                 Logger.Info("Clicked create button.");
-                this.Coordinater.ShowAdd();
+                this.ShowAddEvent?.Invoke();
             }
             catch (Exception e) {
                 Logger.Error(e);
@@ -60,7 +57,7 @@ namespace SongPlayListEditer.UI.Views
         {
             try {
                 Logger.Info("Clicked edit button");
-                this.Coordinater.ShowEdit();
+                this.ShowEditEvent?.Invoke();
             }
             catch (Exception e) {
                 Logger.Error(e);
@@ -69,16 +66,10 @@ namespace SongPlayListEditer.UI.Views
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // オーバーライドメソッド
-        protected override void DidActivate(bool firstActivation, ActivationType type)
+        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
-            base.DidActivate(firstActivation, type);
+            base.DidActivate(firstActivation, addedToHierarchy, screenSystemEnabling);
             this.CreateList();
-        }
-
-        protected override void Awake()
-        {
-            base.Awake();
-            _context = SynchronizationContext.Current;
         }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
@@ -91,7 +82,7 @@ namespace SongPlayListEditer.UI.Views
         public void CreateList()
         {
             _ = this.CreateListAsync();
-            this.Coordinater.SetCurrentPlaylist(null);
+            this.SelectedCell?.Invoke(null);
             this.IsEnableEditButton = false;
         }
 
@@ -110,15 +101,18 @@ namespace SongPlayListEditer.UI.Views
                 {
                     foreach (var playlist in BeatSaberUtility.GetLocalPlaylist()) {
                         var coverstream = playlist.GetCoverStream();
-                        _context.Post(d =>
+                        HMMainThreadDispatcher.instance?.Enqueue(() =>
                         {
-                            this._playlists.data.Add(new CustomCellInfo(playlist.Title, $"Song count-{playlist.Count}", Base64Sprites.StreamToTextuer2D(coverstream)));
-                        }, null);
+                            this._playlists.data.Add(new CustomCellInfo(playlist.Title, $"Song count-{playlist.Count}", Base64Sprites.StreamToSprite(coverstream)));
+                        });
                     }
                 });
 
                 Logger.Info($"Playlists count : {this._playlists.data.Count}");
-                this._playlists.tableView.ReloadData();
+                HMMainThreadDispatcher.instance?.Enqueue(() =>
+                {
+                    this._playlists.tableView.ReloadData();
+                });
                 Logger.Info("Created List");
             }
             catch (Exception e) {
@@ -135,7 +129,7 @@ namespace SongPlayListEditer.UI.Views
         void SelectCell(TableView tableView, int cellindex)
         {
             Logger.Info("Selected Cell");
-            this.Coordinater.SetCurrentPlaylist(BeatSaberUtility.GetLocalPlaylist().ToArray()[cellindex]);
+            this.SelectedCell?.Invoke(BeatSaberUtility.GetLocalPlaylist().ToArray()[cellindex]);
             this.IsEnableEditButton = true;
         }
         #endregion
@@ -145,8 +139,6 @@ namespace SongPlayListEditer.UI.Views
         private CustomListTableData _playlists;
 
         private static SemaphoreSlim _createlistSemaphore = new SemaphoreSlim(1, 1);
-
-        private static SynchronizationContext _context;
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // 構築・破棄

@@ -10,10 +10,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Zenject;
 
 namespace SongPlayListEditer.UI
 {
-    public class MainFlowCoordinator : FlowCoordinator
+    public class PlaylistEditorFlowCoordinator : FlowCoordinator
     {
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プロパティ
@@ -29,9 +30,9 @@ namespace SongPlayListEditer.UI
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // オーバーライドメソッド
-        protected override void DidActivate(bool firstActivation, ActivationType activationType)
+        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
-            this.showBackButton = true;
+            this.SetTitle("PLAYLIST EDITOR");
             this.ProvideInitialViewControllers(this._playListMenuView);
         }
 
@@ -46,13 +47,14 @@ namespace SongPlayListEditer.UI
         public void ShowPlaylist()
         {
             Logger.Info("ShowPlaylistView");
-            this.ReplaceTopViewController(_playListMenuView, null, false, ViewController.SlideAnimationDirection.Left);
+            this.ReplaceTopViewController(_playListMenuView, null, ViewController.AnimationType.In, ViewController.AnimationDirection.Vertical);
         }
 
         public void ShowEdit()
         {
             Logger.Info("ShowEditView");
-            this.ReplaceTopViewController(_editView, null, false, ViewController.SlideAnimationDirection.Right);
+            this._editView.CurrentPlaylist = this.CurrentPlaylist;
+            this.ReplaceTopViewController(_editView, null, ViewController.AnimationType.Out, ViewController.AnimationDirection.Vertical);
         }
 
         public void ShowAdd()
@@ -80,20 +82,33 @@ namespace SongPlayListEditer.UI
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プライベートメソッド
-        private void Awake()
+        [Inject]
+        private void Constractor(PlayListMenuView playListMenuView, EditView editView)
         {
             try {
+                this.showBackButton = true;
                 Logger.Info($"AwakeStart");
-                this._playListMenuView = BeatSaberUI.CreateViewController<PlayListMenuView>();
-                this._editView = BeatSaberUI.CreateViewController<EditView>();
+                this._playListMenuView = playListMenuView;
+                this._editView = editView;
                 Logger.Info($"Is playlist null? {this._playListMenuView == null}");
                 Logger.Info($"Is edit null? {this._editView == null}");
-                this._playListMenuView.Coordinater = this;
-                this._editView.Coordinator = this;
+                this._playListMenuView.ShowAddEvent += this.ShowAdd;
+                this._playListMenuView.ShowEditEvent += this.ShowEdit;
+                this._playListMenuView.SelectedCell += this.SetCurrentPlaylist;
+                this._editView.SaveEvent += this.Save;
+                this._editView.ExitEvent += this.ShowPlaylist;
             }
             catch (Exception e) {
                 Logger.Error(e);
             }
+        }
+
+        private void Save(BeatSaberPlaylistsLib.Types.IPlaylist playlists)
+        {
+            if (playlists == null) {
+                return;
+            }
+            PlaylistManager.DefaultManager.StorePlaylist(playlists);
         }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
@@ -103,7 +118,7 @@ namespace SongPlayListEditer.UI
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // 構築・破棄
-        public MainFlowCoordinator()
+        public PlaylistEditorFlowCoordinator()
         {
 
         }

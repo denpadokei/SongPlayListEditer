@@ -1,4 +1,5 @@
 ﻿using BeatSaberMarkupLanguage;
+using BeatSaberMarkupLanguage.Components;
 using BS_Utils.Utilities;
 using HMUI;
 using System;
@@ -42,12 +43,29 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// <param name="buttonTemplate"></param>
         /// <param name="buttonInstance"></param>
         /// <returns></returns>
-        static public Button CreateUIButton(RectTransform parent, Button buttonTemplate)
+        static public Button CreateUIButton(RectTransform parent, Button buttonTemplate, string name = "")
         {
-            Button btn = UnityEngine.Object.Instantiate(buttonTemplate, parent, false);
+            Button btn = UnityEngine.Object.Instantiate(buttonTemplate, parent);
             UnityEngine.Object.DestroyImmediate(btn.GetComponent<SignalOnUIButtonClick>());
             btn.onClick = new Button.ButtonClickedEvent();
-            btn.name = "CustomUIButton";
+            btn.name = string.IsNullOrEmpty(name) ? "CustomUIButton" : name;
+            btn.interactable = true;
+            Polyglot.LocalizedTextMeshProUGUI localizer = btn.GetComponentInChildren<Polyglot.LocalizedTextMeshProUGUI>();
+            if (localizer != null)
+                GameObject.Destroy(localizer);
+            //CurvedTextMeshPro textMeshPro = btn.GetComponentInChildren<CurvedTextMeshPro>();
+            //if (textMeshPro != null)
+            //    GameObject.Destroy(textMeshPro);
+            ExternalComponents externalComponents = btn.gameObject.AddComponent<ExternalComponents>();
+            TextMeshProUGUI textMesh = btn.GetComponentInChildren<TextMeshProUGUI>();
+            textMesh.richText = true;
+            if (!string.IsNullOrEmpty(name)) {
+                textMesh.text = name;
+            }
+            externalComponents.components.Add(textMesh);
+            StackLayoutGroup stackLayoutGroup = btn.GetComponentInChildren<StackLayoutGroup>();
+            if (stackLayoutGroup != null)
+                externalComponents.components.Add(stackLayoutGroup);
 
             return btn;
         }
@@ -59,21 +77,21 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// <param name="buttonTemplate"></param>
         /// <param name="iconSprite"></param>
         /// <returns></returns>
-        public static Button CreateIconButton(RectTransform parent, Button buttonTemplate, Sprite iconSprite)
-        {
-            Button newButton = BeatSaberUI.CreateUIButton(parent, buttonTemplate);
-            newButton.interactable = true;
+        //public static Button CreateIconButton(RectTransform parent, Button buttonTemplate, Sprite iconSprite)
+        //{
+        //    Button newButton = BeatSaberUI.CreateUIButton(parent, buttonTemplate);
+        //    newButton.interactable = true;
 
-            RectTransform textRect = newButton.GetComponentsInChildren<RectTransform>(true).FirstOrDefault(c => c.name == "Text");
-            if (textRect != null) {
-                UnityEngine.Object.Destroy(textRect.gameObject);
-            }
+        //    RectTransform textRect = newButton.GetComponentsInChildren<RectTransform>(true).FirstOrDefault(c => c.name == "Text");
+        //    if (textRect != null) {
+        //        UnityEngine.Object.Destroy(textRect.gameObject);
+        //    }
 
-            newButton.SetButtonIcon(iconSprite);
-            newButton.onClick.RemoveAllListeners();
+        //    newButton.SetButtonIcon(iconSprite);
+        //    newButton.onClick.RemoveAllListeners();
 
-            return newButton;
-        }
+        //    return newButton;
+        //}
 
         /// <summary>
         /// Creates a copy of a template button and returns it.
@@ -152,6 +170,13 @@ namespace SongPlayListEditer.BeatSaberCommon
             if (onClick != null)
                 btn.onClick.AddListener(onClick);
             btn.name = "CustomUIButton";
+            Polyglot.LocalizedTextMeshProUGUI localizer = btn.GetComponentInChildren<Polyglot.LocalizedTextMeshProUGUI>();
+            if (localizer != null)
+                GameObject.Destroy(localizer);
+            ExternalComponents externalComponents = btn.gameObject.AddComponent<ExternalComponents>();
+            TextMeshProUGUI textMesh = btn.GetComponentInChildren<TextMeshProUGUI>();
+            textMesh.richText = true;
+            externalComponents.components.Add(textMesh);
 
             (btn.transform as RectTransform).anchorMin = new Vector2(0.5f, 0.5f);
             (btn.transform as RectTransform).anchorMax = new Vector2(0.5f, 0.5f);

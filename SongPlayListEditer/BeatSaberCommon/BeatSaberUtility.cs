@@ -13,151 +13,39 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Zenject;
 
 namespace SongPlayListEditer.BeatSaberCommon
 {
-    public static class BeatSaberUtility
+    public class BeatSaberUtility : MonoBehaviour
     {
-        public static LevelSelectionNavigationController LevelSelectionNavigationController { get; set; }
+        [Inject]
+        private LevelSelectionNavigationController _levelSelectionNavigationController;
+        [Inject]
+        private AnnotatedBeatmapLevelCollectionsViewController _annotatedBeatmapLevelCollectionsViewController;
+        [Inject]
+        private LevelCollectionViewController _levelCollectionViewController;
 
-        public static LevelCollectionTableView LevelCollectionTableView { get; set; }
+        public BeatSaberUtility()
+        {
+        }
 
-        public static FlowCoordinator LevelSelectionFlowCoordinator { get; set; }
-        public static LevelFilteringNavigationController LevelFilteringNavigationController { get; set; }
 
-        public static LevelCollectionViewController LevelCollectionViewController { get; set; }
-        public static StandardLevelDetailViewController LevelDetailViewController{ get; set; }
-        public static StandardLevelDetailView StandardLevelDetailView{ get; set; }
+        [Inject]
+        public void Constractor()
+        {
+            this._levelCollectionViewController.didSelectLevelEvent += this.SelectLevelHandle;
+        }
 
-        public static BeatmapDifficultySegmentedControlController LevelDifficultyViewController{ get; set; }
-        public static BeatmapCharacteristicSegmentedControlController BeatmapCharacteristicSelectionViewController{ get; set; }
-
-        public static AnnotatedBeatmapLevelCollectionsViewController AnnotatedBeatmapLevelCollectionsViewController{ get; set; }
-
-        public static RectTransform LevelCollectionTableViewTransform{ get; set; }
-
-        public static Button TableViewPageUpButton{ get; set; }
-        public static Button TableViewPageDownButton{ get; set; }
-
-        public static RectTransform PlayContainer{ get; set; }
-        public static RectTransform PlayButtons{ get; set; }
-
-        public static Button PlayButton{ get; set; }
-
-        public static Button FavoriteButton { get; set; }
-
-        public static Button PracticeButton{ get; set; }
-
-        public static SimpleDialogPromptViewController SimpleDialogPromptViewControllerPrefab{ get; set; }
-
-        public static PlatformLeaderboardViewController PlatformLeaderboardViewController { get; set; }
-
-        public static IDifficultyBeatmap CurrentBeatmap => LevelSelectionNavigationController.selectedDifficultyBeatmap;
-
-        public static IBeatmapLevelPack CurrentPack { get; private set; }
-
-        public static IPreviewBeatmapLevel CurrentPreviewBeatmapLevel { get; private set; }
+        public IPreviewBeatmapLevel CurrentPreviewBeatmapLevel { get; private set; }
 
         /// <summary>
         /// Internal BeatSaber song model
         /// </summary>
         public static BeatmapLevelsModel BeatmapLevelsModel { get; set; }
+        public IBeatmapLevelPack CurrentPack { get; private set; }
 
-        public static void Initialize()
-        {
-            try {
-                //Logger.Debug("CreateUI()");
-
-                //// Determine the flow controller to use
-                //FlowCoordinator flowCoordinator = null;
-                //if (mode == MainMenuViewController.MenuButton.SoloFreePlay) {
-                //    Logger.Debug("Entering SOLO mode...");
-                //    flowCoordinator = Resources.FindObjectsOfTypeAll<SoloFreePlayFlowCoordinator>().First();
-                //}
-                //else if (mode == MainMenuViewController.MenuButton.Party) {
-                //    Logger.Debug("Entering PARTY mode...");
-                //    flowCoordinator = Resources.FindObjectsOfTypeAll<PartyFreePlayFlowCoordinator>().First();
-                //}
-                //else {
-                //    Logger.Debug("Entering SOLO CAMPAIGN mode...");
-                //    flowCoordinator = Resources.FindObjectsOfTypeAll<CampaignFlowCoordinator>().First();
-                //    return;
-                //}
-
-                Logger.Debug("Entering SOLO mode...");
-                var flowCoordinator = Resources.FindObjectsOfTypeAll<SoloFreePlayFlowCoordinator>().First();
-
-                Logger.Debug($"{flowCoordinator.GetType().Namespace}");
-
-                Logger.Debug("Done fetching Flow Coordinator for the appropriate mode...");
-
-                Logger.Debug("Collecting all BeatSaberUI Elements...");
-
-                LevelSelectionFlowCoordinator = flowCoordinator;
-
-
-
-                // gather flow coordinator elements
-                LevelSelectionNavigationController = LevelSelectionFlowCoordinator.GetPrivateField<LevelSelectionNavigationController>("_levelSelectionNavigationController");
-                Logger.Debug($"Acquired LevelSelectionNavigationController [{LevelSelectionNavigationController.GetInstanceID()}]");
-
-                LevelSelectionNavigationController.didSelectLevelPackEvent -= DidSelectLevelPack;
-                LevelSelectionNavigationController.didSelectLevelPackEvent += DidSelectLevelPack;
-
-                PlatformLeaderboardViewController = LevelSelectionFlowCoordinator.GetPrivateField<PlatformLeaderboardViewController>("_platformLeaderboardViewController");
-                Logger.Debug($"Acquired PlatformLeaderboardViewController [{PlatformLeaderboardViewController.GetInstanceID()}]");
-
-                LevelFilteringNavigationController = Resources.FindObjectsOfTypeAll<LevelFilteringNavigationController>().First();
-                Logger.Debug($"Acquired LevelFilteringNavigationController [{LevelFilteringNavigationController.GetInstanceID()}]");
-
-                LevelCollectionViewController = LevelSelectionNavigationController.GetPrivateField<LevelCollectionViewController>("_levelCollectionViewController");
-                Logger.Debug($"Acquired LevelPackLevelsViewController [{LevelCollectionViewController.GetInstanceID()}]");
-                LevelCollectionViewController.didSelectLevelEvent -= SelectLevelHandle;
-                LevelCollectionViewController.didSelectLevelEvent += SelectLevelHandle;
-
-
-                LevelDetailViewController = LevelSelectionNavigationController.GetPrivateField<StandardLevelDetailViewController>("_levelDetailViewController");
-                Logger.Debug($"Acquired StandardLevelDetailViewController [{LevelDetailViewController.GetInstanceID()}]");
-
-                LevelCollectionTableView = LevelCollectionViewController.GetPrivateField<LevelCollectionTableView>("_levelCollectionTableView");
-                Logger.Debug($"Acquired LevelPackLevelsTableView [{LevelCollectionTableView.GetInstanceID()}]");
-
-                StandardLevelDetailView = LevelDetailViewController.GetPrivateField<StandardLevelDetailView>("_standardLevelDetailView");
-                Logger.Debug($"Acquired StandardLevelDetailView [{StandardLevelDetailView.GetInstanceID()}]");
-
-                BeatmapCharacteristicSelectionViewController = Resources.FindObjectsOfTypeAll<BeatmapCharacteristicSegmentedControlController>().First();
-                Logger.Debug($"Acquired BeatmapCharacteristicSegmentedControlController [{BeatmapCharacteristicSelectionViewController.GetInstanceID()}]");
-
-                LevelDifficultyViewController = StandardLevelDetailView.GetPrivateField<BeatmapDifficultySegmentedControlController>("_beatmapDifficultySegmentedControlController");
-                Logger.Debug($"Acquired BeatmapDifficultySegmentedControlController [{LevelDifficultyViewController.GetInstanceID()}]");
-
-                LevelCollectionTableViewTransform = LevelCollectionTableView.transform as RectTransform;
-                Logger.Debug($"Acquired TableViewRectTransform from LevelPackLevelsTableView [{LevelCollectionTableViewTransform.GetInstanceID()}]");
-
-                AnnotatedBeatmapLevelCollectionsViewController = LevelFilteringNavigationController.GetPrivateField<AnnotatedBeatmapLevelCollectionsViewController>("_annotatedBeatmapLevelCollectionsViewController");
-
-                TableView tableView = LevelCollectionTableView.GetPrivateField<TableView>("_tableView");
-                TableViewPageUpButton = tableView.GetPrivateField<Button>("_pageUpButton");
-                TableViewPageDownButton = tableView.GetPrivateField<Button>("_pageDownButton");
-                Logger.Debug("Acquired Page Up and Down buttons...");
-
-                PlayContainer = StandardLevelDetailView.GetComponentsInChildren<RectTransform>().First(x => x.name == "PlayContainer");
-                PlayButtons = PlayContainer.GetComponentsInChildren<RectTransform>().First(x => x.name == "PlayButtons");
-
-                PlayButton = Resources.FindObjectsOfTypeAll<Button>().First(x => x.name == "PlayButton");
-
-                PracticeButton = PlayButtons.GetComponentsInChildren<Button>().First(x => x.name == "PracticeButton");
-
-                SimpleDialogPromptViewControllerPrefab = Resources.FindObjectsOfTypeAll<SimpleDialogPromptViewController>().First();
-
-                BeatmapLevelsModel = Resources.FindObjectsOfTypeAll<BeatmapLevelsModel>().First();
-            }
-            catch (Exception e) {
-                Logger.Error(e);
-            }
-        }
-
-        private static void SelectLevelHandle(LevelCollectionViewController arg1, IPreviewBeatmapLevel arg2)
+        private void SelectLevelHandle(LevelCollectionViewController arg1, IPreviewBeatmapLevel arg2)
         {
             Logger.Info($"Selected Song : {arg2.songName}");
             CurrentPreviewBeatmapLevel = arg2;
@@ -167,13 +55,13 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// Get the currently selected level pack within the LevelPackLevelViewController hierarchy.
         /// </summary>
         /// <returns></returns>
-        public static IBeatmapLevelPack GetCurrentSelectedLevelPack()
+        public IBeatmapLevelPack GetCurrentSelectedLevelPack()
         {
-            if (LevelSelectionNavigationController == null) {
+            if (_levelSelectionNavigationController == null) {
                 return null;
             }
 
-            var pack = LevelSelectionNavigationController.GetPrivateField<IBeatmapLevelPack>("_levelPack");
+            var pack = _levelSelectionNavigationController.GetPrivateField<IBeatmapLevelPack>("_levelPack");
             return pack;
         }
 
@@ -248,13 +136,13 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// Get the currently selected level collection from playlists.
         /// </summary>
         /// <returns></returns>
-        private static IPlaylist GetCurrentSelectedPlaylist()
+        private IPlaylist GetCurrentSelectedPlaylist()
         {
-            if (AnnotatedBeatmapLevelCollectionsViewController == null) {
+            if (_annotatedBeatmapLevelCollectionsViewController == null) {
                 return null;
             }
 
-            IPlaylist playlist = AnnotatedBeatmapLevelCollectionsViewController.selectedAnnotatedBeatmapLevelCollection as IPlaylist;
+            IPlaylist playlist = _annotatedBeatmapLevelCollectionsViewController.selectedAnnotatedBeatmapLevelCollection as IPlaylist;
             return playlist;
         }
 
@@ -262,7 +150,7 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// Helper to get either or playlist or 
         /// </summary>
         /// <returns></returns>
-        public static IAnnotatedBeatmapLevelCollection GetCurrentSelectedAnnotatedBeatmapLevelCollection()
+        public IAnnotatedBeatmapLevelCollection GetCurrentSelectedAnnotatedBeatmapLevelCollection()
         {
             IAnnotatedBeatmapLevelCollection collection = GetCurrentSelectedLevelPack();
             if (collection == null) {
@@ -276,7 +164,7 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// Get Current levels from current level collection.
         /// </summary>
         /// <returns></returns>
-        public static IPreviewBeatmapLevel[] GetCurrentLevelCollectionLevels()
+        public IPreviewBeatmapLevel[] GetCurrentLevelCollectionLevels()
         {
             var levelCollection = GetCurrentSelectedAnnotatedBeatmapLevelCollection();
             if (levelCollection == null) {
@@ -287,7 +175,7 @@ namespace SongPlayListEditer.BeatSaberCommon
             return levelCollection.beatmapLevelCollection.beatmapLevels;
         }
 
-        private static void DidSelectLevelPack(LevelSelectionNavigationController controller, IBeatmapLevelPack beatmap)
+        private void DidSelectLevelPack(LevelSelectionNavigationController controller, IBeatmapLevelPack beatmap)
         {
             Logger.Debug($"Pack name : {beatmap.packName}, Pack ID : {beatmap.packID}, Pack short name : {beatmap.shortPackName}");
             CurrentPack = beatmap;

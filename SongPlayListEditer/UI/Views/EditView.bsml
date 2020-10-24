@@ -5,17 +5,17 @@
       <button text='SELECT COVER' on-click='select-cover' click-event='open-modal'></button>
       <modal show-event='open-modal' hide-event='close-modal' size-delta-x='115' size-delta-y='83'>
         <vertical pad-bottom='23' pad-top='2' spacing='1'>
-          <page-button event-click='covers#PageUp' direction='Up' />
+          <page-button event-click='covers#PageUp' direction='Up' interactable='true'/>
           <list id='covers' select-cell='select-cover-cell'></list>
-          <page-button event-click='covers#PageDown' direction='Down' />
+          <page-button event-click='covers#PageDown' direction='Down' interactable='true'/>
         </vertical>
         <button text='CLOSE' click-event='close-modal'></button>
         <button text='OPEN FOLDER' on-click='open-folder' anchor-pos-x='37'></button>
       </modal>
     </horizontal>
-    <string-setting text='Title' value='title' get-event='change-title' apply-on-change='true'></string-setting>
-    <string-setting text='Author' value='author' get-event='change-author' apply-on-change='true'></string-setting>
-    <string-setting text='Description' value='description' get-event='change-description' apply-on-change='true'></string-setting>
+    <string-setting text='Title' value='title' bind-value='true'></string-setting>
+    <string-setting text='Author' value='author' bind-value='true'></string-setting>
+    <string-setting text='Description' value='description' bind-value='true'></string-setting>
     
     <horizontal>
       <button text='SAVE' on-click='save' interactable='~save-button-interactive'></button>
