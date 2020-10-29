@@ -10,11 +10,13 @@ using HMUI;
 using SongPlayListEditer.Bases;
 using SongPlayListEditer.BeatSaberCommon;
 using SongPlayListEditer.Models;
+using UnityEngine;
 using static BeatSaberMarkupLanguage.Components.CustomListTableData;
 
 namespace SongPlayListEditer.UI.Views
 {
-    internal class PlayListMenuView : ViewContlollerBindableBase
+    [HotReload]
+    public class PlayListMenuView : ViewContlollerBindableBase
     {
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プロパティ
@@ -94,24 +96,32 @@ namespace SongPlayListEditer.UI.Views
             start.Start();
             try {
                 Logger.Info("Create List");
-                this._playlists.tableView.SelectCellWithIdx(-1);
-                this._playlists.data.Clear();
+                this._playlists?.tableView?.SelectCellWithIdx(-1);
+                this._playlists?.data?.Clear();
 
-                await Task.Run(() =>
-                {
-                    foreach (var playlist in BeatSaberUtility.GetLocalPlaylist()) {
-                        var coverstream = playlist.GetCoverStream();
+                foreach (var playlist in BeatSaberUtility.GetLocalPlaylist()) {
+                    if (Base64Sprites.CashedTextuer.TryGetValue(playlist.Filename, out var tex)) {
+                        
                         HMMainThreadDispatcher.instance?.Enqueue(() =>
                         {
-                            this._playlists.data.Add(new CustomCellInfo(playlist.Title, $"Song count-{playlist.Count}", Base64Sprites.StreamToSprite(coverstream)));
+                            this._playlists?.data.Add(new CustomCellInfo(playlist.Title, $"Song count-{playlist.Count}", Sprite.Create(tex, new Rect(Vector2.zero, new Vector2(tex.width, tex.height)), new Vector2(0.5f, 0.5f))));
                         });
                     }
-                });
-
+                    else {
+                        var coverstream = playlist.GetCoverStream();
+                        tex = Base64Sprites.StreamToTextuer2D(coverstream);
+                        Base64Sprites.CashedTextuer.AddOrUpdate(playlist.Filename, tex, (s, t) => tex);
+                        var sprite = Sprite.Create(tex, new Rect(Vector2.zero, new Vector2(tex.width, tex.height)), new Vector2(0.5f, 0.5f));
+                        HMMainThreadDispatcher.instance?.Enqueue(() =>
+                        {
+                            this._playlists?.data.Add(new CustomCellInfo(playlist.Title, $"Song count-{playlist.Count}", sprite));
+                        });
+                    }
+                }
                 Logger.Info($"Playlists count : {this._playlists.data.Count}");
                 HMMainThreadDispatcher.instance?.Enqueue(() =>
                 {
-                    this._playlists.tableView.ReloadData();
+                    this._playlists?.tableView?.ReloadData();
                 });
                 Logger.Info("Created List");
             }

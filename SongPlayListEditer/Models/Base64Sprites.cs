@@ -1,5 +1,6 @@
 ﻿using SongPlayListEditer.Statics;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace SongPlayListEditer.Models
         public static Sprite XIcon;
         public static Sprite RandomIcon;
         public static Sprite DoubleArrow;
-
+        public static ConcurrentDictionary<string, Texture2D> CashedTextuer { get; } = new ConcurrentDictionary<string, Texture2D>();
         private static string Base64StringHeader => "data:image/%extention%;base64";
 
         public static Stream Base64ToStream(string base64)

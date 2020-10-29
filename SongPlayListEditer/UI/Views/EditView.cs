@@ -26,6 +26,7 @@ using static BeatSaberMarkupLanguage.Components.CustomListTableData;
 
 namespace SongPlayListEditer.UI.Views
 {
+    [HotReload]
     public class EditView : ViewContlollerBindableBase
     {
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
@@ -155,11 +156,17 @@ namespace SongPlayListEditer.UI.Views
             Logger.Info($"Has Cover? : {this.CurrentPlaylist.HasCover}");
             if (!string.IsNullOrEmpty(this.CoverPath)) {
                 using (var stream = new FileStream(this.CoverPath, FileMode.Open, FileAccess.Read)) {
+                    var tex = Base64Sprites.StreamToTextuer2D(stream);
+                    Base64Sprites.CashedTextuer.AddOrUpdate(this.CurrentPlaylist.Filename, tex, (s, t) => tex);
+                    stream.Position = 0;
                     this.CurrentPlaylist.SetCover(stream);
                 }
             }
             else if(!this.CurrentPlaylist.HasCover) {
                 using (var stream = Base64Sprites.Base64ToStream(DefaultImage.DEFAULT_IMAGE)) {
+                    var tex = Base64Sprites.StreamToTextuer2D(stream);
+                    Base64Sprites.CashedTextuer.AddOrUpdate(this.CurrentPlaylist.Filename, tex, (s, t) => tex);
+                    stream.Position = 0;
                     this.CurrentPlaylist.SetCover(stream);
                 }
             }
@@ -171,7 +178,9 @@ namespace SongPlayListEditer.UI.Views
             this.CurrentPlaylist.Author = this.Author;
             this.CurrentPlaylist.Description = this.Description;
             this.SaveEvent?.Invoke(this.CurrentPlaylist);
-            PlaylistCollectionOverride.RefreshPlaylists();
+            if (PluginConfig.Instance.AutoRefresh) {
+                PlaylistCollectionOverride.RefreshPlaylists();
+            }
         }
 
         [UIAction("back")]

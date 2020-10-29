@@ -8,7 +8,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using BeatSaberUI = SongPlayListEditer.BeatSaberCommon.BeatSaberUI;
+using PlaylistUI = SongPlayListEditer.BeatSaberCommon.PlaylistUI;
 
 namespace SongPlayListEditer.Extentions
 {
@@ -56,31 +56,25 @@ namespace SongPlayListEditer.Extentions
 
         public static Button CreateUIButton(this HMUI.ViewController parent, string buttonTemplate)
         {
-            Button btn = BeatSaberUI.CreateUIButton(parent.rectTransform, buttonTemplate);
+            Button btn = PlaylistUI.CreateUIButton(parent.rectTransform, buttonTemplate);
             return btn;
         }
 
         public static Button CreateUIButton(this HMUI.ViewController parent, string buttonTemplate, Vector2 anchoredPosition, Vector2 sizeDelta, UnityAction onClick = null, string buttonText = "BUTTON", Sprite icon = null)
         {
-            Button btn = BeatSaberUI.CreateUIButton(parent.rectTransform, buttonTemplate, anchoredPosition, sizeDelta, onClick, buttonText, icon);
+            Button btn = PlaylistUI.CreateUIButton(parent.rectTransform, buttonTemplate, anchoredPosition, sizeDelta, onClick, buttonText, icon);
             return btn;
         }
 
         public static Button CreateUIButton(this HMUI.ViewController parent, string buttonTemplate, Vector2 anchoredPosition, UnityAction onClick = null, string buttonText = "BUTTON", Sprite icon = null)
         {
-            Button btn = BeatSaberUI.CreateUIButton(parent.rectTransform, buttonTemplate, anchoredPosition, onClick, buttonText, icon);
+            Button btn = PlaylistUI.CreateUIButton(parent.rectTransform, buttonTemplate, anchoredPosition, onClick, buttonText, icon);
             return btn;
         }
 
         public static Button CreateUIButton(this HMUI.ViewController parent, string buttonTemplate, UnityAction onClick = null, string buttonText = "BUTTON", Sprite icon = null)
         {
-            Button btn = BeatSaberUI.CreateUIButton(parent.rectTransform, buttonTemplate, onClick, buttonText, icon);
-            return btn;
-        }
-
-        public static Button CreateBackButton(this HMUI.ViewController parent)
-        {
-            Button btn = BeatSaberUI.CreateBackButton(parent.rectTransform);
+            Button btn = PlaylistUI.CreateUIButton(parent.rectTransform, buttonTemplate, onClick, buttonText, icon);
             return btn;
         }
 
@@ -92,13 +86,13 @@ namespace SongPlayListEditer.Extentions
 
         public static TextMeshProUGUI CreateText(this HMUI.ViewController parent, string text, Vector2 anchoredPosition, Vector2 sizeDelta)
         {
-            TextMeshProUGUI textMesh = BeatSaberUI.CreateText(parent.rectTransform, text, anchoredPosition, sizeDelta);
+            TextMeshProUGUI textMesh = PlaylistUI.CreateText(parent.rectTransform, text, anchoredPosition, sizeDelta);
             return textMesh;
         }
 
         public static TextMeshProUGUI CreateText(this HMUI.ViewController parent, string text, Vector2 anchoredPosition)
         {
-            TextMeshProUGUI textMesh = BeatSaberUI.CreateText(parent.rectTransform, text, anchoredPosition);
+            TextMeshProUGUI textMesh = PlaylistUI.CreateText(parent.rectTransform, text, anchoredPosition);
             return textMesh;
         }
 

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using Zenject;
 
 namespace SongPlayListEditer.Installer
@@ -17,13 +18,10 @@ namespace SongPlayListEditer.Installer
     {
         public override void InstallBindings()
         {
-            this.Container.BindFactory<PlaylistCellEntity, PlaylistCellEntity.CellFactory>().AsCached();
+            this.Container.BindFactory<BeatSaberPlaylistsLib.Types.IPlaylist, IPreviewBeatmapLevel, PlaylistCellEntity, PlaylistCellEntity.CellFactory>().AsCached();
             this.Container.BindViewController<SimplePlayListView>();
-            this.Container.BindViewController<EditView>();
-            this.Container.BindViewController<PlayListMenuView>();
-            this.Container.BindFlowCoordinator<PlaylistEditorFlowCoordinator>();
             this.Container.Bind<BeatSaberUtility>().FromNewComponentOnNewGameObject("BSUlility").AsSingle();
-            this.Container.Bind<IInitializable>().To<MenuUI>().FromNewComponentOnNewGameObject("MenuUI").AsSingle().NonLazy();
+            this.Container.BindInterfacesAndSelfTo<MenuUI>().FromNewComponentOnNewGameObject("MenuUI").AsCached().NonLazy();
         }
     }
 }
