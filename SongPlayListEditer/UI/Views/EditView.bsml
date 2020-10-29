@@ -1,23 +1,25 @@
 ﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
-  <vertical pad-bottom='2' pad-top='2'>
-    <horizontal>
+  <vertical pad-bottom='2' pad-top='2' child-align='MiddleCenter' horizontal-fit='MinSize'>
+    <horizontal min-width='65'>
       <image id='cover' preferred-height='12' preferred-width='12' preserve-aspect='true'></image>
       <button text='SELECT COVER' on-click='select-cover' click-event='open-modal'></button>
       <modal show-event='open-modal' hide-event='close-modal' size-delta-x='115' size-delta-y='83'>
-        <vertical pad-bottom='23' pad-top='2' spacing='1'>
+        <vertical pad='2' spacing='1'>
           <page-button event-click='covers#PageUp' direction='Up' interactable='true'/>
           <list id='covers' select-cell='select-cover-cell'></list>
           <page-button event-click='covers#PageDown' direction='Down' interactable='true'/>
+          <horizontal>
+            <button text='CLOSE' click-event='close-modal'></button>
+            <button text='OPEN FOLDER' on-click='open-folder'></button>
+          </horizontal>
         </vertical>
-        <button text='CLOSE' click-event='close-modal'></button>
-        <button text='OPEN FOLDER' on-click='open-folder' anchor-pos-x='37'></button>
       </modal>
     </horizontal>
-    <string-setting text='Title' value='title' bind-value='true'></string-setting>
-    <string-setting text='Author' value='author' bind-value='true'></string-setting>
-    <string-setting text='Description' value='description' bind-value='true'></string-setting>
+    <string-setting min-width='60' text='Title' value='title' bind-value='true'></string-setting>
+    <string-setting min-width='60' text='Author' value='author' bind-value='true'></string-setting>
+    <string-setting min-width='60' text='Description' value='description' bind-value='true'></string-setting>
     
-    <horizontal>
+    <horizontal min-width='55'>
       <button text='SAVE' on-click='save' interactable='~save-button-interactive'></button>
       <button text='BACK' on-click='back'></button>
     </horizontal>

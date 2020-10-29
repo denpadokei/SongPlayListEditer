@@ -91,8 +91,7 @@ namespace SongPlayListEditer.UI
             this._editView = BeatSaberUI.CreateViewController<EditView>();
         }
 
-        [Inject]
-        void Constractor()
+        void Start()
         {
             try {
                 Logger.Info($"AwakeStart");
