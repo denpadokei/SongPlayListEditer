@@ -19,7 +19,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
-using BeatSaberUI = SongPlayListEditer.BeatSaberCommon.BeatSaberUI;
+using PlaylistUI = SongPlayListEditer.BeatSaberCommon.PlaylistUI;
 
 namespace SongPlayListEditer.UI.Views
 {
@@ -121,21 +121,22 @@ namespace SongPlayListEditer.UI.Views
             try {
                 standardLevelDetailViewController = container.Resolve<StandardLevelDetailViewController>();
                 levelCollectionViewController = container.Resolve<LevelCollectionViewController>();
-
                 var standardLevelDetailView = standardLevelDetailViewController.GetPrivateField<StandardLevelDetailView>("_standardLevelDetailView");
                 Logger.Debug($"standardLevelDetailView is null? : {standardLevelDetailView == null}");
                 var playContainer = standardLevelDetailView.GetComponentsInChildren<RectTransform>().First(x => x.name == "BeatmapParamsPanel");
                 _playButtons = standardLevelDetailView.GetComponentsInChildren<RectTransform>().First(x => x.name == "ActionButtons");
-                BSMLParser.instance?.Parse(Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), this.ResourceName), this.gameObject, this);
-                _playlistButton = BeatSaberUI.CreateUIButton(_playButtons as RectTransform, Resources.FindObjectsOfTypeAll<Button>().First(x => x.name == "PracticeButton"), "PLAY LIST");
+                BSMLParser.instance?.Parse(Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), this.ResourceName), this.rectTransform.gameObject, this);
+                var button = Resources.FindObjectsOfTypeAll<Button>().First(x => x.name == "PracticeButton").transform as RectTransform;
+                _playlistButton = PlaylistUI.CreateIconButton("PlaylistButton", _playButtons.transform as RectTransform, Vector2.zero, new Vector2(6f, button.sizeDelta.y), this.ShowModal, Base64Sprites.LoadSpriteFromResources("SongPlayListEditer.Resources.round_playlist_add_white_18dp.png"), "PracticeButton"); //PlaylistUI.CreateUIButton(_playButtons as RectTransform, Resources.FindObjectsOfTypeAll<Button>().First(x => x.name == "PracticeButton"), "PLAY LIST");
+                _playlistButton.GetComponentsInChildren<Image>().First(x => x.name == "Icon").transform.localScale *= 2.1f;
                 Logger.Debug($"Button is null? : {_playlistButton == null}");
                 Logger.Debug($"modal is null? : {_modal == null}");
-
                 this._playlistButton.transform.SetSiblingIndex(PluginConfig.Instance.ButtonIndex);
-                this._playlistButton.onClick.AddListener(this.ShowModal);
                 this._playlistButton.interactable = true;
                 levelCollectionViewController.didSelectLevelEvent -= this.LevelCollectionViewController_didSelectLevelEvent;
                 levelCollectionViewController.didSelectLevelEvent += this.LevelCollectionViewController_didSelectLevelEvent;
+                PlaylistUI.ConvertIconButton(ref this._closeButton, new Vector2(50f, 50f), Base64Sprites.LoadSpriteFromResources("SongPlayListEditer.Resources.baseline_close_white_18dp.png"));
+                _closeButton.GetComponentsInChildren<Image>().First(x => x.name == "Icon").transform.localScale *= 1.2f;
             }
             catch (Exception e) {
                 Logger.Error(e);
@@ -145,7 +146,7 @@ namespace SongPlayListEditer.UI.Views
         private void ShowModal()
         {
             Logger.Info($"modal scale. [x : {this._modal.transform.position.x}, y : {this._modal.transform.position.y}, z : {this._modal.transform.position.z}]");
-            this._modal.transform.SetParent(_playButtons);
+            this._modal.transform.SetParent(this.standardLevelDetailViewController.rectTransform);
             this._modal.transform.position = _defaultLocalScale;
             this.CreateList();
             this._modal.Show(true);
@@ -163,11 +164,14 @@ namespace SongPlayListEditer.UI.Views
         [UIComponent("playlists-list-table")]
         private CustomCellListTableData _playlists;
 
-        //[UIComponent("playlist-button")]
+        
         private Button _playlistButton;
 
         [UIComponent("modal")]
         private ModalView _modal;
+        [UIComponent("close-button")]
+        private Button _closeButton;
+
         private PlaylistCellEntity.CellFactory _factory;
         [Inject]
         private DiContainer container;

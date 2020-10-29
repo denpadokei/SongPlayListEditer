@@ -186,7 +186,7 @@
     <Compile Include="Statics\AddMode.cs" />
     <Compile Include="Statics\SongTypeMode.cs" />
     <Compile Include="Statics\DefaultImage.cs" />
-    <Compile Include="BeatSaberCommon\BeatSaberUI.cs" />
+    <Compile Include="BeatSaberCommon\PlaylistUI.cs" />
     <Compile Include="UI\MenuUI.cs" />
     <Compile Include="UI\PlaylistEditorFlowCoordinater.cs" />
     <Compile Include="UI\Views\PlayListMenuView.cs" />
