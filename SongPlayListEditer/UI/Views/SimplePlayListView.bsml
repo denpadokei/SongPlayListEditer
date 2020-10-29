@@ -1,8 +1,8 @@
 ﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>  
-  <modal id='modal' hide-event='close-modal' click-off-closes='true' anchor-pos-y='31.2' size-delta-x='100' size-delta-y='75' move-to-center='false'>
-    <vertical>
+  <modal id='modal' hide-event='close-modal' click-off-closes='true' anchor-pos-y='20' size-delta-x='100' size-delta-y='120' move-to-center='false'>
+    <vertical pad-bottom='6'>
       <vertical pad-left='3' pad-right='3' spacing='1'>
-        <page-button size-delta-x='3' size-delta-y='3' event-click='playlists-list-table#PageUp' direction='Up'/>
+        <page-button event-click='playlists-list-table#PageUp' direction='Up'/>
         <custom-list id='playlists-list-table' data='playlists' select-cell='current' clickable-cells='false' min-width='90'>
           <horizontal horizontal-fit ='Unconstrained' vertical-fit='Unconstrained'>
             <image min-height='8' min-width='8' pref-height='8' pref-width='8' id='cover'></image>
@@ -13,8 +13,9 @@
             <checkbox id='check-box'></checkbox>
           </horizontal>
         </custom-list>
-        <page-button size-delta-x='3' size-delta-y='3' event-click='playlists-list-table#PageDown' direction='Down'/>
+        <page-button event-click='playlists-list-table#PageDown' direction='Down'/>
       </vertical>
-    </vertical>    
+    </vertical>
+    <button event-click='close-modal' text='CLOSE' font-size='6' align='BottomLeft' pivot-x='0' pivot-y='0' pad='3'></button>
   </modal>
 </bg>

@@ -16,26 +16,6 @@ namespace SongPlayListEditer.BeatSaberCommon
 {
     public static class BeatSaberUI
     {
-        private static Button _backButtonInstance;
-
-        /// <summary>
-        /// Creates a ViewController of type T, and marks it to not be destroyed.
-        /// </summary>
-        /// <typeparam name="T">The variation of ViewController you want to create.</typeparam>
-        /// <returns>The newly created ViewController of type T.</returns>
-        public static T CreateViewController<T>(string name = "CustomViewController") where T : ViewController
-        {
-            T vc = new GameObject(name).AddComponent<T>();
-            UnityEngine.GameObject.DontDestroyOnLoad(vc.gameObject);
-
-            vc.rectTransform.anchorMin = new Vector2(0f, 0f);
-            vc.rectTransform.anchorMax = new Vector2(1f, 1f);
-            vc.rectTransform.sizeDelta = new Vector2(0f, 0f);
-            vc.rectTransform.anchoredPosition = new Vector2(0f, 0f);
-
-            return vc;
-        }
-
         /// <summary>
         /// Clone a Unity Button into a Button we control.
         /// </summary>
@@ -186,31 +166,6 @@ namespace SongPlayListEditer.BeatSaberCommon
             return btn;
         }
 
-        /// <summary>
-        /// Creates a copy of a back button.
-        /// </summary>
-        /// <param name="parent">The transform to parent the new button to.</param>
-        /// <param name="onClick">Callback for when the button is pressed.</param>
-        /// <returns>The newly created back button.</returns>
-        public static Button CreateBackButton(RectTransform parent, UnityAction onClick = null)
-        {
-            if (_backButtonInstance == null) {
-                try {
-                    _backButtonInstance = Resources.FindObjectsOfTypeAll<Button>().First(x => (x.name == "BackArrowButton"));
-                }
-                catch {
-                    return null;
-                }
-            }
-
-            Button btn = UnityEngine.GameObject.Instantiate(_backButtonInstance, parent, false);
-            btn.onClick = new Button.ButtonClickedEvent();
-            if (onClick != null)
-                btn.onClick.AddListener(onClick);
-            btn.name = "CustomUIButton";
-
-            return btn;
-        }
 
         /// <summary>
         /// Creates a TextMeshProUGUI component.
@@ -345,6 +300,56 @@ namespace SongPlayListEditer.BeatSaberCommon
                 img.sprite = icon;
                 img.color = Color.white;
             }
+        }
+
+        /// <summary>
+        /// Create an icon button, simple.
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="buttonTemplate"></param>
+        /// <param name="iconSprite"></param>
+        /// <returns></returns>
+        public static Button CreateIconButton(String name, RectTransform parent, String buttonTemplate, Vector2 anchoredPosition, Vector2 sizeDelta, UnityAction onClick, Sprite icon)
+        {
+            Logger.Debug($"CreateIconButton({name}, {parent}, {buttonTemplate}, {anchoredPosition}, {sizeDelta}");
+            Button btn = UnityEngine.Object.Instantiate(Resources.FindObjectsOfTypeAll<Button>().Last(x => (x.name == buttonTemplate)), parent, false);
+            btn.name = name;
+            btn.interactable = true;
+
+            UnityEngine.Object.Destroy(btn.GetComponent<HoverHint>());
+            GameObject.Destroy(btn.GetComponent<LocalizedHoverHint>());
+            btn.gameObject.AddComponent<BeatSaberMarkupLanguage.Components.ExternalComponents>().components.Add(btn.GetComponentsInChildren<LayoutGroup>().First(x => x.name == "Content"));
+
+            Transform contentTransform = btn.transform.Find("Content");
+            GameObject.Destroy(contentTransform.Find("Text").gameObject);
+            Image iconImage = new GameObject("Icon").AddComponent<ImageView>();
+            iconImage.material = BeatSaberMarkupLanguage.Utilities.ImageResources.NoGlowMat;
+            iconImage.rectTransform.SetParent(contentTransform, false);
+            iconImage.rectTransform.sizeDelta = new Vector2(10f, 10f);
+            iconImage.sprite = icon;
+            iconImage.preserveAspect = true;
+            if (iconImage != null) {
+                BeatSaberMarkupLanguage.Components.ButtonIconImage btnIcon = btn.gameObject.AddComponent<BeatSaberMarkupLanguage.Components.ButtonIconImage>();
+                btnIcon.image = iconImage;
+            }
+
+            GameObject.Destroy(btn.transform.Find("Content").GetComponent<LayoutElement>());
+            btn.GetComponentsInChildren<RectTransform>().First(x => x.name == "Underline").gameObject.SetActive(false);
+
+            ContentSizeFitter buttonSizeFitter = btn.gameObject.AddComponent<ContentSizeFitter>();
+            buttonSizeFitter.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
+            buttonSizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+
+            (btn.transform as RectTransform).anchorMin = new Vector2(0.5f, 0.5f);
+            (btn.transform as RectTransform).anchorMax = new Vector2(0.5f, 0.5f);
+            (btn.transform as RectTransform).anchoredPosition = anchoredPosition;
+            (btn.transform as RectTransform).sizeDelta = sizeDelta;
+
+            btn.onClick.RemoveAllListeners();
+            if (onClick != null)
+                btn.onClick.AddListener(onClick);
+
+            return btn;
         }
     }
 }

@@ -12,6 +12,7 @@ using SongPlayListEditer.Interfaces;
 using SongPlayListEditer.Statics;
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -101,7 +102,7 @@ namespace SongPlayListEditer.Models
         {
             HMMainThreadDispatcher.instance?.Enqueue(() =>
             {
-                                this.Title = this.CurrentPlaylist.Title;
+                this.Title = this.CurrentPlaylist.Title;
                 this.SubInfo = $"Song count - {this.CurrentPlaylist.Count}";
                 this._toggle = (this._checkBox as CurvedTextMeshPro).GetComponentsInParent<ToggleSetting>(true).First();
                 this._toggle.Text = "";
@@ -118,8 +119,124 @@ namespace SongPlayListEditer.Models
             HMMainThreadDispatcher.instance?.Enqueue(this.SetCover());
             
         }
+        #endregion
+        //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
+        #region // プライベートメソッド
 
-        public void SetPlaylistInformation(BeatSaberPlaylistsLib.Types.IPlaylist playlists, IPreviewBeatmapLevel beatmapLevel)
+        private async Task AddSong()
+        {
+            if (this.BeatMap == null || this.CurrentPlaylist == null) {
+                Logger.Debug($"this.BeatMap is null? : {this.BeatMap == null}");
+                Logger.Debug($"this.CurrentPlaylist is null? : {this.CurrentPlaylist == null}");
+                return;
+            }
+
+
+            switch (this.SongType) {
+                case SongTypeMode.Custom:
+                    var addTargetHash = this.BeatMap?.GetBeatmapHash();
+                    if (PluginConfig.Instance.IsSaveWithKey) {
+                        this.CurrentPlaylist.Add(addTargetHash, this.BeatMap.songName, await BeatSarverData.GetBeatMapKey(addTargetHash), this.BeatMap.levelAuthorName);
+                    }
+                    else {
+                        this.CurrentPlaylist.Add(addTargetHash, this.BeatMap.songName, null, this.BeatMap.levelAuthorName);
+                    }
+                    break;
+                case SongTypeMode.Official:
+                    var officalSong = new OfficialSongEntity()
+                    {
+                        LevelId = this.BeatMap.levelID,
+                        Name = this.BeatMap.songName,
+                        Identifiers = BeatSaberPlaylistsLib.Types.Identifier.LevelId,
+                        DateAdded = DateTime.Now
+                    };
+
+                    this.CurrentPlaylist.Add(officalSong);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void RemoveSong()
+        {
+            if (this.BeatMap == null || this.CurrentPlaylist == null) {
+                return;
+            }
+            switch (this.SongType) {
+                case SongTypeMode.Custom:
+                    this.CurrentPlaylist?.TryRemoveByHash(this.BeatMap?.GetBeatmapHash());
+                    break;
+                case SongTypeMode.Official:
+                    var levelID = this.BeatMap.levelID.ToUpper();
+                    this.CurrentPlaylist?.Remove(this.CurrentPlaylist?.FirstOrDefault(x => x.LevelId?.ToUpper() == levelID));
+                    break;
+                default:
+                    break;
+            }
+        }
+        private async void OnChange(bool value)
+        {
+            Logger.Debug($"change check box");
+            Logger.Debug($"value : {value}");
+            if (value) {
+                await this.AddSong();
+            }
+            else {
+                this.RemoveSong();
+
+            }
+            await this.SavePlaylist();
+
+            this.SubInfo = $"Song count - {this.CurrentPlaylist.Count}";
+        }
+
+        private IEnumerator SetCover()
+        {
+            if (Base64Sprites.CashedTextuer.TryGetValue(this.CurrentPlaylist.Filename, out var tex)) {
+                _cover.sprite = Sprite.Create(tex, new Rect(Vector2.zero, new Vector2(tex.width, tex.height)), new Vector2(0.5f, 0.5f));
+            }
+            else {
+                var stream = this.CurrentPlaylist.GetCoverStream();
+                tex = Base64Sprites.StreamToTextuer2D(stream);
+                Base64Sprites.CashedTextuer.TryAdd(this.CurrentPlaylist.Filename, tex);
+                _cover.sprite = Sprite.Create(tex, new Rect(Vector2.zero, new Vector2(tex.width, tex.height)), new Vector2(0.5f, 0.5f));
+            }
+            yield return null;
+        }
+
+        private async Task SavePlaylist()
+        {
+            if (string.IsNullOrEmpty(this.CurrentPlaylist.Filename)) {
+                this.CurrentPlaylist.Filename = $"{this.CurrentPlaylist.Title}_{DateTime.Now:yyyyMMddHHmmss}";
+            }
+            var start = new Stopwatch();
+            start.Start();
+            await Task.Run(() =>
+            {
+                Logger.Info($"Filename : {this.CurrentPlaylist.Filename}");
+                PlaylistManager.DefaultManager.StorePlaylist(this.CurrentPlaylist);
+            });
+            start.Stop();
+            Logger.Info($"Save time : {start.ElapsedMilliseconds}ms");
+        }
+        #endregion
+        //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
+        #region // メンバ変数
+        [UIComponent("cover")]
+        private ImageView _cover;
+        [UIComponent("check-box")]
+        private object _checkBox;
+        private ToggleSetting _toggle;
+
+        
+
+        [Inject]
+        private LevelCollectionViewController _levelCollectionViewController;
+        #endregion
+        //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
+        #region // 構築・破棄
+        public PlaylistCellEntity(BeatSaberPlaylistsLib.Types.IPlaylist playlists, IPreviewBeatmapLevel beatmapLevel)
         {
             this.BeatMap = beatmapLevel;
             this.CurrentPlaylist = playlists;
@@ -136,121 +253,10 @@ namespace SongPlayListEditer.Models
                 this.SongType = SongTypeMode.None;
             }
         }
-
-        #endregion
-        //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
-        #region // プライベートメソッド
-
-        private async Task AddSong(IPreviewBeatmapLevel beatmap, BeatSaberPlaylistsLib.Types.IPlaylist playlist)
-        {
-            if (beatmap == null || playlist == null) {
-                Logger.Debug($"beatmap is null? : {beatmap == null}");
-                Logger.Debug($"playlist is null? : {playlist == null}");
-                return;
-            }
-
-
-            switch (this.SongType) {
-                case SongTypeMode.Custom:
-                    var addTargetHash = this.BeatMap?.GetBeatmapHash();
-                    if (PluginConfig.Instance.IsSaveWithKey) {
-                        playlist.Add(addTargetHash, beatmap.songName, await BeatSarverData.GetBeatMapKey(addTargetHash), beatmap.levelAuthorName);
-                    }
-                    else {
-                        playlist.Add(addTargetHash, beatmap.songName, null, beatmap.levelAuthorName);
-                    }
-                    break;
-                case SongTypeMode.Official:
-                    var officalSong = new OfficialSongEntity()
-                    {
-                        LevelId = beatmap.levelID,
-                        Name = beatmap.songName,
-                        Identifiers = BeatSaberPlaylistsLib.Types.Identifier.LevelId,
-                        DateAdded = DateTime.Now
-                    };
-
-                    playlist.Add(officalSong);
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        private void RemoveSong(IPreviewBeatmapLevel beatmap, BeatSaberPlaylistsLib.Types.IPlaylist playlist)
-        {
-            if (beatmap == null || playlist == null) {
-                return;
-            }
-            switch (this.SongType) {
-                case SongTypeMode.Custom:
-                    playlist?.TryRemoveByHash(beatmap?.GetBeatmapHash());
-                    break;
-                case SongTypeMode.Official:
-                    var levelID = beatmap.levelID.ToUpper();
-                    playlist?.Remove(playlist?.FirstOrDefault(x => x.LevelId?.ToUpper() == levelID));
-                    break;
-                default:
-                    break;
-            }
-        }
-        private async void OnChange(bool value)
-        {
-            Logger.Debug($"change check box");
-            Logger.Debug($"value : {value}");
-            if (value) {
-                await this.AddSong(BeatMap, CurrentPlaylist);
-            }
-            else {
-                this.RemoveSong(BeatMap, CurrentPlaylist);
-
-            }
-            await this.SavePlaylist(CurrentPlaylist);
-
-            this.SubInfo = $"Song count - {this.CurrentPlaylist.Count}";
-        }
-
-        private IEnumerator SetCover()
-        {
-            var stream = this.CurrentPlaylist.GetCoverStream();
-            yield return null;
-            var tex = Base64Sprites.StreamToTextuer2D(stream);
-            yield return null;
-            _cover.sprite = Sprite.Create(tex, new Rect(Vector2.zero, new Vector2(tex.width, tex.height)), new Vector2(0.5f, 0.5f));
-        }
-
-        private async Task SavePlaylist(BeatSaberPlaylistsLib.Types.IPlaylist playlist)
-        {
-            if (string.IsNullOrEmpty(playlist.Filename)) {
-                playlist.Filename = $"{playlist.Title}_{DateTime.Now:yyyyMMddHHmmss}";
-            }
-            var start = new Stopwatch();
-            start.Start();
-            await Task.Run(() =>
-            {
-                Logger.Info($"Filename : {playlist.Filename}");
-                PlaylistManager.DefaultManager.StorePlaylist(playlist);
-            });
-            start.Stop();
-            Logger.Info($"Save time : {start.ElapsedMilliseconds}ms");
-        }
-        #endregion
-        //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
-        #region // メンバ変数
-        [UIComponent("cover")]
-        private ImageView _cover;
-        [UIComponent("check-box")]
-        private object _checkBox;
-        private ToggleSetting _toggle;
-
-        [Inject]
-        private LevelCollectionViewController _levelCollectionViewController;
-        #endregion
-        //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
-        #region // 構築・破棄
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // ファクトリー
-        public class CellFactory : PlaceholderFactory<PlaylistCellEntity>
+        public class CellFactory : PlaceholderFactory<BeatSaberPlaylistsLib.Types.IPlaylist, IPreviewBeatmapLevel, PlaylistCellEntity>
         {
 
         }

@@ -78,12 +78,6 @@ namespace SongPlayListEditer.Extentions
             return btn;
         }
 
-        public static Button CreateBackButton(this HMUI.ViewController parent)
-        {
-            Button btn = BeatSaberUI.CreateBackButton(parent.rectTransform);
-            return btn;
-        }
-
         /*public static GameObject CreateLoadingSpinner(this HMUI.ViewController parent)
         {
             GameObject loadingSpinner = BeatSaberUI.CreateLoadingSpinner(parent.rectTransform);

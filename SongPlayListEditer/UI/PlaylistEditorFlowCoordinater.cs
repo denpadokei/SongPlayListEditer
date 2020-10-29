@@ -32,8 +32,11 @@ namespace SongPlayListEditer.UI
         #region // オーバーライドメソッド
         protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
-            this.SetTitle("PLAYLIST EDITOR");
-            this.ProvideInitialViewControllers(this._playListMenuView);
+            if (firstActivation) {
+                this.SetTitle("PLAYLIST EDITOR");
+                this.showBackButton = true;
+                this.ProvideInitialViewControllers(this._playListMenuView);
+            }
         }
 
         protected override void BackButtonWasPressed(ViewController topViewController)
@@ -82,16 +85,26 @@ namespace SongPlayListEditer.UI
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プライベートメソッド
+        void Awake()
+        {
+            this._playListMenuView = BeatSaberUI.CreateViewController<PlayListMenuView>();
+            this._editView = BeatSaberUI.CreateViewController<EditView>();
+        }
+
         [Inject]
-        private void Constractor(PlayListMenuView playListMenuView, EditView editView)
+        void Constractor()
         {
             try {
-                this.showBackButton = true;
                 Logger.Info($"AwakeStart");
-                this._playListMenuView = playListMenuView;
-                this._editView = editView;
                 Logger.Info($"Is playlist null? {this._playListMenuView == null}");
                 Logger.Info($"Is edit null? {this._editView == null}");
+                this._playListMenuView.ShowAddEvent -= this.ShowAdd;
+                this._playListMenuView.ShowEditEvent -= this.ShowEdit;
+                this._playListMenuView.SelectedCell -= this.SetCurrentPlaylist;
+                this._editView.SaveEvent -= this.Save;
+                this._editView.ExitEvent -= this.ShowPlaylist;
+
+
                 this._playListMenuView.ShowAddEvent += this.ShowAdd;
                 this._playListMenuView.ShowEditEvent += this.ShowEdit;
                 this._playListMenuView.SelectedCell += this.SetCurrentPlaylist;
@@ -101,6 +114,15 @@ namespace SongPlayListEditer.UI
             catch (Exception e) {
                 Logger.Error(e);
             }
+        }
+
+        void OnDestroy()
+        {
+            this._playListMenuView.ShowAddEvent -= this.ShowAdd;
+            this._playListMenuView.ShowEditEvent -= this.ShowEdit;
+            this._playListMenuView.SelectedCell -= this.SetCurrentPlaylist;
+            this._editView.SaveEvent -= this.Save;
+            this._editView.ExitEvent -= this.ShowPlaylist;
         }
 
         private void Save(BeatSaberPlaylistsLib.Types.IPlaylist playlists)
@@ -113,15 +135,13 @@ namespace SongPlayListEditer.UI
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // メンバ変数
+        //[Inject]
         PlayListMenuView _playListMenuView;
+        //[Inject]
         EditView _editView;
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // 構築・破棄
-        public PlaylistEditorFlowCoordinator()
-        {
-
-        }
         #endregion
     }
 }

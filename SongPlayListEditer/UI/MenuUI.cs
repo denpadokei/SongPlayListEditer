@@ -18,6 +18,8 @@ using SongPlayListEditer.UI.Views;
 using BeatSaberMarkupLanguage.Settings;
 using SongPlayListEditer.Models;
 using Zenject;
+using HMUI;
+using UnityEngine.EventSystems;
 
 namespace SongPlayListEditer.UI
 {
@@ -35,21 +37,12 @@ namespace SongPlayListEditer.UI
         /// <summary>
         /// UI全般を作成します。
         /// </summary>
-        [Inject]
-        public void CreateUI(SimplePlayListView simplePlayListView)
-        {
-            Logger.Info("Start Create UI");
-            this._simplePlayListView = simplePlayListView;
-            Logger.Info("Finish Create UI");
-        }
-
-
         public void Initialize()
         {
-            Logger.Debug($"Start Initialize.");
+            Logger.Info("Start Initialize");
+            this._simplePlayListView = diContainer.Resolve<SimplePlayListView>();
             this._simplePlayListView.Initialize();
             this.CreateMenuButton();
-            //this.CreateButton();
             this.CreateSetting();
         }
         #endregion
@@ -63,21 +56,6 @@ namespace SongPlayListEditer.UI
         {
             var button = new MenuButton("SONG PLAYLIST EDITER", "Edit song playlist", this.ShowMainFlowCoodniator, true);
             MenuButtons.instance.RegisterButton(button);
-        }
-
-        /// <summary>
-        /// 曲選択画面内にだすボタンを作成します。
-        /// </summary>
-        private void CreateButton()
-        {
-            try {
-                Logger.Info("Create Playlist Button");
-                //SimplePlayListView.instance.Setup();
-                Logger.Info("Created Playlist button!");
-            }
-            catch (Exception e) {
-                Logger.Error(e);
-            }
         }
 
         /// <summary>
@@ -101,23 +79,23 @@ namespace SongPlayListEditer.UI
         {
             try {
                 Logger.Info("Click Playlist Button");
-                if (this._mainFlowCoordinater == null) {
-                    this._mainFlowCoordinater = BeatSaberUI.CreateFlowCoordinator<PlaylistEditorFlowCoordinator>();
+                if (this._playlistEditorFlowCoordinator == null) {
+                    this._playlistEditorFlowCoordinator = BeatSaberUI.CreateFlowCoordinator<PlaylistEditorFlowCoordinator>();
                 }
-
-                BeatSaberUI.MainFlowCoordinator.PresentFlowCoordinator(this._mainFlowCoordinater);
+                BeatSaberMarkupLanguage.BeatSaberUI.MainFlowCoordinator.PresentFlowCoordinator(_playlistEditorFlowCoordinator);
             }
             catch (Exception e) {
                 Logger.Error(e);
             }
         }
+
+        
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // メンバ変数
         [Inject]
-        DiContainer _container;
-        [Inject]
-        private PlaylistEditorFlowCoordinator _mainFlowCoordinater;
+        private DiContainer diContainer;
+        private PlaylistEditorFlowCoordinator _playlistEditorFlowCoordinator;
         private SimplePlayListView _simplePlayListView;
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*

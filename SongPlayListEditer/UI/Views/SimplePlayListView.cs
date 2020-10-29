@@ -15,6 +15,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -63,9 +64,8 @@ namespace SongPlayListEditer.UI.Views
                 this.Playlists.Clear();
                 this._playlists.tableView.ReloadData();
                 foreach (var playlist in BeatSaberUtility.GetLocalPlaylist()) {
-                    var cell = this._factory.Create();
+                    var cell = this._factory.Create(playlist, this.Beatmap);
                     Logger.Debug($"{cell}");
-                    cell.SetPlaylistInformation(playlist, this.Beatmap);
                     this.Playlists.Add(cell);
                 }
                 Logger.Info($"Playlists count : {this._playlists.data.Count}");
@@ -168,7 +168,6 @@ namespace SongPlayListEditer.UI.Views
 
         [UIComponent("modal")]
         private ModalView _modal;
-
         private PlaylistCellEntity.CellFactory _factory;
         [Inject]
         private DiContainer container;
@@ -178,7 +177,7 @@ namespace SongPlayListEditer.UI.Views
         /// <summary>
         /// ボタンの位置によってモーダルウインドウの位置がずれるので開く前に強制的に座標を上書きさせる。
         /// </summary>
-        private static readonly Vector3 _defaultLocalScale = new Vector3(0.8433125f, 1.64405f, 2.6f);
+        private static readonly Vector3 _defaultLocalScale = new Vector3(0.8433125f, 1.5f, 2.6f);
 
         private const int LEVELID_LENGTH = 32;
         #endregion
