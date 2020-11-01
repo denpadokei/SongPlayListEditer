@@ -141,7 +141,7 @@ namespace SongPlayListEditer.Models
                     }
                     break;
                 case SongTypeMode.Official:
-                    if (this.CurrentPlaylist.Any(x => x.LevelId?.ToUpper() == this.BeatMap.levelID)) {
+                    if (this.CurrentPlaylist.Any(x => x.LevelId?.ToUpper() == this.BeatMap.levelID.ToUpper())) {
                         return;
                     }
                     var officalSong = new OfficialSongEntity()
