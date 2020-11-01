@@ -2,9 +2,7 @@
 using BeatSaberMarkupLanguage.Components.Settings;
 using BeatSaberPlaylistsLib;
 using HMUI;
-using IPA.Utilities;
 using SongPlayListEditer.Bases;
-using SongPlayListEditer.BeatSaberCommon;
 using SongPlayListEditer.Configuration;
 using SongPlayListEditer.DataBases;
 using SongPlayListEditer.Extentions;
@@ -12,18 +10,10 @@ using SongPlayListEditer.Interfaces;
 using SongPlayListEditer.Statics;
 using System;
 using System.Collections;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.UI;
 using Zenject;
 
 namespace SongPlayListEditer.Models
@@ -53,7 +43,7 @@ namespace SongPlayListEditer.Models
             set => this.SetProperty(ref this.title_, value);
         }
 
-        
+
         /// <summary>説明 を取得、設定</summary>
         private string subInfo_;
         /// <summary>説明 を取得、設定</summary>
@@ -108,16 +98,16 @@ namespace SongPlayListEditer.Models
                 this._toggle.Text = "";
                 switch (this.SongType) {
                     case SongTypeMode.Official:
-                        _toggle.toggle.isOn = this.CurrentPlaylist.Any(x => !string.IsNullOrEmpty(x.LevelId) && x.LevelId == this.BeatMap?.levelID);
+                        this._toggle.toggle.isOn = this.CurrentPlaylist.Any(x => !string.IsNullOrEmpty(x.LevelId) && x.LevelId == this.BeatMap?.levelID);
                         break;
                     default:
-                        _toggle.toggle.isOn = this.CurrentPlaylist.Any(x => x.Hash?.ToUpper() == this.BeatMap?.GetBeatmapHash().ToUpper());
+                        this._toggle.toggle.isOn = this.CurrentPlaylist.Any(x => x.Hash?.ToUpper() == this.BeatMap?.GetBeatmapHash().ToUpper());
                         break;
                 }
                 this._toggle.toggle.onValueChanged.AddListener(this.OnToggleChange);
             });
             HMMainThreadDispatcher.instance?.Enqueue(this.SetCover());
-            
+
         }
 
         public void SelectedCell()
@@ -180,18 +170,18 @@ namespace SongPlayListEditer.Models
                     break;
             }
         }
-        
+
 
         private IEnumerator SetCover()
         {
             if (Base64Sprites.CashedTextuer.TryGetValue(this.CurrentPlaylist.Filename, out var tex)) {
-                _cover.sprite = Sprite.Create(tex, new Rect(Vector2.zero, new Vector2(tex.width, tex.height)), new Vector2(0.5f, 0.5f));
+                this._cover.sprite = Sprite.Create(tex, new Rect(Vector2.zero, new Vector2(tex.width, tex.height)), new Vector2(0.5f, 0.5f));
             }
             else {
                 var stream = this.CurrentPlaylist.GetCoverStream();
                 tex = Base64Sprites.StreamToTextuer2D(stream);
                 Base64Sprites.CashedTextuer.TryAdd(this.CurrentPlaylist.Filename, tex);
-                _cover.sprite = Sprite.Create(tex, new Rect(Vector2.zero, new Vector2(tex.width, tex.height)), new Vector2(0.5f, 0.5f));
+                this._cover.sprite = Sprite.Create(tex, new Rect(Vector2.zero, new Vector2(tex.width, tex.height)), new Vector2(0.5f, 0.5f));
             }
             yield return null;
         }
@@ -235,11 +225,6 @@ namespace SongPlayListEditer.Models
         [UIComponent("check-box")]
         private object _checkBox;
         private ToggleSetting _toggle;
-
-        
-
-        [Inject]
-        private LevelCollectionViewController _levelCollectionViewController;
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // 構築・破棄
