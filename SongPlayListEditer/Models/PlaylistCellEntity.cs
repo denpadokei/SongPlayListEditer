@@ -114,10 +114,15 @@ namespace SongPlayListEditer.Models
                         _toggle.toggle.isOn = this.CurrentPlaylist.Any(x => x.Hash?.ToUpper() == this.BeatMap?.GetBeatmapHash().ToUpper());
                         break;
                 }
-                this._toggle.toggle.onValueChanged.AddListener(this.OnChange);
+                this._toggle.toggle.onValueChanged.AddListener(this.OnToggleChange);
             });
             HMMainThreadDispatcher.instance?.Enqueue(this.SetCover());
             
+        }
+
+        public void SelectedCell()
+        {
+            this._toggle.toggle.isOn = !this._toggle.toggle.isOn;
         }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
@@ -175,21 +180,7 @@ namespace SongPlayListEditer.Models
                     break;
             }
         }
-        private async void OnChange(bool value)
-        {
-            Logger.Debug($"change check box");
-            Logger.Debug($"value : {value}");
-            if (value) {
-                await this.AddSong();
-            }
-            else {
-                this.RemoveSong();
-
-            }
-            await this.SavePlaylist();
-
-            this.SubInfo = $"Song count - {this.CurrentPlaylist.Count}";
-        }
+        
 
         private IEnumerator SetCover()
         {
@@ -219,6 +210,22 @@ namespace SongPlayListEditer.Models
             });
             start.Stop();
             Logger.Info($"Save time : {start.ElapsedMilliseconds}ms");
+        }
+
+        private async void OnToggleChange(bool value)
+        {
+            Logger.Debug($"change check box");
+            Logger.Debug($"value : {value}");
+            if (value) {
+                await this.AddSong();
+            }
+            else {
+                this.RemoveSong();
+
+            }
+            await this.SavePlaylist();
+
+            this.SubInfo = $"Song count - {this.CurrentPlaylist.Count}";
         }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*

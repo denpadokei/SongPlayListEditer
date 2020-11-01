@@ -3,7 +3,9 @@
     <vertical pad-bottom='2' child-expand-width='true' vertical-fit='Unconstrained'>
       <vertical pad-left='3' pad-right='3' spacing='1'>
         <page-button event-click='playlists-list-table#PageUp' direction='Up'/>
-        <custom-list id='playlists-list-table' data='playlists' select-cell='current' clickable-cells='false' min-width='90'>
+        <custom-list id='playlists-list-table' data='playlists' select-cell='current' clickable-cells='true' min-width='90'>
+          <background tags='un-selected-un-hovered'></background>
+          <background tags='hovered' background='panel-top'></background>
           <horizontal horizontal-fit ='Unconstrained' vertical-fit='Unconstrained'>
             <image min-height='8' min-width='8' pref-height='8' pref-width='8' id='cover'></image>
             <vertical min-width='60' horizontal-fit='Unconstrained' child-align='MiddleLeft'>

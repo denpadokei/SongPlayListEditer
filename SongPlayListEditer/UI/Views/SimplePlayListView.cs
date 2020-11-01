@@ -7,6 +7,7 @@ using SongPlayListEditer.Bases;
 using SongPlayListEditer.BeatSaberCommon;
 using SongPlayListEditer.Configuration;
 using SongPlayListEditer.Extentions;
+using SongPlayListEditer.Interfaces;
 using SongPlayListEditer.Models;
 using System;
 using System.Collections.Generic;
@@ -82,11 +83,6 @@ namespace SongPlayListEditer.UI.Views
             }
         }
 
-        private void Cell_ReloadRequest()
-        {
-            this._playlists.tableView.ReloadData();
-        }
-
         private void LevelCollectionViewController_didSelectLevelEvent(LevelCollectionViewController arg1, IPreviewBeatmapLevel arg2)
         {
             this.Beatmap = arg2;
@@ -150,6 +146,13 @@ namespace SongPlayListEditer.UI.Views
             this._modal.transform.position = _defaultLocalScale;
             this.CreateList();
             this._modal.Show(true);
+        }
+
+        [UIAction("current")]
+        private void SelectedCell(TableView tableView, IPlaylistCell playlistCell)
+        {
+            playlistCell.SelectedCell();
+            tableView.SelectCellWithIdx(-1);
         }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
