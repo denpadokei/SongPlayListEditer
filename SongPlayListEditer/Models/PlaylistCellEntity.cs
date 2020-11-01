@@ -125,11 +125,14 @@ namespace SongPlayListEditer.Models
                 Logger.Debug($"this.CurrentPlaylist is null? : {this.CurrentPlaylist == null}");
                 return;
             }
-
-
+            this.CurrentPlaylist.AllowDuplicates = true;
             switch (this.SongType) {
                 case SongTypeMode.Custom:
-                    var addTargetHash = this.BeatMap?.GetBeatmapHash();
+                    
+                    var addTargetHash = this.BeatMap?.GetBeatmapHash().ToUpper();
+                    if (this.CurrentPlaylist.Any(x => x.Hash?.ToUpper() == addTargetHash)) {
+                        return;
+                    }
                     if (PluginConfig.Instance.IsSaveWithKey) {
                         this.CurrentPlaylist.Add(addTargetHash, this.BeatMap.songName, await BeatSarverData.GetBeatMapKey(addTargetHash), this.BeatMap.levelAuthorName);
                     }
@@ -138,6 +141,9 @@ namespace SongPlayListEditer.Models
                     }
                     break;
                 case SongTypeMode.Official:
+                    if (this.CurrentPlaylist.Any(x => x.LevelId?.ToUpper() == this.BeatMap.levelID)) {
+                        return;
+                    }
                     var officalSong = new OfficialSongEntity()
                     {
                         LevelId = this.BeatMap.levelID,
