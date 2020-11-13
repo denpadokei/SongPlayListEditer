@@ -175,7 +175,7 @@ namespace SongPlayListEditer.UI.Views
         /// <summary>
         /// ボタンの位置によってモーダルウインドウの位置がずれるので開く前に強制的に座標を上書きさせる。
         /// </summary>
-        private static readonly Vector3 _defaultLocalScale = new Vector3(0.8433125f, 1.5f, 2.6f);
+        private static readonly Vector3 _defaultLocalScale = new Vector3(0.8433125f, 1.41f, 2.6f);
 
         //private const int LEVELID_LENGTH = 32;
         #endregion
