@@ -175,25 +175,24 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// <returns></returns>
         public static Button CreateIconButton(String name, RectTransform parent, Vector2 anchoredPosition, Vector2 sizeDelta, UnityAction onClick, Sprite icon, String buttonTemplate = "PracticeButton")
         {
-            //Logger.Debug("CreateIconButton({0}, {1}, {2}, {3}, {4}", name, parent, buttonTemplate, anchoredPosition, sizeDelta);
             Button btn = UnityEngine.Object.Instantiate(Resources.FindObjectsOfTypeAll<Button>().First(x => (x.name == buttonTemplate)), parent, false);
             btn.name = name;
             btn.interactable = true;
 
             UnityEngine.Object.Destroy(btn.GetComponent<HoverHint>());
             GameObject.Destroy(btn.GetComponent<LocalizedHoverHint>());
-            btn.gameObject.AddComponent<BeatSaberMarkupLanguage.Components.ExternalComponents>().components.Add(btn.GetComponentsInChildren<LayoutGroup>().First(x => x.name == "Content"));
+            btn.gameObject.AddComponent<ExternalComponents>().components.Add(btn.GetComponentsInChildren<LayoutGroup>().First(x => x.name == "Content"));
 
             Transform contentTransform = btn.transform.Find("Content");
             GameObject.Destroy(contentTransform.Find("Text").gameObject);
             Image iconImage = new GameObject("Icon").AddComponent<ImageView>();
-            iconImage.material = BeatSaberMarkupLanguage.Utilities.ImageResources.NoGlowMat;
+            iconImage.material = Utilities.ImageResources.NoGlowMat;
             iconImage.rectTransform.SetParent(contentTransform, false);
             iconImage.rectTransform.sizeDelta = new Vector2(10f, 10f);
             iconImage.sprite = icon;
             iconImage.preserveAspect = true;
             if (iconImage != null) {
-                BeatSaberMarkupLanguage.Components.ButtonIconImage btnIcon = btn.gameObject.AddComponent<BeatSaberMarkupLanguage.Components.ButtonIconImage>();
+                ButtonIconImage btnIcon = btn.gameObject.AddComponent<BeatSaberMarkupLanguage.Components.ButtonIconImage>();
                 btnIcon.image = iconImage;
             }
 

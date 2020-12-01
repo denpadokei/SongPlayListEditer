@@ -10,6 +10,7 @@ using SongPlayListEditer.Extentions;
 using SongPlayListEditer.Interfaces;
 using SongPlayListEditer.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -117,7 +118,7 @@ namespace SongPlayListEditer.UI.Views
                 this._playButtons = standardLevelDetailView.GetComponentsInChildren<RectTransform>().First(x => x.name == "ActionButtons");
                 BSMLParser.instance?.Parse(Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), this.ResourceName), this.rectTransform.gameObject, this);
                 var button = Resources.FindObjectsOfTypeAll<Button>().First(x => x.name == "PracticeButton").transform as RectTransform;
-                this._playlistButton = PlaylistUI.CreateIconButton("PlaylistButton", this._playButtons.transform as RectTransform, Vector2.zero, new Vector2(6f, button.sizeDelta.y), this.ShowModal, Base64Sprites.LoadSpriteFromResources("SongPlayListEditer.Resources.round_playlist_add_white_18dp.png"), "PracticeButton"); //PlaylistUI.CreateUIButton(_playButtons as RectTransform, Resources.FindObjectsOfTypeAll<Button>().First(x => x.name == "PracticeButton"), "PLAY LIST");
+                this._playlistButton = PlaylistUI.CreateIconButton("PlaylistButton", this._playButtons.transform as RectTransform, Vector2.zero, new Vector2(6f, button.sizeDelta.y), this.ShowModal, Base64Sprites.LoadSpriteFromResources("SongPlayListEditer.Resources.round_playlist_add_white_18dp.png"), "PracticeButton");
                 this._playlistButton.GetComponentsInChildren<Image>().First(x => x.name == "Icon").transform.localScale *= 2.1f;
                 Logger.Debug($"Button is null? : {this._playlistButton == null}");
                 Logger.Debug($"modal is null? : {this._modal == null}");
@@ -127,10 +128,24 @@ namespace SongPlayListEditer.UI.Views
                 this.levelCollectionViewController.didSelectLevelEvent += this.LevelCollectionViewController_didSelectLevelEvent;
                 PlaylistUI.ConvertIconButton(ref this._closeButton, new Vector2(50f, 50f), Base64Sprites.LoadSpriteFromResources("SongPlayListEditer.Resources.baseline_close_white_18dp.png"));
                 this._closeButton.GetComponentsInChildren<Image>().First(x => x.name == "Icon").transform.localScale *= 1.2f;
+
+                if (MenuUI.IsInstalledSongBrowser) {
+                    this.StartCoroutine(this.ResizeDeleteButton());
+                }
             }
             catch (Exception e) {
                 Logger.Error(e);
             }
+        }
+
+        IEnumerator ResizeDeleteButton()
+        {
+            Logger.Debug("Start Resize DeleteButton");
+            yield return new WaitWhile(() => this._playButtons.GetComponentsInChildren<Button>(true).FirstOrDefault(x => x.name.Contains("DeleteLevelButton")) == null);
+            var deletebutton = this._playButtons.GetComponentsInChildren<Button>().FirstOrDefault(x => x.name.Contains("DeleteLevelButton"));
+            deletebutton.gameObject.GetComponentsInChildren<LayoutElement>(true).FirstOrDefault().preferredWidth = 12f;
+            (deletebutton.transform as RectTransform).sizeDelta = new Vector2(6f, (deletebutton.transform as RectTransform).sizeDelta.y);
+            Logger.Debug("Finish Resize DeleteButton");
         }
 
         private void ShowModal()
