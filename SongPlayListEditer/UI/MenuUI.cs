@@ -20,6 +20,7 @@ using SongPlayListEditer.Models;
 using Zenject;
 using HMUI;
 using UnityEngine.EventSystems;
+using IPA.Loader;
 
 namespace SongPlayListEditer.UI
 {
@@ -30,7 +31,7 @@ namespace SongPlayListEditer.UI
     {
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プロパティ
-
+        public static bool IsInstalledSongBrowser { get; private set; }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // パブリックメソッド
@@ -40,6 +41,7 @@ namespace SongPlayListEditer.UI
         public void Initialize()
         {
             Logger.Info("Start Initialize");
+            IsInstalledSongBrowser = PluginManager.GetPlugin("Song Browser") != null;
             this._simplePlayListView = diContainer.Resolve<SimplePlayListView>();
             this._simplePlayListView.Initialize();
             this.CreateMenuButton();
