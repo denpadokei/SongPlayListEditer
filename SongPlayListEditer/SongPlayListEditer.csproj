@@ -219,6 +219,7 @@
     <Content Include="dll\BeatSaberPlaylistsLib.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Resources\predator.png" />
     <EmbeddedResource Include="Resources\baseline_close_white_18dp.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
