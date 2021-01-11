@@ -148,10 +148,9 @@ namespace SongPlayListEditer.Models
                     {
                         LevelId = this.BeatMap.levelID,
                         Name = this.BeatMap.songName,
-                        Identifiers = BeatSaberPlaylistsLib.Types.Identifier.LevelId,
                         DateAdded = DateTime.Now
                     };
-
+                    officalSong.AddIdentifierFlag(BeatSaberPlaylistsLib.Types.Identifier.LevelId);
                     this.CurrentPlaylist.Add(officalSong);
                     break;
                 default:

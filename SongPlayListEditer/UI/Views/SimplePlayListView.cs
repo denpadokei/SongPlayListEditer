@@ -166,8 +166,7 @@ namespace SongPlayListEditer.UI.Views
             Logger.Info($"modal scale. [x : {this._modal.transform.position.x}, y : {this._modal.transform.position.y}, z : {this._modal.transform.position.z}]");
             this._modal.transform.SetParent(this.standardLevelDetailViewController.rectTransform);
             this._modal.transform.position = _defaultLocalScale;
-            _ = this.CreateList();
-            this._modal.Show(true);
+            this._modal.Show(true, false, () => { _ = this.CreateList(); });
         }
 
         [UIAction("current")]

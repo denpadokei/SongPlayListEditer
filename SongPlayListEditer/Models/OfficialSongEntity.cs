@@ -3,24 +3,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace SongPlayListEditer.Models
 {
-    class OfficialSongEntity : IPlaylistSong
+    public class OfficialSongEntity : PlaylistSong
     {
-        public string Hash { get; set; }
-        public string LevelId { get; set; }
-        public string Name { get; set; }
-        public string Key { get; set; }
-        public string LevelAuthorName { get; set; }
+        public new void AddIdentifierFlag(Identifier identifier) => base.AddIdentifierFlag(identifier);
 
-        public Identifier Identifiers { get; set; }
-        public DateTime? DateAdded { get; set; }
-
-        public bool Equals(IPlaylistSong other)
+        public override bool Equals(IPlaylistSong other)
         {
-            throw new NotImplementedException();
+            return this.LevelId == other.LevelId;
         }
     }
 }
