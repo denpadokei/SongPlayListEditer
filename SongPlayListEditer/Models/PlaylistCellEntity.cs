@@ -2,6 +2,7 @@
 using BeatSaberMarkupLanguage.Components.Settings;
 using BeatSaberPlaylistsLib;
 using HMUI;
+using Polyglot;
 using SongPlayListEditer.Bases;
 using SongPlayListEditer.Configuration;
 using SongPlayListEditer.DataBases;
@@ -94,17 +95,23 @@ namespace SongPlayListEditer.Models
             {
                 this.Title = this.CurrentPlaylist.Title;
                 this.SubInfo = $"Song count - {this.CurrentPlaylist.Count}";
-                this._toggle = (this._checkBox as CurvedTextMeshPro).GetComponentsInParent<ToggleSetting>(true).First();
-                this._toggle.Text = "";
-                switch (this.SongType) {
-                    case SongTypeMode.Official:
-                        this._toggle.toggle.isOn = this.CurrentPlaylist.Any(x => !string.IsNullOrEmpty(x.LevelId) && x.LevelId == this.BeatMap?.levelID);
-                        break;
-                    default:
-                        this._toggle.toggle.isOn = this.CurrentPlaylist.Any(x => x.Hash?.ToUpper() == this.BeatMap?.GetBeatmapHash().ToUpper());
-                        break;
+                Logger.Debug($"{this._checkBox}");
+                try {
+                    this._toggle = (this._checkBox as LocalizedTextMeshProUGUI).GetComponentsInParent<ToggleSetting>(true).First();
+                    this._toggle.Text = "";
+                    switch (this.SongType) {
+                        case SongTypeMode.Official:
+                            this._toggle.toggle.isOn = this.CurrentPlaylist.Any(x => !string.IsNullOrEmpty(x.LevelId) && x.LevelId == this.BeatMap?.levelID);
+                            break;
+                        default:
+                            this._toggle.toggle.isOn = this.CurrentPlaylist.Any(x => x.Hash?.ToUpper() == this.BeatMap?.GetBeatmapHash().ToUpper());
+                            break;
+                    }
+                    this._toggle.toggle.onValueChanged.AddListener(this.OnToggleChange);
                 }
-                this._toggle.toggle.onValueChanged.AddListener(this.OnToggleChange);
+                catch (Exception e) {
+                    Logger.Error(e);
+                }
             });
             HMMainThreadDispatcher.instance?.Enqueue(this.SetCover());
 

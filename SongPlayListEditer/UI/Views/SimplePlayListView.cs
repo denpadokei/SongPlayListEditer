@@ -164,7 +164,7 @@ namespace SongPlayListEditer.UI.Views
         private void ShowModal()
         {
             Logger.Info($"modal scale. [x : {this._modal.transform.position.x}, y : {this._modal.transform.position.y}, z : {this._modal.transform.position.z}]");
-            this._modal.transform.SetParent(this.standardLevelDetailViewController.rectTransform);
+            this._modal.transform.SetParent(this.standardLevelDetailViewController.rectTransform, false);
             this._modal.transform.position = _defaultLocalScale;
             this._modal.Show(true, false, () => { _ = this.CreateList(); });
         }
@@ -201,8 +201,9 @@ namespace SongPlayListEditer.UI.Views
         private StandardLevelDetailViewController standardLevelDetailViewController;
         /// <summary>
         /// ボタンの位置によってモーダルウインドウの位置がずれるので開く前に強制的に座標を上書きさせる。
+        /// x : 1.221752, y : 1.052058, z : 4.02051
         /// </summary>
-        private static readonly Vector3 _defaultLocalScale = new Vector3(0.8433125f, 1.41f, 2.6f);
+        private static readonly Vector3 _defaultLocalScale = new Vector3(1.221752f, 1.41f, 4.02051f);
 
         //private const int LEVELID_LENGTH = 32;
         #endregion
