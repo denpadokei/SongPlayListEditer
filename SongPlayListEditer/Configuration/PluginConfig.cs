@@ -17,7 +17,7 @@ namespace SongPlayListEditer.Configuration
 
         public virtual bool IsSaveWithKey { get; set; } = false;
 
-        public virtual bool AutoRefresh { get; set; } = false;
+        //public virtual bool AutoRefresh { get; set; } = false;
 
         public virtual bool AutoBackup { get; set; } = true;
 
@@ -49,7 +49,7 @@ namespace SongPlayListEditer.Configuration
             this.CoverDirectoryPath = other.CoverDirectoryPath;
             this.ButtonIndex = other.ButtonIndex;
             this.IsSaveWithKey = other.IsSaveWithKey;
-            this.AutoRefresh = other.AutoRefresh;
+            //this.AutoRefresh = other.AutoRefresh;
             this.AutoBackup = other.AutoBackup;
         }
     }

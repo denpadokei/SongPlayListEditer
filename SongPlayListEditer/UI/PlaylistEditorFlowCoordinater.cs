@@ -5,6 +5,7 @@ using BeatSaberPlaylistsLib.Types;
 using HMUI;
 using SongPlayListEditer.Models;
 using SongPlayListEditer.UI.Views;
+using SongPlayListEditer.Utilites;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,7 +63,7 @@ namespace SongPlayListEditer.UI
 
         public void ShowAdd()
         {
-            this.SetCurrentPlaylist(PlaylistManager.DefaultManager.CreatePlaylist(null, "", "", ""));
+            this.SetCurrentPlaylist(PlaylistLibUtility.CurrentManager.CreatePlaylist(null, "", "", ""));
             this.ShowEdit();
         }
 
@@ -129,7 +130,7 @@ namespace SongPlayListEditer.UI
             if (playlists == null) {
                 return;
             }
-            PlaylistManager.DefaultManager.StorePlaylist(playlists);
+            PlaylistLibUtility.CurrentManager.StorePlaylist(playlists);
         }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*

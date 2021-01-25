@@ -9,6 +9,7 @@ using SongPlayListEditer.DataBases;
 using SongPlayListEditer.Extentions;
 using SongPlayListEditer.Interfaces;
 using SongPlayListEditer.Statics;
+using SongPlayListEditer.Utilites;
 using System;
 using System.Collections;
 using System.Diagnostics;
@@ -93,8 +94,7 @@ namespace SongPlayListEditer.Models
         {
             HMMainThreadDispatcher.instance?.Enqueue(() =>
             {
-                this.Title = this.CurrentPlaylist.Title;
-                this.SubInfo = $"Song count - {this.CurrentPlaylist.Count}";
+                
                 Logger.Debug($"{this._checkBox}");
                 try {
                     this._toggle = (this._checkBox as LocalizedTextMeshProUGUI).GetComponentsInParent<ToggleSetting>(true).First();
@@ -124,7 +124,6 @@ namespace SongPlayListEditer.Models
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プライベートメソッド
-
         private async Task AddSong()
         {
             if (this.BeatMap == null || this.CurrentPlaylist == null) {
@@ -208,8 +207,9 @@ namespace SongPlayListEditer.Models
             await Task.Run(() =>
             {
                 Logger.Info($"Filename : {this.CurrentPlaylist.Filename}");
-                PlaylistManager.DefaultManager.StorePlaylist(this.CurrentPlaylist);
+                PlaylistLibUtility.CurrentManager.StorePlaylist(this.CurrentPlaylist);
             });
+            HMMainThreadDispatcher.instance.Enqueue(PlaylistLibUtility.RefreshPlaylists());
             start.Stop();
             Logger.Info($"Save time : {start.ElapsedMilliseconds}ms");
         }
@@ -244,6 +244,8 @@ namespace SongPlayListEditer.Models
         {
             this.BeatMap = beatmapLevel;
             this.CurrentPlaylist = playlists;
+            this.Title = this.CurrentPlaylist.Title;
+            this.SubInfo = $"Song count - {this.CurrentPlaylist.Count}";
             if (this.BeatMap?.IsCustom() == true) {
                 this.SongType = SongTypeMode.Custom;
             }
