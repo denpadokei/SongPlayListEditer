@@ -14,7 +14,7 @@ namespace SongPlayListEditer.DataBases
 
         static BeatSarverData()
         {
-            var http = new HttpOptions() { ApplicationName = "SongPlayListEditer", Version = Assembly.GetExecutingAssembly().GetName().Version, Timeout = new TimeSpan(0, 0, 30) };
+            var http = new HttpOptions("SongPlayListEditer", Assembly.GetExecutingAssembly().GetName().Version, new TimeSpan(0, 0, 30));
 
             BeatSaver = new BeatSaver(http);
         }
