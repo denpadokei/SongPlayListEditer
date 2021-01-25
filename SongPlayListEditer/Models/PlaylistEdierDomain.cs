@@ -2,6 +2,7 @@
 using IPA.Utilities;
 using SongPlayListEditer.DataBases;
 using SongPlayListEditer.Statics;
+using SongPlayListEditer.Utilites;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,7 +26,7 @@ namespace SongPlayListEditer.Models
             await Task.Run(() =>
             {
                 Logger.Info($"Filename : {playlist.Filename}");
-                PlaylistManager.DefaultManager.StorePlaylist(playlist);
+                PlaylistLibUtility.CurrentManager.StorePlaylist(playlist);
             });
             start.Stop();
             Logger.Info($"Save time : {start.ElapsedMilliseconds}ms");

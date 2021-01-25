@@ -4,6 +4,7 @@ using BS_Utils.Utilities;
 using HMUI;
 using SongPlayListEditer.Models;
 using SongPlayListEditer.Statics;
+using SongPlayListEditer.Utilites;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -127,7 +128,7 @@ namespace SongPlayListEditer.BeatSaberCommon
 
         public static IEnumerable<BeatSaberPlaylistsLib.Types.IPlaylist> GetLocalPlaylist()
         {
-            foreach (var playlist in PlaylistManager.DefaultManager.GetAllPlaylists().OrderBy(x => x.Title)) {
+            foreach (var playlist in PlaylistLibUtility.CurrentManager.GetAllPlaylists().OrderBy(x => x.Title)) {
                 yield return playlist;
             }
         }

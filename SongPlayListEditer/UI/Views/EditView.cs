@@ -19,9 +19,11 @@ using SongPlayListEditer.Bases;
 using SongPlayListEditer.Configuration;
 using SongPlayListEditer.Models;
 using SongPlayListEditer.Statics;
+using SongPlayListEditer.Utilites;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 using static BeatSaberMarkupLanguage.Components.CustomListTableData;
 
 namespace SongPlayListEditer.UI.Views
@@ -184,9 +186,7 @@ namespace SongPlayListEditer.UI.Views
             this.CurrentPlaylist.Author = this.Author;
             this.CurrentPlaylist.Description = this.Description;
             this.SaveEvent?.Invoke(this.CurrentPlaylist);
-            if (PluginConfig.Instance.AutoRefresh) {
-                PlaylistCollectionOverride.RefreshPlaylists();
-            }
+            PlaylistLibUtility.RefreshPlaylists();
         }
 
         [UIAction("back")]

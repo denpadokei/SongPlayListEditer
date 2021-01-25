@@ -63,9 +63,9 @@
       <HintPath>$(BeatSaberDir)\Plugins\BS_Utils.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="PlaylistLoaderLite, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="PlaylistManager, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <Private>False</Private>
-      <HintPath>$(BeatSaberDir)\Plugins\PlaylistLoaderLite.dll</HintPath>
+      <HintPath>$(BeatSaberDir)\Plugins\PlaylistManager.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Polyglot, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -193,6 +193,7 @@
     <Compile Include="UI\Views\SettingView.cs" />
     <Compile Include="UI\Views\SimplePlayListView.cs" />
     <Compile Include="UI\Views\EditView.cs" />
+    <Compile Include="Utilites\PlaylistLibUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="manifest.json" />
@@ -203,8 +204,10 @@
     <EmbeddedResource Include="UI\Views\PlayListMenuView.bsml" />
     <EmbeddedResource Include="UI\Views\EditView.bsml" />
     <EmbeddedResource Include="UI\Views\SimplePlayListView.bsml" />
-    <None Include="dll\BeatSaberPlaylistsLib.manifest" />
     <EmbeddedResource Include="UI\Views\SettingView.bsml" />
+    <None Include="dll\BeatSaberPlaylistsLib.manifest">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\round_playlist_add_white_18dp.png" />
@@ -221,6 +224,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="dll\BeatSaberPlaylistsLib.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="dll\PlaylistManager.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
