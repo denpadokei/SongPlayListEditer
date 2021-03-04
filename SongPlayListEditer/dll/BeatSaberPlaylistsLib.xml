@@ -22,32 +22,32 @@
             <param name="title"></param>
             <param name="author"></param>
         </member>
+        <member name="P:BeatSaberPlaylistsLib.Blist.BlistPlaylist.Title">
+            <summary>
+            The playlist title
+            </summary>
+        </member>
         <member name="P:BeatSaberPlaylistsLib.Blist.BlistPlaylist.Author">
             <summary>
             The playlist author
             </summary>
-        </member>
-        <member name="P:BeatSaberPlaylistsLib.Blist.BlistPlaylist.Cover">
-            <summary>
-            The filename of the optional playlist cover image
-            </summary>
-        </member>
-        <member name="P:BeatSaberPlaylistsLib.Blist.BlistPlaylist.CustomData">
-            <inheritdoc/>
         </member>
         <member name="P:BeatSaberPlaylistsLib.Blist.BlistPlaylist.Description">
             <summary>
             The optional playlist description
             </summary>
         </member>
+        <member name="P:BeatSaberPlaylistsLib.Blist.BlistPlaylist.CustomData">
+            <inheritdoc/>
+        </member>
         <member name="P:BeatSaberPlaylistsLib.Blist.BlistPlaylist._serializedSongs">
             <summary>
             The beatmaps contained in the playlist
             </summary>
         </member>
-        <member name="P:BeatSaberPlaylistsLib.Blist.BlistPlaylist.Title">
+        <member name="P:BeatSaberPlaylistsLib.Blist.BlistPlaylist.Cover">
             <summary>
-            The playlist title
+            The filename of the optional playlist cover image
             </summary>
         </member>
         <member name="M:BeatSaberPlaylistsLib.Blist.BlistPlaylist.CreateFrom(BeatSaberPlaylistsLib.Types.ISong)">
@@ -68,7 +68,7 @@
         <member name="P:BeatSaberPlaylistsLib.Blist.BlistPlaylist.HasCover">
             <inheritdoc/>
         </member>
-        <member name="F:BeatSaberPlaylistsLib.Blist.BlistPlaylist.CoverData">
+        <member name="P:BeatSaberPlaylistsLib.Blist.BlistPlaylist.CoverData">
             <summary>
             Raw data for the cover image.
             </summary>
@@ -236,13 +236,107 @@
         <member name="M:BeatSaberPlaylistsLib.Blist.BlistPlaylistSong.ToString">
             <inheritdoc/>
         </member>
+        <member name="T:BeatSaberPlaylistsLib.ImageUtilities">
+            <summary>
+            Utilities for modifying images.
+            </summary>
+        </member>
+        <member name="M:BeatSaberPlaylistsLib.ImageUtilities.DrawString(System.String,System.Drawing.Image,BeatSaberPlaylistsLib.DrawSettings)">
+            <summary>
+            Draw a string on the given <see cref="T:System.Drawing.Image"/>.
+            </summary>
+            <param name="str"></param>
+            <param name="bitmap"></param>
+            <param name="drawSettings"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaberPlaylistsLib.ImageUtilities.DrawBorderedString(System.String,System.Drawing.Image,BeatSaberPlaylistsLib.DrawSettings)">
+            <summary>
+            Draws a bordered string on a bitmap.
+            </summary>
+            <param name="str"></param>
+            <param name="bitmap"></param>
+            <param name="drawSettings"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaberPlaylistsLib.ImageUtilities.WordWrap(System.String,System.Int32)">
+            <summary>
+            Word wraps the given text to fit within the specified width.
+            </summary>
+            <param name="text">Text to be word wrapped</param>
+            <param name="width">Width, in characters, to which the text
+            should be word wrapped</param>
+            <returns>The modified text</returns>
+        </member>
+        <member name="M:BeatSaberPlaylistsLib.ImageUtilities.BreakLine(System.String,System.Int32,System.Int32)">
+            <summary>
+            Locates position to break the given line so as to avoid
+            breaking words.
+            </summary>
+            <param name="text">String that contains line of text</param>
+            <param name="pos">Index where line of text starts</param>
+            <param name="max">Maximum line length</param>
+            <returns>The modified line length</returns>
+        </member>
+        <member name="T:BeatSaberPlaylistsLib.DrawSettings">
+            <summary>
+            Settings for drawing text.
+            </summary>
+        </member>
+        <member name="F:BeatSaberPlaylistsLib.DrawSettings.StringFormat">
+            <summary>
+            <see cref="F:BeatSaberPlaylistsLib.DrawSettings.StringFormat"/> settings.
+            </summary>
+        </member>
+        <member name="F:BeatSaberPlaylistsLib.DrawSettings.Color">
+            <summary>
+            Color of the text.
+            </summary>
+        </member>
+        <member name="F:BeatSaberPlaylistsLib.DrawSettings.Font">
+            <summary>
+            Font of the text.
+            </summary>
+        </member>
+        <member name="F:BeatSaberPlaylistsLib.DrawSettings.WrapWidth">
+            <summary>
+            Width, in characters, to wrap text.
+            </summary>
+        </member>
+        <member name="F:BeatSaberPlaylistsLib.DrawSettings.MinTextSize">
+            <summary>
+            Minimum text size.
+            </summary>
+        </member>
+        <member name="F:BeatSaberPlaylistsLib.DrawSettings.MaxTextSize">
+            <summary>
+            Maximum text size.
+            </summary>
+        </member>
+        <member name="F:BeatSaberPlaylistsLib.DrawSettings.DrawStyle">
+            <summary>
+            Style of text to draw.
+            </summary>
+        </member>
+        <member name="T:BeatSaberPlaylistsLib.DrawStyle">
+            <summary>
+            Draw style.
+            </summary>
+        </member>
+        <member name="F:BeatSaberPlaylistsLib.DrawStyle.Normal">
+            <summary>
+            Basic text drawing.
+            </summary>
+        </member>
+        <member name="F:BeatSaberPlaylistsLib.DrawStyle.Bordered">
+            <summary>
+            Text with a border.
+            </summary>
+        </member>
         <member name="T:BeatSaberPlaylistsLib.Legacy.LegacyPlaylist">
             <summary>
             An <see cref="T:BeatSaberPlaylistsLib.Types.IPlaylist"/> that can be serialized by a <see cref="T:BeatSaberPlaylistsLib.Legacy.LegacyPlaylistHandler"/>.
             </summary>
-        </member>
-        <member name="P:BeatSaberPlaylistsLib.Legacy.LegacyPlaylist._serializedSongs">
-            <inheritdoc/>
         </member>
         <member name="M:BeatSaberPlaylistsLib.Legacy.LegacyPlaylist.#ctor">
             <summary>
@@ -290,12 +384,15 @@
         <member name="P:BeatSaberPlaylistsLib.Legacy.LegacyPlaylist.CustomData">
             <inheritdoc/>
         </member>
+        <member name="P:BeatSaberPlaylistsLib.Legacy.LegacyPlaylist._serializedSongs">
+            <inheritdoc/>
+        </member>
         <member name="P:BeatSaberPlaylistsLib.Legacy.LegacyPlaylist.CoverString">
             <summary>
             A base64 string conversion of the cover image.
             </summary>
         </member>
-        <member name="F:BeatSaberPlaylistsLib.Legacy.LegacyPlaylist.CoverData">
+        <member name="P:BeatSaberPlaylistsLib.Legacy.LegacyPlaylist.CoverData">
             <summary>
             Raw data for the cover image.
             </summary>
@@ -913,6 +1010,50 @@
             <summary>
             A beatmap difficulty
             </summary>
+            <summary>
+            A beatmap difficulty
+            </summary>
+        </member>
+        <member name="P:BeatSaberPlaylistsLib.Types.Difficulty.BeatmapDifficulty">
+            <summary>
+            Beat Saber's <see cref="T:BeatmapDifficulty"/> value.
+            Returns the int '99' if an invalid difficulty is set.
+            </summary>
+        </member>
+        <member name="F:BeatSaberPlaylistsLib.Types.Difficulty.EasyValue">
+            <summary>
+            Integer value of the 'Easy' difficulty.
+            </summary>
+        </member>
+        <member name="F:BeatSaberPlaylistsLib.Types.Difficulty.NormalValue">
+            <summary>
+            Integer value of the 'Normal' difficulty.
+            </summary>
+        </member>
+        <member name="F:BeatSaberPlaylistsLib.Types.Difficulty.HardValue">
+            <summary>
+            Integer value of the 'Hard' difficulty.
+            </summary>
+        </member>
+        <member name="F:BeatSaberPlaylistsLib.Types.Difficulty.ExpertValue">
+            <summary>
+            Integer value of the 'Expert' difficulty.
+            </summary>
+        </member>
+        <member name="F:BeatSaberPlaylistsLib.Types.Difficulty.ExpertPlusValue">
+            <summary>
+            Integer value of the 'ExpertPlus' difficulty.
+            </summary>
+        </member>
+        <member name="F:BeatSaberPlaylistsLib.Types.Difficulty.InvalidDifficultyValue">
+            <summary>
+            Integer value of an invalid difficulty.
+            </summary>
+        </member>
+        <member name="P:BeatSaberPlaylistsLib.Types.Difficulty.DifficultyValue">
+            <summary>
+            Integer value of the difficulty. Matches Beat Saber's BeatmapDifficulty enum.
+            </summary>
         </member>
         <member name="P:BeatSaberPlaylistsLib.Types.Difficulty.Characteristic">
             <summary>
@@ -923,6 +1064,22 @@
             <summary>
             The difficulty name
             </summary>
+        </member>
+        <member name="M:BeatSaberPlaylistsLib.Types.Difficulty.DifficultyStringToValue(System.String)">
+            <summary>
+            Converts a difficulty string to an integer. 
+            Returns 99 for invalid difficulty strings.
+            </summary>
+            <param name="difficultyString"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaberPlaylistsLib.Types.Difficulty.DifficultyValueToString(System.Int32)">
+            <summary>
+            Converts a difficulty string to an integer. 
+            Returns 99 for invalid difficulty strings.
+            </summary>
+            <param name="difficultyValue"></param>
+            <returns></returns>
         </member>
         <member name="M:BeatSaberPlaylistsLib.Types.Difficulty.Equals(System.Object)">
             <inheritdoc/>
@@ -954,6 +1111,16 @@
         <member name="P:BeatSaberPlaylistsLib.Types.IDeferredSpriteLoad.Sprite">
             <summary>
             The Sprite.
+            </summary>
+        </member>
+        <member name="T:BeatSaberPlaylistsLib.Types.INotifyCoverChanged">
+            <summary>
+            Notifies when a cover image has changed.
+            </summary>
+        </member>
+        <member name="E:BeatSaberPlaylistsLib.Types.INotifyCoverChanged.CoverImageChanged">
+            <summary>
+            Raised when the cover image is changed.
             </summary>
         </member>
         <member name="T:BeatSaberPlaylistsLib.Types.IPlaylist">
@@ -1235,6 +1402,40 @@
             Unique identifier for playlist song, used for distinguishing between duplicates.
             </summary>
         </member>
+        <member name="T:BeatSaberPlaylistsLib.Types.IPlaylistSongComparer">
+            <summary>
+            Compares two <see cref="T:BeatSaberPlaylistsLib.Types.IPlaylistSong"/> using their <see cref="P:BeatSaberPlaylistsLib.Types.ISong.LevelId"/>.
+            Falls back to using <see cref="P:BeatSaberPlaylistsLib.Types.ISong.Key"/> if <see cref="P:BeatSaberPlaylistsLib.Types.ISong.LevelId"/> is null.
+            </summary>
+        </member>
+        <member name="F:BeatSaberPlaylistsLib.Types.IPlaylistSongComparer.Default">
+            <summary>
+            Default instance of <see cref="T:BeatSaberPlaylistsLib.Types.IPlaylistSongComparer"/>.
+            </summary>
+        </member>
+        <member name="M:BeatSaberPlaylistsLib.Types.IPlaylistSongComparer.Equals(BeatSaberPlaylistsLib.Types.IPlaylistSong,BeatSaberPlaylistsLib.Types.IPlaylistSong)">
+            <summary>
+            Compares two <see cref="T:BeatSaberPlaylistsLib.Types.IPlaylistSong"/> using their <see cref="P:BeatSaberPlaylistsLib.Types.ISong.LevelId"/>.
+            Falls back to using <see cref="P:BeatSaberPlaylistsLib.Types.ISong.Key"/> if <see cref="P:BeatSaberPlaylistsLib.Types.ISong.LevelId"/> is null.
+            </summary>
+        </member>
+        <member name="M:BeatSaberPlaylistsLib.Types.IPlaylistSongComparer.GetHashCode(BeatSaberPlaylistsLib.Types.IPlaylistSong)">
+            <inheritdoc/>
+        </member>
+        <member name="T:BeatSaberPlaylistsLib.Types.IPlaylistSongComparer`1">
+            <inheritdoc/>
+        </member>
+        <member name="F:BeatSaberPlaylistsLib.Types.IPlaylistSongComparer`1.Default">
+            <summary>
+            Default instance of <see cref="T:BeatSaberPlaylistsLib.Types.IPlaylistSongComparer"/>.
+            </summary>
+        </member>
+        <member name="M:BeatSaberPlaylistsLib.Types.IPlaylistSongComparer`1.Equals(`0,`0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BeatSaberPlaylistsLib.Types.IPlaylistSongComparer`1.GetHashCode(`0)">
+            <inheritdoc/>
+        </member>
         <member name="T:BeatSaberPlaylistsLib.Types.ISong">
             <summary>
             Interface for the basic data of a song.
@@ -1274,7 +1475,7 @@
         </member>
         <member name="P:BeatSaberPlaylistsLib.Types.ISong.Key">
             <summary>
-            Beat Saver key of the song, always uppercase. 
+            Beat Saver key of the song, always uppercase unless the length is >= 12. 
             </summary>
         </member>
         <member name="P:BeatSaberPlaylistsLib.Types.ISong.LevelAuthorName">
@@ -1312,6 +1513,16 @@
             Indicates the Beat Saver key is available.
             </summary>
         </member>
+        <member name="T:BeatSaberPlaylistsLib.Types.JSONPlaylist`1">
+            <summary>
+            An abstract class for a playlist storing information in a JSON file.
+            </summary>
+        </member>
+        <member name="F:BeatSaberPlaylistsLib.Types.JSONPlaylist`1.ExtensionData">
+            <summary>
+            Additional data not deserialized into the object.
+            </summary>
+        </member>
         <member name="T:BeatSaberPlaylistsLib.Types.Playlist">
             <summary>
             Base class for a Playlist.
@@ -1325,7 +1536,7 @@
             Queue of <see cref="T:System.Action"/>s to load playlist sprites.
             </summary>
         </member>
-        <member name="P:BeatSaberPlaylistsLib.Types.Playlist.DefaultCoverImage">
+        <member name="M:BeatSaberPlaylistsLib.Types.Playlist.GetDefaultCoverSprite(BeatSaberPlaylistsLib.Types.Playlist)">
             <summary>
             Default cover image to use if a playlist has no cover image.
             </summary>
@@ -1333,6 +1544,11 @@
         <member name="F:BeatSaberPlaylistsLib.Types.Playlist._sprite">
             <summary>
             Instance of the playlist cover sprite.
+            </summary>
+        </member>
+        <member name="F:BeatSaberPlaylistsLib.Types.Playlist._previousSprite">
+            <summary>
+            Instance of the previous cover sprite.
             </summary>
         </member>
         <member name="F:BeatSaberPlaylistsLib.Types.Playlist.SpriteLoadQueued">
@@ -1367,6 +1583,9 @@
             <inheritdoc/>
         </member>
         <member name="E:BeatSaberPlaylistsLib.Types.Playlist.PlaylistChanged">
+            <inheritdoc/>
+        </member>
+        <member name="E:BeatSaberPlaylistsLib.Types.Playlist.CoverImageChanged">
             <inheritdoc/>
         </member>
         <member name="P:BeatSaberPlaylistsLib.Types.Playlist.Title">
@@ -1405,8 +1624,19 @@
         <member name="M:BeatSaberPlaylistsLib.Types.Playlist.SetCover(System.IO.Stream)">
             <inheritdoc/>
         </member>
+        <member name="M:BeatSaberPlaylistsLib.Types.Playlist.OnExtensionData(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Object}})">
+            <summary>
+            Action to take when additional data that wasn't deserialized is found.
+            </summary>
+            <param name="extensionData"></param>
+        </member>
         <member name="M:BeatSaberPlaylistsLib.Types.Playlist.RaisePlaylistChanged">
             <inheritdoc/>
+        </member>
+        <member name="M:BeatSaberPlaylistsLib.Types.Playlist.RaiseCoverImageChanged">
+            <summary>
+            Raises the <see cref="E:BeatSaberPlaylistsLib.Types.Playlist.CoverImageChanged"/> event.
+            </summary>
         </member>
         <member name="P:BeatSaberPlaylistsLib.Types.Playlist.CustomData">
             <inheritdoc/>
@@ -1697,6 +1927,13 @@
             <returns></returns>
             <exception cref="T:System.ArgumentNullException"></exception>
             <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:BeatSaberPlaylistsLib.Utilities.GenerateCoverForPlaylist(BeatSaberPlaylistsLib.Types.IPlaylist)">
+            <summary>
+            Generates a cover for a playlist.
+            </summary>
+            <param name="playlist"></param>
+            <returns></returns>
         </member>
         <member name="M:BeatSaberPlaylistsLib.Utilities.ImageToBase64(System.String)">
             <summary>
