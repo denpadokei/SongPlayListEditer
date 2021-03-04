@@ -3,7 +3,7 @@
   "id": "SongPlayListEditer",
   "name": "SongPlayListEditer",
   "author": "denpadokei",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "",
   "gameVersion": "1.13.2",
   "dependsOn": {
@@ -11,7 +11,7 @@
     "BeatSaberMarkupLanguage": "^1.4.0",
     "BS Utils": "^1.6.1",
     "SiraUtil": "^2.0.0",
-    "PlaylistManager": "^0.1.0",
+    "PlaylistManager": "^0.2.1",
     "BeatSaverSharp": "^2.0.1",
     "BeatSaberPlaylistsLib": "^1.0.1"
   },

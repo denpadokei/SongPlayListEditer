@@ -1,29 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using BeatSaberMarkupLanguage;
-using BeatSaberMarkupLanguage.Attributes;
+﻿using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
-using BeatSaberMarkupLanguage.Components.Settings;
 // using BeatSaberMarkupLanguage.Notify;
-using BeatSaberMarkupLanguage.ViewControllers;
-using BeatSaberPlaylistsLib;
 using HMUI;
-using PlaylistLoaderLite.HarmonyPatches;
 using SongPlayListEditer.Bases;
 using SongPlayListEditer.Configuration;
 using SongPlayListEditer.Models;
 using SongPlayListEditer.Statics;
 using SongPlayListEditer.Utilites;
-using TMPro;
-using UnityEngine;
+using System;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine.UI;
-using Zenject;
 using static BeatSaberMarkupLanguage.Components.CustomListTableData;
 
 namespace SongPlayListEditer.UI.Views
@@ -34,7 +24,7 @@ namespace SongPlayListEditer.UI.Views
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プロパティ
         // For this method of setting the ResourceName, this class must be the first class in the file.
-        
+
 
         /// <summary>プレイリストのタイトル を取得、設定</summary>
         private string title_;
@@ -170,7 +160,7 @@ namespace SongPlayListEditer.UI.Views
                     this.CurrentPlaylist.SetCover(stream);
                 }
             }
-            else if(!this.CurrentPlaylist.HasCover) {
+            else if (!this.CurrentPlaylist.HasCover) {
                 using (var stream = Base64Sprites.Base64ToStream(DefaultImage.DEFAULT_IMAGE)) {
                     var tex = Base64Sprites.StreamToTextuer2D(stream);
                     Base64Sprites.CashedTextuer.AddOrUpdate(this.CurrentPlaylist.Filename, tex, (s, t) => tex);
