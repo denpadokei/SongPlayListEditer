@@ -19,7 +19,7 @@ namespace SongPlayListEditer.Installer
         public override void InstallBindings()
         {
             this.Container.BindFactory<BeatSaberPlaylistsLib.Types.IPlaylist, IPreviewBeatmapLevel, PlaylistCellEntity, PlaylistCellEntity.CellFactory>().AsCached();
-            this.Container.BindViewController<SimplePlayListView>();
+            this.Container.BindInterfacesAndSelfTo<SimplePlayListView>().FromNewComponentAsViewController().AsSingle().NonLazy();
             this.Container.Bind<BeatSaberUtility>().FromNewComponentOnNewGameObject("BSUlility").AsSingle();
             this.Container.BindInterfacesAndSelfTo<MenuUI>().FromNewComponentOnNewGameObject("MenuUI").AsCached().NonLazy();
         }
