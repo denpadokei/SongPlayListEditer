@@ -1,26 +1,12 @@
-﻿using BeatSaberMarkupLanguage.MenuButtons;
-using UnityEngine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using IPA.Logging;
-using BeatSaberMarkupLanguage;
-using BS_Utils.Utilities;
-using UnityEngine.UI;
-using SongPlayListEditer.BeatSaberCommon;
-using SongPlayListEditer.Extentions;
-
-using BeatSaberUI = BeatSaberMarkupLanguage.BeatSaberUI;
-using IPA.Utilities;
-using SongPlayListEditer.UI.Views;
+﻿using BeatSaberMarkupLanguage;
+using BeatSaberMarkupLanguage.MenuButtons;
 using BeatSaberMarkupLanguage.Settings;
-using SongPlayListEditer.Models;
-using Zenject;
-using HMUI;
-using UnityEngine.EventSystems;
 using IPA.Loader;
+using SongPlayListEditer.UI.Views;
+using System;
+using UnityEngine;
+using Zenject;
+using BeatSaberUI = BeatSaberMarkupLanguage.BeatSaberUI;
 
 namespace SongPlayListEditer.UI
 {
@@ -41,9 +27,6 @@ namespace SongPlayListEditer.UI
         public void Initialize()
         {
             Logger.Info("Start Initialize");
-            IsInstalledSongBrowser = PluginManager.GetPlugin("Song Browser") != null;
-            this._simplePlayListView = diContainer.Resolve<SimplePlayListView>();
-            this._simplePlayListView.Initialize();
             this.CreateMenuButton();
             this.CreateSetting();
         }
@@ -91,17 +74,19 @@ namespace SongPlayListEditer.UI
             }
         }
 
-        
+
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // メンバ変数
-        [Inject]
-        private DiContainer diContainer;
         private PlaylistEditorFlowCoordinator _playlistEditorFlowCoordinator;
-        private SimplePlayListView _simplePlayListView;
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // 構築・破棄
+        [Inject]
+        private void Constroctor()
+        {
+            IsInstalledSongBrowser = PluginManager.GetPlugin("Song Browser") != null;
+        }
         #endregion
     }
 }

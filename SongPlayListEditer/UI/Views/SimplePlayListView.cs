@@ -26,7 +26,7 @@ using PlaylistUI = SongPlayListEditer.BeatSaberCommon.PlaylistUI;
 namespace SongPlayListEditer.UI.Views
 {
     [HotReload]
-    public class SimplePlayListView : ViewContlollerBindableBase
+    public class SimplePlayListView : ViewContlollerBindableBase, IInitializable
     {
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プロパティ
@@ -144,7 +144,7 @@ namespace SongPlayListEditer.UI.Views
                 PlaylistUI.ConvertIconButton(ref this._closeButton, new Vector2(50f, 50f), Base64Sprites.LoadSpriteFromResources("SongPlayListEditer.Resources.baseline_close_white_18dp.png"));
                 this._closeButton.GetComponentsInChildren<Image>().First(x => x.name == "Icon").transform.localScale *= 1.2f;
                 if (MenuUI.IsInstalledSongBrowser) {
-                    this.StartCoroutine(this.ResizeDeleteButton());
+                    HMMainThreadDispatcher.instance.Enqueue(this.ResizeDeleteButton());
                 }
             }
             catch (Exception e) {
