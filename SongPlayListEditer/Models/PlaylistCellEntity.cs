@@ -209,7 +209,9 @@ namespace SongPlayListEditer.Models
                 Logger.Info($"Filename : {this.CurrentPlaylist.Filename}");
                 PlaylistLibUtility.CurrentManager.StorePlaylist(this.CurrentPlaylist);
             });
-            HMMainThreadDispatcher.instance.Enqueue(PlaylistLibUtility.RefreshPlaylists());
+            if (PluginConfig.Instance.AutoRefresh) {
+                HMMainThreadDispatcher.instance.Enqueue(PlaylistLibUtility.RefreshPlaylists());
+            }
             start.Stop();
             Logger.Info($"Save time : {start.ElapsedMilliseconds}ms");
         }
