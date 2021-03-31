@@ -1,12 +1,5 @@
-﻿using BeatSaberPlaylistsLib.Blist;
-using BeatSaberPlaylistsLib.Legacy;
-using SongCore;
-using System;
+﻿using SongCore;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace SongPlayListEditer.Utilites
@@ -15,7 +8,6 @@ namespace SongPlayListEditer.Utilites
     {
         public static readonly WaitWhile _waitSongloaderLoading = new WaitWhile(() => !Loader.AreSongsLoaded || Loader.AreSongsLoading);
         public static BeatSaberPlaylistsLib.PlaylistManager CurrentManager => PlaylistManager.Utilities.PlaylistLibUtils.playlistManager;
-
         public static IEnumerator RefreshPlaylists()
         {
             yield return _waitSongloaderLoading;

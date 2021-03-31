@@ -1,6 +1,10 @@
 ﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
   <vertical>
-    <horizontal pad-bottom='12' pad-top='2' spacing='1'>
+    <horizontal pad-bottom='12' pad-top='2' spacing='1' horizontal-fit='PreferredSize'>
+      <vertical preferred-width='40'>
+        <button text='All Lock' on-click='all-lock'></button>
+        <button text='All Unlock' on-click='all-unlock'></button>
+      </vertical>
       <list id='playlists' list-style='List' expand-cell='true' select-cell='select-cell'></list>
       <vertical>
         <page-button event-click='playlists#PageUp' direction='Up' />

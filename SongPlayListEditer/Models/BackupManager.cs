@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SongPlayListEditer.Models
 {
-    static class BackupManager
+    internal static class BackupManager
     {
         public static readonly string PLAYLIST_PATH = Path.Combine(Environment.CurrentDirectory, "Playlists");
 
@@ -44,7 +41,7 @@ namespace SongPlayListEditer.Models
                         }
                     }
                 }
-                
+
                 File.Delete(Path.ChangeExtension(fileInfo.FullName, ".bak"));
             }
             catch (Exception e) {

@@ -3,10 +3,7 @@ using BeatSaberMarkupLanguage.Components;
 using BS_Utils.Utilities;
 using HMUI;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -23,27 +20,27 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// <param name="buttonTemplate"></param>
         /// <param name="buttonInstance"></param>
         /// <returns></returns>
-        static public Button CreateUIButton(RectTransform parent, Button buttonTemplate, string name = "")
+        public static Button CreateUIButton(RectTransform parent, Button buttonTemplate, string name = "")
         {
-            Button btn = UnityEngine.Object.Instantiate(buttonTemplate, parent);
+            var btn = UnityEngine.Object.Instantiate(buttonTemplate, parent);
             UnityEngine.Object.DestroyImmediate(btn.GetComponent<SignalOnUIButtonClick>());
             btn.onClick = new Button.ButtonClickedEvent();
             btn.name = string.IsNullOrEmpty(name) ? "CustomUIButton" : name;
             btn.interactable = true;
-            Polyglot.LocalizedTextMeshProUGUI localizer = btn.GetComponentInChildren<Polyglot.LocalizedTextMeshProUGUI>();
+            var localizer = btn.GetComponentInChildren<Polyglot.LocalizedTextMeshProUGUI>();
             if (localizer != null)
                 GameObject.Destroy(localizer);
             //CurvedTextMeshPro textMeshPro = btn.GetComponentInChildren<CurvedTextMeshPro>();
             //if (textMeshPro != null)
             //    GameObject.Destroy(textMeshPro);
-            ExternalComponents externalComponents = btn.gameObject.AddComponent<ExternalComponents>();
-            TextMeshProUGUI textMesh = btn.GetComponentInChildren<TextMeshProUGUI>();
+            var externalComponents = btn.gameObject.AddComponent<ExternalComponents>();
+            var textMesh = btn.GetComponentInChildren<TextMeshProUGUI>();
             textMesh.richText = true;
             if (!string.IsNullOrEmpty(name)) {
                 textMesh.text = name;
             }
             externalComponents.components.Add(textMesh);
-            StackLayoutGroup stackLayoutGroup = btn.GetComponentInChildren<StackLayoutGroup>();
+            var stackLayoutGroup = btn.GetComponentInChildren<StackLayoutGroup>();
             if (stackLayoutGroup != null)
                 externalComponents.components.Add(stackLayoutGroup);
 
@@ -86,7 +83,7 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// <returns>The newly created button.</returns>
         public static Button CreateUIButton(RectTransform parent, string buttonTemplate, Vector2 anchoredPosition, Vector2 sizeDelta, UnityAction onClick = null, string buttonText = "BUTTON", Sprite icon = null)
         {
-            Button btn = UnityEngine.Object.Instantiate(Resources.FindObjectsOfTypeAll<Button>().Last(x => (x.name == buttonTemplate)), parent, false);
+            var btn = UnityEngine.Object.Instantiate(Resources.FindObjectsOfTypeAll<Button>().Last(x => (x.name == buttonTemplate)), parent, false);
             btn.onClick = new Button.ButtonClickedEvent();
             if (onClick != null)
                 btn.onClick.AddListener(onClick);
@@ -116,7 +113,7 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// <returns>The newly created button.</returns>
         public static Button CreateUIButton(RectTransform parent, string buttonTemplate, Vector2 anchoredPosition, UnityAction onClick = null, string buttonText = "BUTTON", Sprite icon = null)
         {
-            Button btn = UnityEngine.Object.Instantiate(Resources.FindObjectsOfTypeAll<Button>().Last(x => (x.name == buttonTemplate)), parent, false);
+            var btn = UnityEngine.Object.Instantiate(Resources.FindObjectsOfTypeAll<Button>().Last(x => (x.name == buttonTemplate)), parent, false);
             btn.onClick = new Button.ButtonClickedEvent();
             if (onClick != null)
                 btn.onClick.AddListener(onClick);
@@ -145,16 +142,16 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// <returns>The newly created button.</returns>
         public static Button CreateUIButton(RectTransform parent, string buttonTemplate, UnityAction onClick = null, string buttonText = "BUTTON", Sprite icon = null)
         {
-            Button btn = UnityEngine.Object.Instantiate(Resources.FindObjectsOfTypeAll<Button>().Last(x => (x.name == buttonTemplate)), parent, false);
+            var btn = UnityEngine.Object.Instantiate(Resources.FindObjectsOfTypeAll<Button>().Last(x => (x.name == buttonTemplate)), parent, false);
             btn.onClick = new Button.ButtonClickedEvent();
             if (onClick != null)
                 btn.onClick.AddListener(onClick);
             btn.name = "CustomUIButton";
-            Polyglot.LocalizedTextMeshProUGUI localizer = btn.GetComponentInChildren<Polyglot.LocalizedTextMeshProUGUI>();
+            var localizer = btn.GetComponentInChildren<Polyglot.LocalizedTextMeshProUGUI>();
             if (localizer != null)
                 GameObject.Destroy(localizer);
-            ExternalComponents externalComponents = btn.gameObject.AddComponent<ExternalComponents>();
-            TextMeshProUGUI textMesh = btn.GetComponentInChildren<TextMeshProUGUI>();
+            var externalComponents = btn.gameObject.AddComponent<ExternalComponents>();
+            var textMesh = btn.GetComponentInChildren<TextMeshProUGUI>();
             textMesh.richText = true;
             externalComponents.components.Add(textMesh);
 
@@ -175,7 +172,7 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// <returns></returns>
         public static Button CreateIconButton(String name, RectTransform parent, Vector2 anchoredPosition, Vector2 sizeDelta, UnityAction onClick, Sprite icon, String buttonTemplate = "PracticeButton")
         {
-            Button btn = UnityEngine.Object.Instantiate(Resources.FindObjectsOfTypeAll<Button>().First(x => (x.name == buttonTemplate)), parent, false);
+            var btn = UnityEngine.Object.Instantiate(Resources.FindObjectsOfTypeAll<Button>().First(x => (x.name == buttonTemplate)), parent, false);
             btn.name = name;
             btn.interactable = true;
 
@@ -183,7 +180,7 @@ namespace SongPlayListEditer.BeatSaberCommon
             GameObject.Destroy(btn.GetComponent<LocalizedHoverHint>());
             btn.gameObject.AddComponent<ExternalComponents>().components.Add(btn.GetComponentsInChildren<LayoutGroup>().First(x => x.name == "Content"));
 
-            Transform contentTransform = btn.transform.Find("Content");
+            var contentTransform = btn.transform.Find("Content");
             GameObject.Destroy(contentTransform.Find("Text").gameObject);
             Image iconImage = new GameObject("Icon").AddComponent<ImageView>();
             iconImage.material = Utilities.ImageResources.NoGlowMat;
@@ -192,14 +189,14 @@ namespace SongPlayListEditer.BeatSaberCommon
             iconImage.sprite = icon;
             iconImage.preserveAspect = true;
             if (iconImage != null) {
-                ButtonIconImage btnIcon = btn.gameObject.AddComponent<BeatSaberMarkupLanguage.Components.ButtonIconImage>();
+                var btnIcon = btn.gameObject.AddComponent<BeatSaberMarkupLanguage.Components.ButtonIconImage>();
                 btnIcon.image = iconImage;
             }
 
             GameObject.Destroy(btn.transform.Find("Content").GetComponent<LayoutElement>());
             btn.GetComponentsInChildren<RectTransform>().First(x => x.name == "Underline").gameObject.SetActive(false);
 
-            ContentSizeFitter buttonSizeFitter = btn.gameObject.AddComponent<ContentSizeFitter>();
+            var buttonSizeFitter = btn.gameObject.AddComponent<ContentSizeFitter>();
             buttonSizeFitter.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
             buttonSizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
 
@@ -232,7 +229,7 @@ namespace SongPlayListEditer.BeatSaberCommon
             GameObject.Destroy(btn.GetComponent<LocalizedHoverHint>());
             btn.gameObject.AddComponent<BeatSaberMarkupLanguage.Components.ExternalComponents>().components.Add(btn.GetComponentsInChildren<LayoutGroup>().First(x => x.name == "Content"));
 
-            Transform contentTransform = btn.transform.Find("Content");
+            var contentTransform = btn.transform.Find("Content");
             GameObject.Destroy(contentTransform.Find("Text").gameObject);
             Image iconImage = new GameObject("Icon").AddComponent<ImageView>();
             iconImage.material = BeatSaberMarkupLanguage.Utilities.ImageResources.NoGlowMat;
@@ -241,14 +238,14 @@ namespace SongPlayListEditer.BeatSaberCommon
             iconImage.sprite = icon;
             iconImage.preserveAspect = true;
             if (iconImage != null) {
-                BeatSaberMarkupLanguage.Components.ButtonIconImage btnIcon = btn.gameObject.AddComponent<BeatSaberMarkupLanguage.Components.ButtonIconImage>();
+                var btnIcon = btn.gameObject.AddComponent<BeatSaberMarkupLanguage.Components.ButtonIconImage>();
                 btnIcon.image = iconImage;
             }
 
             GameObject.Destroy(btn.transform.Find("Content").GetComponent<LayoutElement>());
             btn.GetComponentsInChildren<RectTransform>().First(x => x.name == "Underline").gameObject.SetActive(false);
 
-            ContentSizeFitter buttonSizeFitter = btn.gameObject.GetComponent<ContentSizeFitter>();
+            var buttonSizeFitter = btn.gameObject.GetComponent<ContentSizeFitter>();
             buttonSizeFitter.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
             buttonSizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
 
@@ -270,10 +267,7 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// <param name="text">The text to be displayed.</param>
         /// <param name="anchoredPosition">The position the button should be anchored to.</param>
         /// <returns>The newly created TextMeshProUGUI component.</returns>
-        public static TextMeshProUGUI CreateText(RectTransform parent, string text, Vector2 anchoredPosition)
-        {
-            return CreateText(parent, text, anchoredPosition, new Vector2(60f, 10f));
-        }
+        public static TextMeshProUGUI CreateText(RectTransform parent, string text, Vector2 anchoredPosition) => CreateText(parent, text, anchoredPosition, new Vector2(60f, 10f));
 
         /// <summary>
         /// Creates a TextMeshProUGUI component.
@@ -285,10 +279,10 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// <returns>The newly created TextMeshProUGUI component.</returns>
         public static TextMeshProUGUI CreateText(RectTransform parent, string text, Vector2 anchoredPosition, Vector2 sizeDelta)
         {
-            GameObject gameObj = new GameObject("CustomUIText");
+            var gameObj = new GameObject("CustomUIText");
             gameObj.SetActive(false);
 
-            TextMeshProUGUI textMesh = gameObj.AddComponent<TextMeshProUGUI>();
+            var textMesh = gameObj.AddComponent<TextMeshProUGUI>();
             textMesh.font = UnityEngine.GameObject.Instantiate(Resources.FindObjectsOfTypeAll<TMP_FontAsset>().First(t => t.name == "Teko-Medium SDF No Glow"));
             textMesh.rectTransform.SetParent(parent, false);
             textMesh.text = text;
@@ -312,7 +306,7 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// <param name="text"></param>
         public static void SetHoverHint(RectTransform button, string name, string text)
         {
-            HoverHintController hoverHintController = Resources.FindObjectsOfTypeAll<HoverHintController>().First();
+            var hoverHintController = Resources.FindObjectsOfTypeAll<HoverHintController>().First();
             DestroyHoverHint(button);
             var newHoverHint = button.gameObject.AddComponent<HoverHint>();
             newHoverHint.SetPrivateField("_hoverHintController", hoverHintController);
@@ -326,7 +320,7 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// <param name="button"></param>
         public static void DestroyHoverHint(RectTransform button)
         {
-            HoverHint currentHoverHint = button.GetComponentsInChildren<HMUI.HoverHint>().First();
+            var currentHoverHint = button.GetComponentsInChildren<HMUI.HoverHint>().First();
             if (currentHoverHint != null) {
                 UnityEngine.GameObject.DestroyImmediate(currentHoverHint);
             }
@@ -337,9 +331,9 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// </summary>
         /// <param name="button"></param>
         /// <param name="fontSize"></param>
-        static public void SetButtonTextColor(Button button, Color color)
+        public static void SetButtonTextColor(Button button, Color color)
         {
-            TextMeshProUGUI txt = button.GetComponentsInChildren<TextMeshProUGUI>().FirstOrDefault(x => x.name == "Text");
+            var txt = button.GetComponentsInChildren<TextMeshProUGUI>().FirstOrDefault(x => x.name == "Text");
             if (txt != null) {
                 txt.color = color;
             }
@@ -350,9 +344,9 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// </summary>
         /// <param name="button"></param>
         /// <param name="color"></param>
-        static public void SetButtonBorder(Button button, Color color)
+        public static void SetButtonBorder(Button button, Color color)
         {
-            Image img = button.GetComponentsInChildren<Image>().FirstOrDefault(x => x.name == "Stroke");
+            var img = button.GetComponentsInChildren<Image>().FirstOrDefault(x => x.name == "Stroke");
             if (img != null) {
                 img.color = color;
             }
@@ -363,9 +357,9 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// </summary>
         /// <param name="button"></param>
         /// <param name="color"></param>
-        static public void SetButtonBorderActive(Button button, bool active)
+        public static void SetButtonBorderActive(Button button, bool active)
         {
-            Image img = button.GetComponentsInChildren<Image>().FirstOrDefault(x => x.name == "Stroke");
+            var img = button.GetComponentsInChildren<Image>().FirstOrDefault(x => x.name == "Stroke");
             if (img != null) {
                 img.gameObject.SetActive(active);
             }
@@ -376,9 +370,9 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// </summary>
         /// <param name="rect"></param>
         /// <param name="text"></param>
-        static public void SetStatButtonText(RectTransform rect, String text)
+        public static void SetStatButtonText(RectTransform rect, String text)
         {
-            TextMeshProUGUI txt = rect.GetComponentsInChildren<TextMeshProUGUI>().FirstOrDefault(x => x.name == "ValueText");
+            var txt = rect.GetComponentsInChildren<TextMeshProUGUI>().FirstOrDefault(x => x.name == "ValueText");
             if (txt != null) {
                 txt.text = text;
             }
@@ -389,9 +383,9 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// </summary>
         /// <param name="rect"></param>
         /// <param name="icon"></param>
-        static public void SetStatButtonIcon(RectTransform rect, Sprite icon)
+        public static void SetStatButtonIcon(RectTransform rect, Sprite icon)
         {
-            Image img = rect.GetComponentsInChildren<Image>().FirstOrDefault(x => x.name == "Icon");
+            var img = rect.GetComponentsInChildren<Image>().FirstOrDefault(x => x.name == "Icon");
             if (img != null) {
                 img.sprite = icon;
                 img.color = Color.white;
@@ -408,7 +402,7 @@ namespace SongPlayListEditer.BeatSaberCommon
         public static Button CreateIconButton(String name, RectTransform parent, String buttonTemplate, Vector2 anchoredPosition, Vector2 sizeDelta, UnityAction onClick, Sprite icon)
         {
             Logger.Debug($"CreateIconButton({name}, {parent}, {buttonTemplate}, {anchoredPosition}, {sizeDelta}");
-            Button btn = UnityEngine.Object.Instantiate(Resources.FindObjectsOfTypeAll<Button>().Last(x => (x.name == buttonTemplate)), parent, false);
+            var btn = UnityEngine.Object.Instantiate(Resources.FindObjectsOfTypeAll<Button>().Last(x => (x.name == buttonTemplate)), parent, false);
             btn.name = name;
             btn.interactable = true;
 
@@ -416,7 +410,7 @@ namespace SongPlayListEditer.BeatSaberCommon
             GameObject.Destroy(btn.GetComponent<LocalizedHoverHint>());
             btn.gameObject.AddComponent<BeatSaberMarkupLanguage.Components.ExternalComponents>().components.Add(btn.GetComponentsInChildren<LayoutGroup>().First(x => x.name == "Content"));
 
-            Transform contentTransform = btn.transform.Find("Content");
+            var contentTransform = btn.transform.Find("Content");
             GameObject.Destroy(contentTransform.Find("Text").gameObject);
             Image iconImage = new GameObject("Icon").AddComponent<ImageView>();
             iconImage.material = BeatSaberMarkupLanguage.Utilities.ImageResources.NoGlowMat;
@@ -425,14 +419,14 @@ namespace SongPlayListEditer.BeatSaberCommon
             iconImage.sprite = icon;
             iconImage.preserveAspect = true;
             if (iconImage != null) {
-                BeatSaberMarkupLanguage.Components.ButtonIconImage btnIcon = btn.gameObject.AddComponent<BeatSaberMarkupLanguage.Components.ButtonIconImage>();
+                var btnIcon = btn.gameObject.AddComponent<BeatSaberMarkupLanguage.Components.ButtonIconImage>();
                 btnIcon.image = iconImage;
             }
 
             GameObject.Destroy(btn.transform.Find("Content").GetComponent<LayoutElement>());
             btn.GetComponentsInChildren<RectTransform>().First(x => x.name == "Underline").gameObject.SetActive(false);
 
-            ContentSizeFitter buttonSizeFitter = btn.gameObject.AddComponent<ContentSizeFitter>();
+            var buttonSizeFitter = btn.gameObject.AddComponent<ContentSizeFitter>();
             buttonSizeFitter.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
             buttonSizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
 

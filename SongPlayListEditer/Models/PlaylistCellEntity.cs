@@ -1,6 +1,5 @@
 ﻿using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components.Settings;
-using BeatSaberPlaylistsLib;
 using HMUI;
 using Polyglot;
 using SongPlayListEditer.Bases;
@@ -94,7 +93,7 @@ namespace SongPlayListEditer.Models
         {
             HMMainThreadDispatcher.instance?.Enqueue(() =>
             {
-                
+
                 Logger.Debug($"{this._checkBox}");
                 try {
                     this._toggle = (this._checkBox as LocalizedTextMeshProUGUI).GetComponentsInParent<ToggleSetting>(true).First();
@@ -117,10 +116,7 @@ namespace SongPlayListEditer.Models
 
         }
 
-        public void SelectedCell()
-        {
-            this._toggle.toggle.isOn = !this._toggle.toggle.isOn;
-        }
+        public void SelectedCell() => this._toggle.toggle.isOn = !this._toggle.toggle.isOn;
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プライベートメソッド
@@ -134,7 +130,7 @@ namespace SongPlayListEditer.Models
             this.CurrentPlaylist.AllowDuplicates = true;
             switch (this.SongType) {
                 case SongTypeMode.Custom:
-                    
+
                     var addTargetHash = this.BeatMap?.GetBeatmapHash().ToUpper();
                     if (this.CurrentPlaylist.Any(x => x.Hash?.ToUpper() == addTargetHash)) {
                         return;
@@ -235,9 +231,9 @@ namespace SongPlayListEditer.Models
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // メンバ変数
         [UIComponent("cover")]
-        private ImageView _cover;
+        private readonly ImageView _cover;
         [UIComponent("check-box")]
-        private object _checkBox;
+        private readonly object _checkBox;
         private ToggleSetting _toggle;
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*

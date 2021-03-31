@@ -3,6 +3,7 @@ using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BS_Utils.Utilities;
 using HMUI;
+using IPA.Loader;
 using SongPlayListEditer.Bases;
 using SongPlayListEditer.BeatSaberCommon;
 using SongPlayListEditer.Configuration;
@@ -15,9 +16,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -36,6 +37,7 @@ namespace SongPlayListEditer.UI.Views
         public string ResourceName => string.Join(".", this.GetType().Namespace, "SimplePlayListView.bsml");
         [UIValue("playlists")]
         private List<object> Playlists { get; } = new List<object>();
+        public static bool IsInstalledSongBrowser { get; private set; }
 
         public IPreviewBeatmapLevel Beatmap { get; private set; }
         #endregion
@@ -60,7 +62,11 @@ namespace SongPlayListEditer.UI.Views
                 Logger.Info("Create List");
                 this.Playlists.Clear();
                 this._playlists.tableView.ReloadData();
+
                 foreach (var playlist in BeatSaberUtility.GetLocalPlaylist()) {
+                    if (this.LockedPlaylistEntity.LockedPlaylists.Any(x => Regex.IsMatch(x, $"^{playlist.Filename}$", RegexOptions.IgnoreCase))) {
+                        continue;
+                    }
                     var cell = this._factory.Create(playlist, this.Beatmap);
                     this.Playlists.Add(cell);
                 }
@@ -102,14 +108,12 @@ namespace SongPlayListEditer.UI.Views
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プライベートメソッド
         [Inject]
-        private void Constractor(PlaylistCellEntity.CellFactory cellFactory)
-        {
-            this._factory = cellFactory;
-        }
+        private void Constractor(PlaylistCellEntity.CellFactory cellFactory) => this._factory = cellFactory;
 
         public void Initialize()
         {
             try {
+                IsInstalledSongBrowser = PluginManager.GetPlugin("Song Browser") != null;
                 this.standardLevelDetailViewController = this.container.Resolve<StandardLevelDetailViewController>();
                 this.levelCollectionViewController = this.container.Resolve<LevelCollectionViewController>();
                 var standardLevelDetailView = this.standardLevelDetailViewController.GetPrivateField<StandardLevelDetailView>("_standardLevelDetailView");
@@ -143,7 +147,7 @@ namespace SongPlayListEditer.UI.Views
                 this.levelCollectionViewController.didSelectLevelEvent += this.LevelCollectionViewController_didSelectLevelEvent;
                 PlaylistUI.ConvertIconButton(ref this._closeButton, new Vector2(50f, 50f), Base64Sprites.LoadSpriteFromResources("SongPlayListEditer.Resources.baseline_close_white_18dp.png"));
                 this._closeButton.GetComponentsInChildren<Image>().First(x => x.name == "Icon").transform.localScale *= 1.2f;
-                if (MenuUI.IsInstalledSongBrowser) {
+                if (IsInstalledSongBrowser) {
                     HMMainThreadDispatcher.instance.Enqueue(this.ResizeDeleteButton());
                 }
             }
@@ -152,7 +156,7 @@ namespace SongPlayListEditer.UI.Views
             }
         }
 
-        IEnumerator ResizeDeleteButton()
+        private IEnumerator ResizeDeleteButton()
         {
             Logger.Debug("Start Resize DeleteButton");
             yield return new WaitWhile(() => this._playButtons.GetComponentsInChildren<Button>(true).FirstOrDefault(x => x.name.Contains("DeleteLevelButton")) == null);
@@ -164,6 +168,8 @@ namespace SongPlayListEditer.UI.Views
         private void ShowModal()
         {
             Logger.Info($"modal scale. [x : {this._modal.transform.position.x}, y : {this._modal.transform.position.y}, z : {this._modal.transform.position.z}]");
+
+            this.LockedPlaylistEntity = this.LockedPlaylistEntity.Read();
             this._modal.transform.SetParent(this.standardLevelDetailViewController.rectTransform, false);
             this._modal.transform.position = _defaultLocalScale;
             this._modal.Show(true, false, () => { _ = this.CreateList(); });
@@ -183,22 +189,23 @@ namespace SongPlayListEditer.UI.Views
         private static readonly SemaphoreSlim _createlistSemaphore = new SemaphoreSlim(1, 1);
 
         [UIComponent("playlists-list-table")]
-        private CustomCellListTableData _playlists;
+        private readonly CustomCellListTableData _playlists;
 
-        
+
         private Button _playlistButton;
 
         [UIComponent("modal")]
-        private ModalView _modal;
+        private readonly ModalView _modal;
         [UIComponent("close-button")]
         private Button _closeButton;
 
         private PlaylistCellEntity.CellFactory _factory;
         [Inject]
-        private DiContainer container;
+        private readonly DiContainer container;
 
         private LevelCollectionViewController levelCollectionViewController;
         private StandardLevelDetailViewController standardLevelDetailViewController;
+        private LockedPlaylistEntity LockedPlaylistEntity = new LockedPlaylistEntity();
         /// <summary>
         /// ボタンの位置によってモーダルウインドウの位置がずれるので開く前に強制的に座標を上書きさせる。
         /// x : 1.221752, y : 1.052058, z : 4.02051
@@ -210,6 +217,5 @@ namespace SongPlayListEditer.UI.Views
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // 構築・破棄
         #endregion
-        //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
     }
 }

@@ -1,19 +1,15 @@
 ﻿using SongPlayListEditer.Statics;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace SongPlayListEditer.Models
 {
-    class Base64Sprites
+    internal class Base64Sprites
     {
         public static Sprite StarFullIcon;
         public static Sprite SpeedIcon;
@@ -33,20 +29,17 @@ namespace SongPlayListEditer.Models
             return new MemoryStream(body);
         }
 
-        public static string SpriteToBase64(Sprite input)
-        {
-            return Convert.ToBase64String(input.texture.EncodeToPNG());
-        }
+        public static string SpriteToBase64(Sprite input) => Convert.ToBase64String(input.texture.EncodeToPNG());
 
         public static Sprite Base64ToSprite(string base64)
         {
             // prune base64 encoded image header
-            Regex r = new Regex(@"data:image.*base64,");
+            var r = new Regex(@"data:image.*base64,");
             base64 = r.Replace(base64, "");
 
             Sprite s = null;
             try {
-                Texture2D tex = Base64ToTexture2D(base64);
+                var tex = Base64ToTexture2D(base64);
                 s = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), (Vector2.one / 2f));
             }
             catch (Exception) {
@@ -60,14 +53,14 @@ namespace SongPlayListEditer.Models
         public static Texture2D Base64ToTexture2D(string encodedData)
         {
             try {
-                byte[] imageData = Convert.FromBase64String(string.IsNullOrEmpty(encodedData) ? DefaultImage.DEFAULT_IMAGE : encodedData);
+                var imageData = Convert.FromBase64String(string.IsNullOrEmpty(encodedData) ? DefaultImage.DEFAULT_IMAGE : encodedData);
 
                 int width, height;
                 GetImageSize(imageData, out width, out height);
 
                 Logger.Info($"W : {width}, H : {height}");
 
-                Texture2D texture = new Texture2D(width, height, TextureFormat.ARGB32, false, true);
+                var texture = new Texture2D(width, height, TextureFormat.ARGB32, false, true);
                 texture.hideFlags = HideFlags.HideAndDontSave;
                 texture.filterMode = FilterMode.Trilinear;
                 texture.LoadImage(imageData);
@@ -75,14 +68,14 @@ namespace SongPlayListEditer.Models
             }
             catch (Exception e) {
                 Logger.Error(e);
-                byte[] imageData = Convert.FromBase64String(DefaultImage.DEFAULT_IMAGE);
+                var imageData = Convert.FromBase64String(DefaultImage.DEFAULT_IMAGE);
 
                 int width, height;
                 GetImageSize(imageData, out width, out height);
 
                 Logger.Info($"W : {width}, H : {height}");
 
-                Texture2D texture = new Texture2D(width, height, TextureFormat.ARGB32, false, true);
+                var texture = new Texture2D(width, height, TextureFormat.ARGB32, false, true);
                 texture.hideFlags = HideFlags.HideAndDontSave;
                 texture.filterMode = FilterMode.Trilinear;
                 texture.LoadImage(imageData);
@@ -111,7 +104,7 @@ namespace SongPlayListEditer.Models
 
                 Logger.Info($"W : {width}, H : {height}");
 
-                Texture2D texture = new Texture2D(width, height, TextureFormat.ARGB32, false, true);
+                var texture = new Texture2D(width, height, TextureFormat.ARGB32, false, true);
                 texture.hideFlags = HideFlags.HideAndDontSave;
                 texture.filterMode = FilterMode.Trilinear;
                 texture.LoadImage(imageData);
@@ -119,14 +112,14 @@ namespace SongPlayListEditer.Models
             }
             catch (Exception e) {
                 Logger.Error(e);
-                byte[] imageData = Convert.FromBase64String(DefaultImage.DEFAULT_IMAGE);
+                var imageData = Convert.FromBase64String(DefaultImage.DEFAULT_IMAGE);
 
                 int width, height;
                 GetImageSize(imageData, out width, out height);
 
                 Logger.Info($"W : {width}, H : {height}");
 
-                Texture2D texture = new Texture2D(width, height, TextureFormat.ARGB32, false, true);
+                var texture = new Texture2D(width, height, TextureFormat.ARGB32, false, true);
                 texture.hideFlags = HideFlags.HideAndDontSave;
                 texture.filterMode = FilterMode.Trilinear;
                 texture.LoadImage(imageData);
@@ -138,7 +131,7 @@ namespace SongPlayListEditer.Models
         {
             Sprite s = null;
             try {
-                Texture2D tex = StreamToTextuer2D(stream);
+                var tex = StreamToTextuer2D(stream);
                 s = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), (Vector2.one / 2f));
             }
             catch (Exception) {
@@ -164,30 +157,21 @@ namespace SongPlayListEditer.Models
             height = ReadInt(imageData, 3 + 15 + 2 + 2);
         }
 
-        private static int ReadInt(byte[] imageData, int offset)
-        {
-            return (imageData[offset] << 8) | imageData[offset + 1];
-        }
+        private static int ReadInt(byte[] imageData, int offset) => (imageData[offset] << 8) | imageData[offset + 1];
 
         public static Texture2D LoadTextureRaw(byte[] file)
         {
             if (file.Count() > 0) {
-                Texture2D Tex2D = new Texture2D(2, 2);
+                var Tex2D = new Texture2D(2, 2);
                 if (Tex2D.LoadImage(file))
                     return Tex2D;
             }
             return null;
         }
 
-        public static Texture2D LoadTextureFromResources(string resourcePath)
-        {
-            return LoadTextureRaw(GetResource(Assembly.GetCallingAssembly(), resourcePath));
-        }
+        public static Texture2D LoadTextureFromResources(string resourcePath) => LoadTextureRaw(GetResource(Assembly.GetCallingAssembly(), resourcePath));
 
-        public static Sprite LoadSpriteRaw(byte[] image, float PixelsPerUnit = 100.0f)
-        {
-            return LoadSpriteFromTexture(LoadTextureRaw(image), PixelsPerUnit);
-        }
+        public static Sprite LoadSpriteRaw(byte[] image, float PixelsPerUnit = 100.0f) => LoadSpriteFromTexture(LoadTextureRaw(image), PixelsPerUnit);
 
         public static Sprite LoadSpriteFromTexture(Texture2D SpriteTexture, float PixelsPerUnit = 100.0f)
         {
@@ -196,10 +180,7 @@ namespace SongPlayListEditer.Models
             return null;
         }
 
-        public static Sprite LoadSpriteFromResources(string resourcePath, float PixelsPerUnit = 100.0f)
-        {
-            return LoadSpriteRaw(GetResource(Assembly.GetCallingAssembly(), resourcePath), PixelsPerUnit);
-        }
+        public static Sprite LoadSpriteFromResources(string resourcePath, float PixelsPerUnit = 100.0f) => LoadSpriteRaw(GetResource(Assembly.GetCallingAssembly(), resourcePath), PixelsPerUnit);
 
         public static string FileInfoToBase64(FileInfo fileinfo)
         {
@@ -211,7 +192,7 @@ namespace SongPlayListEditer.Models
             catch (Exception e) {
                 Logger.Error(e);
                 return GetBase64String("jpg", DefaultImage.DEFAULT_IMAGE);
-            }            
+            }
         }
 
         public static string StreamToBase64(Stream stream, string extention)
@@ -227,15 +208,12 @@ namespace SongPlayListEditer.Models
             }
         }
 
-        public static string GetBase64String(string extention, string base64string)
-        {
-            return $"{Base64StringHeader.Replace("%extention%", extention)},{base64string}";
-        }
+        public static string GetBase64String(string extention, string base64string) => $"{Base64StringHeader.Replace("%extention%", extention)},{base64string}";
 
         public static byte[] GetResource(Assembly asm, string ResourceName)
         {
-            System.IO.Stream stream = asm.GetManifestResourceStream(ResourceName);
-            byte[] data = new byte[stream.Length];
+            var stream = asm.GetManifestResourceStream(ResourceName);
+            var data = new byte[stream.Length];
             stream.Read(data, 0, (int)stream.Length);
             return data;
         }

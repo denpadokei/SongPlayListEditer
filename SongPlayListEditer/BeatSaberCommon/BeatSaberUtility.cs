@@ -1,16 +1,9 @@
 ﻿using BeatSaberMarkupLanguage;
-using BeatSaberPlaylistsLib;
 using BS_Utils.Utilities;
 using HMUI;
-using SongPlayListEditer.Models;
-using SongPlayListEditer.Statics;
 using SongPlayListEditer.Utilites;
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -21,11 +14,11 @@ namespace SongPlayListEditer.BeatSaberCommon
     public class BeatSaberUtility : MonoBehaviour
     {
         [Inject]
-        private LevelSelectionNavigationController _levelSelectionNavigationController;
+        private readonly LevelSelectionNavigationController _levelSelectionNavigationController;
         [Inject]
-        private AnnotatedBeatmapLevelCollectionsViewController _annotatedBeatmapLevelCollectionsViewController;
+        private readonly AnnotatedBeatmapLevelCollectionsViewController _annotatedBeatmapLevelCollectionsViewController;
         [Inject]
-        private LevelCollectionViewController _levelCollectionViewController;
+        private readonly LevelCollectionViewController _levelCollectionViewController;
 
         public BeatSaberUtility()
         {
@@ -33,10 +26,7 @@ namespace SongPlayListEditer.BeatSaberCommon
 
 
         [Inject]
-        public void Constractor()
-        {
-            this._levelCollectionViewController.didSelectLevelEvent += this.SelectLevelHandle;
-        }
+        public void Constractor() => this._levelCollectionViewController.didSelectLevelEvent += this.SelectLevelHandle;
 
         public IPreviewBeatmapLevel CurrentPreviewBeatmapLevel { get; private set; }
 
@@ -49,7 +39,7 @@ namespace SongPlayListEditer.BeatSaberCommon
         private void SelectLevelHandle(LevelCollectionViewController arg1, IPreviewBeatmapLevel arg2)
         {
             Logger.Info($"Selected Song : {arg2.songName}");
-            CurrentPreviewBeatmapLevel = arg2;
+            this.CurrentPreviewBeatmapLevel = arg2;
         }
 
         /// <summary>
@@ -58,11 +48,11 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// <returns></returns>
         public IBeatmapLevelPack GetCurrentSelectedLevelPack()
         {
-            if (_levelSelectionNavigationController == null) {
+            if (this._levelSelectionNavigationController == null) {
                 return null;
             }
 
-            var pack = _levelSelectionNavigationController.GetPrivateField<IBeatmapLevelPack>("_levelPack");
+            var pack = this._levelSelectionNavigationController.GetPrivateField<IBeatmapLevelPack>("_levelPack");
             return pack;
         }
 
@@ -79,7 +69,7 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// <returns>The newly created button.</returns>
         public static Button CreateUIButton(RectTransform parent, string buttonTemplate, Vector2 anchoredPosition, Vector2 sizeDelta, UnityAction onClick = null, string buttonText = "BUTTON", Sprite icon = null)
         {
-            Button btn = UnityEngine.Object.Instantiate(Resources.FindObjectsOfTypeAll<Button>().Last(x => (x.name == buttonTemplate)), parent, false);
+            var btn = UnityEngine.Object.Instantiate(Resources.FindObjectsOfTypeAll<Button>().Last(x => (x.name == buttonTemplate)), parent, false);
             btn.onClick = new Button.ButtonClickedEvent();
             if (onClick != null)
                 btn.onClick.AddListener(onClick);
@@ -104,9 +94,9 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// <param name="buttonTemplate"></param>
         /// <param name="buttonInstance"></param>
         /// <returns></returns>
-        static public Button CreateUIButton(RectTransform parent, Button buttonTemplate)
+        public static Button CreateUIButton(RectTransform parent, Button buttonTemplate)
         {
-            Button btn = UnityEngine.Object.Instantiate(buttonTemplate, parent, false);
+            var btn = UnityEngine.Object.Instantiate(buttonTemplate, parent, false);
             UnityEngine.Object.DestroyImmediate(btn.GetComponent<SignalOnUIButtonClick>());
             btn.onClick = new Button.ButtonClickedEvent();
             btn.name = "CustomUIButton";
@@ -120,7 +110,7 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// <param name="button"></param>
         public static void DestroyHoverHint(RectTransform button)
         {
-            HoverHint currentHoverHint = button.GetComponentsInChildren<HMUI.HoverHint>().First();
+            var currentHoverHint = button.GetComponentsInChildren<HMUI.HoverHint>().First();
             if (currentHoverHint != null) {
                 UnityEngine.GameObject.DestroyImmediate(currentHoverHint);
             }
@@ -139,11 +129,11 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// <returns></returns>
         private IPlaylist GetCurrentSelectedPlaylist()
         {
-            if (_annotatedBeatmapLevelCollectionsViewController == null) {
+            if (this._annotatedBeatmapLevelCollectionsViewController == null) {
                 return null;
             }
 
-            IPlaylist playlist = _annotatedBeatmapLevelCollectionsViewController.selectedAnnotatedBeatmapLevelCollection as IPlaylist;
+            var playlist = this._annotatedBeatmapLevelCollectionsViewController.selectedAnnotatedBeatmapLevelCollection as IPlaylist;
             return playlist;
         }
 
@@ -153,9 +143,9 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// <returns></returns>
         public IAnnotatedBeatmapLevelCollection GetCurrentSelectedAnnotatedBeatmapLevelCollection()
         {
-            IAnnotatedBeatmapLevelCollection collection = GetCurrentSelectedLevelPack();
+            IAnnotatedBeatmapLevelCollection collection = this.GetCurrentSelectedLevelPack();
             if (collection == null) {
-                collection = GetCurrentSelectedPlaylist();
+                collection = this.GetCurrentSelectedPlaylist();
             }
 
             return collection;
@@ -167,7 +157,7 @@ namespace SongPlayListEditer.BeatSaberCommon
         /// <returns></returns>
         public IPreviewBeatmapLevel[] GetCurrentLevelCollectionLevels()
         {
-            var levelCollection = GetCurrentSelectedAnnotatedBeatmapLevelCollection();
+            var levelCollection = this.GetCurrentSelectedAnnotatedBeatmapLevelCollection();
             if (levelCollection == null) {
                 Logger.Debug("Current selected level collection is null for some reason...");
                 return null;
@@ -179,7 +169,7 @@ namespace SongPlayListEditer.BeatSaberCommon
         private void DidSelectLevelPack(LevelSelectionNavigationController controller, IBeatmapLevelPack beatmap)
         {
             Logger.Debug($"Pack name : {beatmap.packName}, Pack ID : {beatmap.packID}, Pack short name : {beatmap.shortPackName}");
-            CurrentPack = beatmap;
+            this.CurrentPack = beatmap;
         }
 
         public static HoverHint AddHintText(RectTransform parent, string text)

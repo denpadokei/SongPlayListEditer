@@ -1,6 +1,5 @@
 ﻿using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
-// using BeatSaberMarkupLanguage.Notify;
 using HMUI;
 using SongPlayListEditer.Bases;
 using SongPlayListEditer.Configuration;
@@ -12,6 +11,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UnityEngine.UI;
 using static BeatSaberMarkupLanguage.Components.CustomListTableData;
@@ -24,8 +24,6 @@ namespace SongPlayListEditer.UI.Views
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プロパティ
         // For this method of setting the ResourceName, this class must be the first class in the file.
-
-
         /// <summary>プレイリストのタイトル を取得、設定</summary>
         private string title_;
         /// <summary>プレイリストのタイトル を取得、設定</summary>
@@ -57,6 +55,17 @@ namespace SongPlayListEditer.UI.Views
             get => this.description_ ?? "";
 
             set => this.SetProperty(ref this.description_, value);
+        }
+
+        /// <summary>ロックしてるかどうか を取得、設定</summary>
+        private bool isLocked_;
+        [UIValue("is-locked")]
+        /// <summary>ロックしてるかどうか を取得、設定</summary>
+        public bool IsLocked
+        {
+            get => this.isLocked_;
+
+            set => this.SetProperty(ref this.isLocked_, value);
         }
 
         /// <summary>説明 を取得、設定</summary>
@@ -96,7 +105,8 @@ namespace SongPlayListEditer.UI.Views
         public event Action ExitEvent;
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
-        #region // コマンド用メソッド
+        #region // Unity massage
+        private void Awake() => this.lockedPlaylistEntity = new LockedPlaylistEntity();
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // オーバーライドメソッド
@@ -104,6 +114,7 @@ namespace SongPlayListEditer.UI.Views
         {
             try {
                 base.DidActivate(firstActivation, addedToHierarchy, screenSystemEnabling);
+                this.lockedPlaylistEntity = this.lockedPlaylistEntity.Read();
                 this.CoverPath = null;
                 this.Title = null;
                 this.Author = null;
@@ -112,8 +123,9 @@ namespace SongPlayListEditer.UI.Views
                 this.Title = this.CurrentPlaylist.Title;
                 this.Author = this.CurrentPlaylist.Author;
                 this.Description = this.CurrentPlaylist.Description;
+                this.IsLocked = this.lockedPlaylistEntity.LockedPlaylists.Any(x => Regex.IsMatch(x, $"^{this.CurrentPlaylist.Filename}$", RegexOptions.IgnoreCase));
 
-                _cover.sprite = Base64Sprites.StreamToSprite(this.CurrentPlaylist?.GetCoverStream());
+                this._cover.sprite = Base64Sprites.StreamToSprite(this.CurrentPlaylist?.GetCoverStream());
 
                 this.IsSaveButtonInteractive = !string.IsNullOrEmpty(this.Title);
             }
@@ -144,7 +156,7 @@ namespace SongPlayListEditer.UI.Views
         }
 
         [UIAction("save")]
-        void Save()
+        private void Save()
         {
             Logger.Info("Clicked Save.");
             if (string.IsNullOrEmpty(this.CurrentPlaylist.Filename)) {
@@ -176,18 +188,25 @@ namespace SongPlayListEditer.UI.Views
             this.CurrentPlaylist.Author = this.Author;
             this.CurrentPlaylist.Description = this.Description;
             this.SaveEvent?.Invoke(this.CurrentPlaylist);
+            if (this.IsLocked) {
+                this.lockedPlaylistEntity = this.lockedPlaylistEntity.Add(this.CurrentPlaylist.Filename);
+            }
+            else {
+                this.lockedPlaylistEntity = this.lockedPlaylistEntity.Remove(this.CurrentPlaylist.Filename);
+            }
+            this.lockedPlaylistEntity.Save();
             PlaylistLibUtility.RefreshPlaylists();
         }
 
         [UIAction("back")]
-        void Back()
+        private void Back()
         {
             Logger.Info("Clicked Back");
             this.ExitEvent?.Invoke();
         }
 
         [UIAction("select-cover-cell")]
-        void SelectCoverCell(TableView tableView, int cellindex)
+        private void SelectCoverCell(TableView tableView, int cellindex)
         {
             var cell = this._covers.data[cellindex];
             var files = Directory.EnumerateFiles(PluginConfig.Instance.CoverDirectoryPath, "*.jpg", SearchOption.TopDirectoryOnly).Union(Directory.EnumerateFiles(PluginConfig.Instance.CoverDirectoryPath, "*.png", SearchOption.TopDirectoryOnly)).Select(x => new FileInfo(x));
@@ -207,11 +226,11 @@ namespace SongPlayListEditer.UI.Views
         private void ShowModal()
         {
             Logger.Info("Clicked Show modal");
-            _ = CreateCoverList();
+            _ = this.CreateCoverList();
         }
 
         [UIAction("open-folder")]
-        void OpenCoverFolder()
+        private void OpenCoverFolder()
         {
             Logger.Info("Clicked Open Folder.");
             Logger.Info($"Cover folder path : {PluginConfig.Instance.CoverDirectoryPath}");
@@ -241,10 +260,10 @@ namespace SongPlayListEditer.UI.Views
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // メンバ変数
         [UIComponent("covers")]
-        CustomListTableData _covers;
-
+        private readonly CustomListTableData _covers;
         [UIComponent("cover")]
-        Image _cover;
+        private readonly Image _cover;
+        private LockedPlaylistEntity lockedPlaylistEntity;
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // 構築・破棄

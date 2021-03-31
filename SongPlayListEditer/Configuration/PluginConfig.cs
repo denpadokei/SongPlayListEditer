@@ -1,7 +1,7 @@
-﻿using System;
+﻿using IPA.Config.Stores;
+using System;
 using System.IO;
 using System.Runtime.CompilerServices;
-using IPA.Config.Stores;
 
 [assembly: InternalsVisibleTo(GeneratedStore.AssemblyVisibilityTarget)]
 namespace SongPlayListEditer.Configuration
