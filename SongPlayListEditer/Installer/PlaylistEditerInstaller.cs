@@ -15,7 +15,7 @@ namespace SongPlayListEditer.Installer
             this.Container.BindFactory<BeatSaberPlaylistsLib.Types.IPlaylist, IPreviewBeatmapLevel, PlaylistCellEntity, PlaylistCellEntity.CellFactory>().AsCached();
             this.Container.BindInterfacesAndSelfTo<SimplePlayListView>().FromNewComponentAsViewController().AsSingle().NonLazy();
 
-            this.Container.Bind<BeatSaberUtility>().FromNewComponentOnNewGameObject("BSUlility").AsSingle();
+            this.Container.BindInterfacesAndSelfTo<BeatSaberUtility>().FromNewComponentOnNewGameObject("BSUlility").AsSingle();
 
             this.Container.BindInterfacesAndSelfTo<EditView>().FromNewComponentAsViewController().AsSingle();
             this.Container.BindInterfacesAndSelfTo<PlayListMenuView>().FromNewComponentAsViewController().AsSingle();
