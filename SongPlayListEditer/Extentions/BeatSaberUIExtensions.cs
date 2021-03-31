@@ -1,9 +1,4 @@
 ﻿using BS_Utils.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -56,25 +51,25 @@ namespace SongPlayListEditer.Extentions
 
         public static Button CreateUIButton(this HMUI.ViewController parent, string buttonTemplate)
         {
-            Button btn = PlaylistUI.CreateUIButton(parent.rectTransform, buttonTemplate);
+            var btn = PlaylistUI.CreateUIButton(parent.rectTransform, buttonTemplate);
             return btn;
         }
 
         public static Button CreateUIButton(this HMUI.ViewController parent, string buttonTemplate, Vector2 anchoredPosition, Vector2 sizeDelta, UnityAction onClick = null, string buttonText = "BUTTON", Sprite icon = null)
         {
-            Button btn = PlaylistUI.CreateUIButton(parent.rectTransform, buttonTemplate, anchoredPosition, sizeDelta, onClick, buttonText, icon);
+            var btn = PlaylistUI.CreateUIButton(parent.rectTransform, buttonTemplate, anchoredPosition, sizeDelta, onClick, buttonText, icon);
             return btn;
         }
 
         public static Button CreateUIButton(this HMUI.ViewController parent, string buttonTemplate, Vector2 anchoredPosition, UnityAction onClick = null, string buttonText = "BUTTON", Sprite icon = null)
         {
-            Button btn = PlaylistUI.CreateUIButton(parent.rectTransform, buttonTemplate, anchoredPosition, onClick, buttonText, icon);
+            var btn = PlaylistUI.CreateUIButton(parent.rectTransform, buttonTemplate, anchoredPosition, onClick, buttonText, icon);
             return btn;
         }
 
         public static Button CreateUIButton(this HMUI.ViewController parent, string buttonTemplate, UnityAction onClick = null, string buttonText = "BUTTON", Sprite icon = null)
         {
-            Button btn = PlaylistUI.CreateUIButton(parent.rectTransform, buttonTemplate, onClick, buttonText, icon);
+            var btn = PlaylistUI.CreateUIButton(parent.rectTransform, buttonTemplate, onClick, buttonText, icon);
             return btn;
         }
 
@@ -86,30 +81,21 @@ namespace SongPlayListEditer.Extentions
 
         public static TextMeshProUGUI CreateText(this HMUI.ViewController parent, string text, Vector2 anchoredPosition, Vector2 sizeDelta)
         {
-            TextMeshProUGUI textMesh = PlaylistUI.CreateText(parent.rectTransform, text, anchoredPosition, sizeDelta);
+            var textMesh = PlaylistUI.CreateText(parent.rectTransform, text, anchoredPosition, sizeDelta);
             return textMesh;
         }
 
         public static TextMeshProUGUI CreateText(this HMUI.ViewController parent, string text, Vector2 anchoredPosition)
         {
-            TextMeshProUGUI textMesh = PlaylistUI.CreateText(parent.rectTransform, text, anchoredPosition);
+            var textMesh = PlaylistUI.CreateText(parent.rectTransform, text, anchoredPosition);
             return textMesh;
         }
 
-        public static void SetText(this LevelListTableCell cell, string text)
-        {
-            cell.GetPrivateField<TextMeshProUGUI>("_songNameText").text = text;
-        }
+        public static void SetText(this LevelListTableCell cell, string text) => cell.GetPrivateField<TextMeshProUGUI>("_songNameText").text = text;
 
-        public static void SetSubText(this LevelListTableCell cell, string subtext)
-        {
-            cell.GetPrivateField<TextMeshProUGUI>("_authorText").text = subtext;
-        }
+        public static void SetSubText(this LevelListTableCell cell, string subtext) => cell.GetPrivateField<TextMeshProUGUI>("_authorText").text = subtext;
 
-        public static void SetIcon(this LevelListTableCell cell, Sprite icon)
-        {
-            cell.GetPrivateField<UnityEngine.UI.Image>("_coverImage").sprite = icon;
-        }
+        public static void SetIcon(this LevelListTableCell cell, Sprite icon) => cell.GetPrivateField<UnityEngine.UI.Image>("_coverImage").sprite = icon;
         #endregion
     }
 }

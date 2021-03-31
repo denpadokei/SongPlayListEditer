@@ -1,23 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using IPA;
-using IPA.Config;
+﻿using IPA;
 using IPA.Config.Stores;
-using UnityEngine.SceneManagement;
-using UnityEngine;
-using IPALogger = IPA.Logging.Logger;
-using SongPlayListEditer.UI;
-using BS_Utils.Utilities;
-using SongPlayListEditer.BeatSaberCommon;
-using SongCore;
-using System.Reflection;
-using System.IO;
-using SongPlayListEditer.Configuration;
-using SongPlayListEditer.Models;
 using SiraUtil.Zenject;
+using SongPlayListEditer.Configuration;
 using SongPlayListEditer.Installer;
+using SongPlayListEditer.Models;
+using System.IO;
+using System.Reflection;
+using IPALogger = IPA.Logging.Logger;
 
 namespace SongPlayListEditer
 {
@@ -34,10 +23,10 @@ namespace SongPlayListEditer
         public void InitWithConfig(IPA.Config.Config conf, IPALogger logger, Zenjector zenjector)
         {
             instance = this;
-            Logger.log = logger;
-            Logger.log.Debug("Logger initialized.");
+            Logger.Log = logger;
+            Logger.Log.Debug("Logger initialized.");
             Configuration.PluginConfig.Instance = conf.Generated<Configuration.PluginConfig>();
-            Logger.log.Debug("Config loaded");
+            Logger.Log.Debug("Config loaded");
             zenjector.OnMenu<PlaylistEditerInstaller>();
         }
         #endregion
@@ -62,7 +51,7 @@ namespace SongPlayListEditer
             if (PluginConfig.Instance?.AutoBackup == true) {
                 BackupManager.Backup(PluginConfig.Instance?.BackupPath);
             }
-            Logger.log.Debug("OnApplicationQuit");
+            Logger.Log.Debug("OnApplicationQuit");
         }
     }
 }

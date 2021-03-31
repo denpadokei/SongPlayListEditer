@@ -1,17 +1,8 @@
-﻿using BeatSaberMarkupLanguage;
-using BeatSaberMarkupLanguage.Attributes;
-// using BeatSaberMarkupLanguage.Notify;
-using BeatSaberMarkupLanguage.Parser;
+﻿// using BeatSaberMarkupLanguage.Notify;
 using BeatSaberMarkupLanguage.ViewControllers;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SongPlayListEditer.Bases
 {
@@ -34,7 +25,7 @@ namespace SongPlayListEditer.Bases
             if (EqualityComparer<T>.Default.Equals(storage, value)) return false;
 
             storage = value;
-            RaisePropertyChanged(propertyName);
+            this.RaisePropertyChanged(propertyName);
             return true;
         }
 
@@ -44,18 +35,11 @@ namespace SongPlayListEditer.Bases
         /// <param name="propertyName">Name of the property used to notify listeners. This
         /// value is optional and can be provided automatically when invoked from compilers
         /// that support <see cref="CallerMemberNameAttribute"/>.</param>
-        protected void RaisePropertyChanged([CallerMemberName]string propertyName = null)
-        {
-            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
-        }
+        protected void RaisePropertyChanged([CallerMemberName] string propertyName = null) => this.OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
         /// <summary>
         /// Raises this object's PropertyChanged event.
         /// </summary>
         /// <param name="args">The PropertyChangedEventArgs</param>
-        protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
-        {
-            Logger.Info($"Property Changed by {args.PropertyName}");
-            HMMainThreadDispatcher.instance?.Enqueue(() => NotifyPropertyChanged(args.PropertyName));
-        }
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs args) => HMMainThreadDispatcher.instance?.Enqueue(() => this.NotifyPropertyChanged(args.PropertyName));
     }
 }

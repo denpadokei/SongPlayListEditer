@@ -21,11 +21,6 @@
       <Output TaskParameter="CommitShortHash" PropertyName="CommitShortHash" />
     </GetCommitHash>
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFiles="$(IntermediateOutputPath)zip\Plugins\$(AssemblyName).dll" />
-    <Copy SourceFiles="$(OutputPath)dll\PlaylistManager.dll" DestinationFiles="$(IntermediateOutputPath)zip\Plugins\PlaylistManager.dll" />
-    <Copy SourceFiles="$(OutputPath)dll\BeatSaberPlaylistsLib.manifest" DestinationFiles="$(IntermediateOutputPath)zip\Plugins\BeatSaberPlaylistsLib.manifest" />
-    <Copy SourceFiles="$(OutputPath)dll\BeatSaberPlaylistsLib.dll" DestinationFiles="$(IntermediateOutputPath)zip\Libs\BeatSaberPlaylistsLib.dll" />
-    <Copy SourceFiles="$(OutputPath)dll\BeatSaberPlaylistsLib.xml" DestinationFiles="$(IntermediateOutputPath)zip\Libs\BeatSaberPlaylistsLib.xml" />
-    
     <GetManifestInfo ErrorOnMismatch="False">
       <Output TaskParameter="PluginVersion" PropertyName="PluginVersion" />
       <Output TaskParameter="GameVersion" PropertyName="GameVersion" />
@@ -47,11 +42,7 @@
     </PropertyGroup>
     <Message Text="Copying $(OutputPath)$(AssemblyName).dll to $(PluginDir)" Importance="high" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFiles="$(PluginDir)\$(AssemblyName).dll" />
-    <Copy SourceFiles="$(OutputPath)dll\PlaylistManager.dll" DestinationFiles="$(IntermediateOutputPath)zip\Plugins\PlaylistManager.dll" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFiles="$(PluginDir)\$(AssemblyName).pdb" />
-    <Copy SourceFiles="$(OutputPath)dll\BeatSaberPlaylistsLib.manifest" DestinationFiles="$(PluginDir)\BeatSaberPlaylistsLib.manifest" />
-    <Copy SourceFiles="$(OutputPath)dll\BeatSaberPlaylistsLib.dll" DestinationFiles="$(BeatSaberDir)\Libs\BeatSaberPlaylistsLib.dll" />
-    <Copy SourceFiles="$(OutputPath)dll\BeatSaberPlaylistsLib.xml" DestinationFiles="$(BeatSaberDir)\Libs\BeatSaberPlaylistsLib.xml" />
   </Target>
   <!--Build Tasks-->
   <UsingTask TaskName="GetManifestInfo" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v12.0.dll">

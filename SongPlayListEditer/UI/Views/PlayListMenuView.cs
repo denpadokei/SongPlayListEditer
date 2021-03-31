@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using BeatSaberMarkupLanguage.Attributes;
+﻿using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using HMUI;
 using SongPlayListEditer.Bases;
 using SongPlayListEditer.BeatSaberCommon;
 using SongPlayListEditer.Models;
+using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using static BeatSaberMarkupLanguage.Components.CustomListTableData;
 
@@ -79,8 +79,6 @@ namespace SongPlayListEditer.UI.Views
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プライベートメソッド
-
-
         public void CreateList()
         {
             _ = this.CreateListAsync();
@@ -100,11 +98,14 @@ namespace SongPlayListEditer.UI.Views
                 this._playlists?.data?.Clear();
 
                 foreach (var playlist in BeatSaberUtility.GetLocalPlaylist()) {
+                    var lockedPlaylists = new LockedPlaylistEntity().Read();
+                    var title = lockedPlaylists.LockedPlaylists.Any(x => Regex.IsMatch(x, $"^{playlist.Filename}$")) ? $"<color=yellow>{playlist.Title}</color>" : playlist.Title;
+
                     if (Base64Sprites.CashedTextuer.TryGetValue(playlist.Filename, out var tex)) {
-                        
+
                         HMMainThreadDispatcher.instance?.Enqueue(() =>
                         {
-                            this._playlists?.data.Add(new CustomCellInfo(playlist.Title, $"Song count-{playlist.Count}", Sprite.Create(tex, new Rect(Vector2.zero, new Vector2(tex.width, tex.height)), new Vector2(0.5f, 0.5f))));
+                            this._playlists?.data.Add(new CustomCellInfo(title, $"Song count-{playlist.Count}", Sprite.Create(tex, new Rect(Vector2.zero, new Vector2(tex.width, tex.height)), new Vector2(0.5f, 0.5f))));
                         });
                     }
                     else {
@@ -114,7 +115,7 @@ namespace SongPlayListEditer.UI.Views
                         var sprite = Sprite.Create(tex, new Rect(Vector2.zero, new Vector2(tex.width, tex.height)), new Vector2(0.5f, 0.5f));
                         HMMainThreadDispatcher.instance?.Enqueue(() =>
                         {
-                            this._playlists?.data.Add(new CustomCellInfo(playlist.Title, $"Song count-{playlist.Count}", sprite));
+                            this._playlists?.data.Add(new CustomCellInfo(title, $"Song count-{playlist.Count}", sprite));
                         });
                     }
                 }
@@ -136,19 +137,37 @@ namespace SongPlayListEditer.UI.Views
         }
 
         [UIAction("select-cell")]
-        void SelectCell(TableView tableView, int cellindex)
+        private void SelectCell(TableView tableView, int cellindex)
         {
             Logger.Info("Selected Cell");
             this.SelectedCell?.Invoke(BeatSaberUtility.GetLocalPlaylist().ToArray()[cellindex]);
             this.IsEnableEditButton = true;
         }
+
+        [UIAction("all-lock")]
+        private void AllLock()
+        {
+            var lockedPlaylists = new LockedPlaylistEntity().Read();
+            lockedPlaylists.Add(BeatSaberUtility.GetLocalPlaylist().Select(x => x.Filename).ToArray());
+            lockedPlaylists.Save();
+            this.CreateList();
+        }
+
+        [UIAction("all-unlock")]
+        private void Allunlock()
+        {
+            var lockedPlaylists = new LockedPlaylistEntity().Read();
+            lockedPlaylists.Remove(BeatSaberUtility.GetLocalPlaylist().Select(x => x.Filename).ToArray());
+            lockedPlaylists.Save();
+            this.CreateList();
+        }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // メンバ変数
         [UIComponent("playlists")]
-        private CustomListTableData _playlists;
+        private readonly CustomListTableData _playlists;
 
-        private static SemaphoreSlim _createlistSemaphore = new SemaphoreSlim(1, 1);
+        private static readonly SemaphoreSlim _createlistSemaphore = new SemaphoreSlim(1, 1);
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // 構築・破棄

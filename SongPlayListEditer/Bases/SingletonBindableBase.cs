@@ -1,13 +1,9 @@
 ﻿using BeatSaberMarkupLanguage.Components;
 // using BeatSaberMarkupLanguage.Notify;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace SongPlayListEditer.Bases
@@ -17,10 +13,7 @@ namespace SongPlayListEditer.Bases
         private static SynchronizationContext context;
 
 
-        protected virtual void Awake()
-        {
-            context = SynchronizationContext.Current;
-        }
+        protected virtual void Awake() => context = SynchronizationContext.Current;
 
         /// <summary>
         /// Checks if a property already matches a desired value. Sets the property and
@@ -39,7 +32,7 @@ namespace SongPlayListEditer.Bases
             if (EqualityComparer<T>.Default.Equals(storage, value)) return false;
 
             storage = value;
-            RaisePropertyChanged(propertyName);
+            this.RaisePropertyChanged(propertyName);
             return true;
         }
 
@@ -49,17 +42,11 @@ namespace SongPlayListEditer.Bases
         /// <param name="propertyName">Name of the property used to notify listeners. This
         /// value is optional and can be provided automatically when invoked from compilers
         /// that support <see cref="CallerMemberNameAttribute"/>.</param>
-        protected void RaisePropertyChanged([CallerMemberName]string propertyName = null)
-        {
-            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
-        }
+        protected void RaisePropertyChanged([CallerMemberName] string propertyName = null) => this.OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
         /// <summary>
         /// Raises this object's PropertyChanged event.
         /// </summary>
         /// <param name="args">The PropertyChangedEventArgs</param>
-        protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
-        {
-            context?.Post(d => { NotifyPropertyChanged(args.PropertyName); }, null);
-        }
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs args) => context?.Post(d => { this.NotifyPropertyChanged(args.PropertyName); }, null);
     }
 }

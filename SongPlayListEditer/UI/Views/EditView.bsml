@@ -1,5 +1,5 @@
 ﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
-  <vertical pad-bottom='2' pad-top='2' child-align='MiddleCenter' horizontal-fit='MinSize'>
+  <vertical pad-bottom='2' pad-top='2' child-align='MiddleCenter' horizontal-fit='PreferredSize'>
     <horizontal min-width='65'>
       <image id='cover' preferred-height='12' preferred-width='12' preserve-aspect='true'></image>
       <button text='SELECT COVER' on-click='select-cover' click-event='open-modal'></button>
@@ -15,9 +15,10 @@
         </vertical>
       </modal>
     </horizontal>
-    <string-setting min-width='60' text='Title' value='title' apply-on-change='true' bind-value='true'></string-setting>
-    <string-setting min-width='60' text='Author' value='author' apply-on-change='true' bind-value='true'></string-setting>
-    <string-setting min-width='60' text='Description' value='description' apply-on-change='true' bind-value='true'></string-setting>
+    <string-setting text='Title' value='title' bind-value='true' apply-on-change='true'></string-setting>
+    <string-setting text='Author' value='author' bind-value='true' apply-on-change='true'></string-setting>
+    <string-setting text='Description' value='description' bind-value='true' apply-on-change='true'></string-setting>
+    <bool-setting text='Lock' value='is-locked' bind-value='true' apply-on-change='true'></bool-setting>
     
     <horizontal min-width='55'>
       <button text='SAVE' on-click='save' interactable='~save-button-interactive'></button>

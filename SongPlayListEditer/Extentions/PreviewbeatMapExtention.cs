@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SongPlayListEditer.Extentions
 {
-    static class PreviewBeatMapExtention
+    internal static class PreviewBeatMapExtention
     {
         private const int LEVELID_LENGTH = 32;
 

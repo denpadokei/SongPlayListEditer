@@ -1,27 +1,22 @@
 ﻿using BeatSaberMarkupLanguage;
-using BeatSaberPlaylistsLib;
-using BeatSaberPlaylistsLib.Blist;
-using BeatSaberPlaylistsLib.Types;
+using BeatSaberMarkupLanguage.MenuButtons;
 using HMUI;
 using SongPlayListEditer.Models;
 using SongPlayListEditer.UI.Views;
 using SongPlayListEditer.Utilites;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Zenject;
 
 namespace SongPlayListEditer.UI
 {
-    public class PlaylistEditorFlowCoordinator : FlowCoordinator
+    public class PlaylistEditorFlowCoordinator : FlowCoordinator, IInitializable
     {
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プロパティ
-        
+
         /// <summary>説明 を取得、設定</summary>
         public BeatSaberPlaylistsLib.Types.IPlaylist CurrentPlaylist { get; private set; }
+        public LockedPlaylistEntity LockedPlaylists { get; private set; }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // コマンド
@@ -51,14 +46,14 @@ namespace SongPlayListEditer.UI
         public void ShowPlaylist()
         {
             Logger.Info("ShowPlaylistView");
-            this.ReplaceTopViewController(_playListMenuView, null, ViewController.AnimationType.In, ViewController.AnimationDirection.Vertical);
+            this.ReplaceTopViewController(this._playListMenuView, null, ViewController.AnimationType.In, ViewController.AnimationDirection.Vertical);
         }
 
         public void ShowEdit()
         {
             Logger.Info("ShowEditView");
             this._editView.CurrentPlaylist = this.CurrentPlaylist;
-            this.ReplaceTopViewController(_editView, null, ViewController.AnimationType.Out, ViewController.AnimationDirection.Vertical);
+            this.ReplaceTopViewController(this._editView, null, ViewController.AnimationType.Out, ViewController.AnimationDirection.Vertical);
         }
 
         public void ShowAdd()
@@ -69,7 +64,7 @@ namespace SongPlayListEditer.UI
 
         public void SetCurrentPlaylist(BeatSaberPlaylistsLib.Types.IPlaylist playlist)
         {
-            
+
             this.CurrentPlaylist = playlist;
             if (playlist == null) {
                 this._editView.Title = "";
@@ -86,13 +81,13 @@ namespace SongPlayListEditer.UI
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プライベートメソッド
-        void Awake()
+        private void Awake()
         {
             this._playListMenuView = BeatSaberUI.CreateViewController<PlayListMenuView>();
             this._editView = BeatSaberUI.CreateViewController<EditView>();
         }
 
-        void Start()
+        private void Start()
         {
             try {
                 Logger.Info($"AwakeStart");
@@ -116,13 +111,14 @@ namespace SongPlayListEditer.UI
             }
         }
 
-        void OnDestroy()
+        private void OnDestroy()
         {
             this._playListMenuView.ShowAddEvent -= this.ShowAdd;
             this._playListMenuView.ShowEditEvent -= this.ShowEdit;
             this._playListMenuView.SelectedCell -= this.SetCurrentPlaylist;
             this._editView.SaveEvent -= this.Save;
             this._editView.ExitEvent -= this.ShowPlaylist;
+            MenuButtons.instance.UnregisterButton(this.menuButton);
         }
 
         private void Save(BeatSaberPlaylistsLib.Types.IPlaylist playlists)
@@ -132,16 +128,29 @@ namespace SongPlayListEditer.UI
             }
             PlaylistLibUtility.CurrentManager.StorePlaylist(playlists);
         }
+
+        /// <summary>
+        /// プレイリスト編集画面に遷移します。
+        /// </summary>
+        private void ShowMainFlowCoodniator() => BeatSaberUI.MainFlowCoordinator.PresentFlowCoordinator(this);
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // メンバ変数
-        //[Inject]
-        PlayListMenuView _playListMenuView;
-        //[Inject]
-        EditView _editView;
+        [Inject]
+        private PlayListMenuView _playListMenuView;
+        [Inject]
+        private EditView _editView;
+        private MenuButton menuButton;
+
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // 構築・破棄
+        public void Initialize()
+        {
+            this.menuButton = new MenuButton("SONG PLAYLIST EDITER", "Edit song playlist", this.ShowMainFlowCoodniator);
+            MenuButtons.instance.RegisterButton(this.menuButton);
+
+        }
         #endregion
     }
 }
