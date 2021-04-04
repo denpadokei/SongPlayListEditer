@@ -12,11 +12,11 @@
 [Beat-Saber-Utils](https://github.com/Kylemc1413/Beat-Saber-Utils)  
 [BeatSaberMarkupLanguage](https://github.com/monkeymanboy/BeatSaberMarkupLanguage)  
 [BeatSaverSharp](https://github.com/lolPants/BeatSaverSharp)  
-[PlaylistLoaderLite](https://github.com/rithik-b/PlaylistLoaderPlugin)  
+[PlaylistLoaderLite](https://github.com/rithik-b/PlaylistManager)  
 [BeatSaberPlaylistsLib](https://github.com/Zingabopp/BeatSaberPlaylistsLib)  
 [SiraUtil](https://github.com/Auros/SiraUtil)  
   
-上記4個はModAssistantからインストールできます。  
+ModAssistantからインストールできます。  
   
 # SongPlayListEditer  
 Edit playlist in game  
@@ -29,8 +29,8 @@ Rename the playlist itself
 [Beat-Saber-Utils](https://github.com/Kylemc1413/Beat-Saber-Utils)  
 [BeatSaberMarkupLanguage](https://github.com/monkeymanboy/BeatSaberMarkupLanguage)  
 [BeatSaverSharp](https://github.com/lolPants/BeatSaverSharp)  
-[PlaylistLoaderLite](https://github.com/rithik-b/PlaylistLoaderPlugin)  
+[PlaylistLoaderLite](https://github.com/rithik-b/PlaylistManager)  
 [BeatSaberPlaylistsLib](https://github.com/Zingabopp/BeatSaberPlaylistsLib)  
 [SiraUtil](https://github.com/Auros/SiraUtil)  
   
-The above three can be installed from Mod Assistant.
+Installed from Mod Assistant.
