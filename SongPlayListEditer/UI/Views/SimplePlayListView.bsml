@@ -1,9 +1,8 @@
 ﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
   <modal id='modal' hide-event='close-modal' click-off-closes='true' anchor-pos-y='20' size-delta-x='100' size-delta-y='80' move-to-center='false'>
-    <vertical pad-top='2' pad-bottom='2' child-expand-width='true' vertical-fit='Unconstrained'>
-      <vertical pad-left='3' pad-right='3' spacing='1'>
-        <page-button event-click='playlists-list-table#PageUp' direction='Up'/>
-        <custom-list id='playlists-list-table' data='playlists' select-cell='current' clickable-cells='true' min-width='75' preferred-height='52'>
+    <vertical pad-top='2' pad-right='2' child-expand-width='true' vertical-fit='PreferredSize'>
+      <horizontal pad-top='3' pad-left='3' pad-right='3' pad-bottom='3'>
+        <custom-list id='playlists-list-table' data='playlists' select-cell='current' clickable-cells='true' min-width='75' preferred-height='60'>
           <background tags='un-selected-un-hovered'></background>
           <background tags='hovered' background='panel-top'></background>
           <horizontal horizontal-fit ='Unconstrained' vertical-fit='Unconstrained'>
@@ -15,9 +14,12 @@
             <checkbox id='check-box'></checkbox>
           </horizontal>
         </custom-list>
-        <page-button event-click='playlists-list-table#PageDown' direction='Down'/>
-      </vertical>
-      <button id='close-button' event-click='close-modal' anchor-max-x='1' anchor-max-y='1' anchor-min-x='0' anchor-min-y='0' min-height='12'></button>
+        <vertical child-expand-height='true' horizontal-fit='PreferredSize' vertical-fit='Unconstrained' pad-left='4'>
+          <page-button event-click='playlists-list-table#PageUp' direction='Up' preferred-width='13' vertical-fit='Unconstrained'/>
+          <page-button event-click='playlists-list-table#PageDown' direction='Down' preferred-width='13' vertical-fit='Unconstrained'/>
+        </vertical>
+      </horizontal>
+      <button id='close-button' event-click='close-modal' anchor-max-x='1' anchor-max-y='1' anchor-min-x='0' anchor-min-y='0' preferred-height='15' pad-left='3' pad-right='3' pad-bottom='3'></button>
     </vertical>
   </modal>
 </bg>
